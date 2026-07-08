@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mcagentlauncher.dev/schemas/instance-lock.schema.json",
+  "title": "MCagentlauncher Instance Lock",
+  "description": "Verified installed instance state written after Desktop Local Executor finishes installation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "lockId",
+    "instanceId",
+    "createdFrom",
+    "installedAt",
+    "target",
+    "files",
+    "verification",
+    "launch"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "lockId": {
+      "type": "string",
+      "pattern": "^lock_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "instanceId": {
+      "type": "string",
+      "pattern": "^instance_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "createdFrom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intentId",
+        "planId",
+        "actionId"
+      ],
+      "properties": {
+        "intentId": {
+          "type": "string",
+          "pattern": "^intent_[a-z0-9][a-z0-9_-]{5,63}$"
+        },
+        "planId": {
+          "type": "string",
+          "pattern": "^plan_[a-z0-9][a-z0-9_-]{5,63}$"
+        },
+        "actionId": {
+          "type": "string",
+          "pattern": "^install_[a-z0-9][a-z0-9_-]{5,63}$"
+        }
+      }
+    },
+    "installedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minecraftVersion",
+        "loader",
+        "loaderVersion",
+        "javaMajorVersion"
+      ],
+      "properties": {
+        "minecraftVersion": {
+          "type": "string",
+          "pattern": "^1\\.[0-9]+(\\.[0-9]+)?$"
+        },
+        "loader": {
+          "type": "string",
+          "const": "fabric"
+        },
+        "loaderVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "javaMajorVersion": {
+          "type": "integer",
+          "enum": [
+            17,
+            21
+          ]
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resourceId",
+          "type",
+          "fileName",
+          "relativePath",
+          "sizeBytes",
+          "hashes",
+          "source"
+        ],
+        "properties": {
+          "resourceId": {
+            "type": "string",
+            "pattern": "^res_[a-z0-9][a-z0-9_-]{5,63}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "mod",
+              "resourcepack",
+              "shaderpack",
+              "config",
+              "loader"
+            ]
+          },
+          "fileName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relativePath": {
+            "type": "string",
+            "pattern": "^(mods|resourcepacks|shaderpacks|config|loaders|instance-lock\\.json)(/[^/\\\\]+)*$"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "hashes": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sha1",
+              "sha512"
+            ],
+            "properties": {
+              "sha1": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              },
+              "sha512": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{128}$"
+              }
+            }
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "platform",
+              "projectId",
+              "versionId"
+            ],
+            "properties": {
+              "platform": {
+                "type": "string",
+                "enum": [
+                  "modrinth",
+                  "manual",
+                  "local-generated"
+                ]
+              },
+              "projectId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "versionId": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allHashesVerified",
+        "metadataVerified",
+        "ruleSetVersion"
+      ],
+      "properties": {
+        "allHashesVerified": {
+          "type": "boolean"
+        },
+        "metadataVerified": {
+          "type": "boolean"
+        },
+        "ruleSetVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "launch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lastAttemptedAt",
+        "lastResult"
+      ],
+      "properties": {
+        "lastAttemptedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "lastResult": {
+          "type": "string",
+          "enum": [
+            "not-attempted",
+            "success",
+            "failed"
+          ]
+        }
+      }
+    }
+  }
+}

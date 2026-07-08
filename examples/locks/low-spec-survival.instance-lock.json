@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "0.1.0",
+  "lockId": "lock_low_spec_survival",
+  "instanceId": "instance_low_spec_survival",
+  "createdFrom": {
+    "intentId": "intent_low_spec_survival",
+    "planId": "plan_low_spec_survival",
+    "actionId": "install_low_spec_survival"
+  },
+  "installedAt": "2026-07-08T10:00:00Z",
+  "target": {
+    "minecraftVersion": "1.20.1",
+    "loader": "fabric",
+    "loaderVersion": "0.15.11",
+    "javaMajorVersion": 17
+  },
+  "files": [
+    {
+      "resourceId": "res_sodium_core",
+      "type": "mod",
+      "fileName": "sodium-fabric-0.5.11+mc1.20.1.jar",
+      "relativePath": "mods/sodium-fabric-0.5.11+mc1.20.1.jar",
+      "sizeBytes": 987654,
+      "hashes": {
+        "sha1": "1111111111111111111111111111111111111111",
+        "sha512": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "source": {
+        "platform": "modrinth",
+        "projectId": "AANobbMI",
+        "versionId": "sodium-1-20-1-example"
+      }
+    },
+    {
+      "resourceId": "res_lithium_core",
+      "type": "mod",
+      "fileName": "lithium-fabric-mc1.20.1-0.11.2.jar",
+      "relativePath": "mods/lithium-fabric-mc1.20.1-0.11.2.jar",
+      "sizeBytes": 765432,
+      "hashes": {
+        "sha1": "2222222222222222222222222222222222222222",
+        "sha512": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "source": {
+        "platform": "modrinth",
+        "projectId": "gvQqBUqZ",
+        "versionId": "lithium-1-20-1-example"
+      }
+    }
+  ],
+  "verification": {
+    "allHashesVerified": true,
+    "metadataVerified": true,
+    "ruleSetVersion": "rules-0.1.0"
+  },
+  "launch": {
+    "lastAttemptedAt": null,
+    "lastResult": "not-attempted"
+  }
+}

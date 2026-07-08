@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "0.1.0",
+  "intentId": "intent_low_spec_survival",
+  "source": "test-fixture",
+  "locale": "zh-CN",
+  "prompt": {
+    "rawText": "我想玩 1.20.1 Fabric 生存，电脑配置比较低，希望更流畅，不要光影。",
+    "redacted": true
+  },
+  "game": {
+    "edition": "java",
+    "minecraftVersions": [
+      "1.20.1"
+    ],
+    "loader": "fabric"
+  },
+  "preferences": {
+    "playStyle": "low-spec",
+    "performanceProfile": "low-spec",
+    "resourceTypes": [
+      "mod"
+    ],
+    "requestedFeatures": [
+      "performance optimization",
+      "vanilla survival"
+    ],
+    "avoidFeatures": [
+      "shaderpack",
+      "heavy visual effects"
+    ]
+  },
+  "constraints": {
+    "modLoaderRequired": true,
+    "maxMemoryMb": 4096,
+    "requireStableReleases": true,
+    "allowOptionalResources": false,
+    "privacy": {
+      "allowTelemetry": false,
+      "allowAnonymousCaseUpload": false
+    }
+  }
+}

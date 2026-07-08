@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "0.1.0",
+  "planId": "plan_low_spec_survival",
+  "intentId": "intent_low_spec_survival",
+  "status": "needs-user-confirmation",
+  "target": {
+    "minecraftVersion": "1.20.1",
+    "loader": "fabric",
+    "loaderVersion": "0.15.11",
+    "javaMajorVersion": 17
+  },
+  "summary": {
+    "title": "Low-spec Fabric survival",
+    "description": "A small Fabric profile focused on performance and vanilla survival compatibility.",
+    "riskLevel": "low",
+    "estimatedMemoryMb": 4096
+  },
+  "resources": [
+    {
+      "resourceId": "res_sodium_core",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Sodium",
+        "slug": "sodium",
+        "projectId": "AANobbMI"
+      },
+      "version": {
+        "versionId": "sodium-1-20-1-example",
+        "versionNumber": "0.5.11",
+        "releaseType": "release"
+      },
+      "required": true,
+      "reason": "Improves client rendering performance for low-spec play.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.20.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "client"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    },
+    {
+      "resourceId": "res_lithium_core",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Lithium",
+        "slug": "lithium",
+        "projectId": "gvQqBUqZ"
+      },
+      "version": {
+        "versionId": "lithium-1-20-1-example",
+        "versionNumber": "0.11.2",
+        "releaseType": "release"
+      },
+      "required": true,
+      "reason": "Optimizes game logic without changing vanilla gameplay.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.20.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "both"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    }
+  ],
+  "ruleResults": {
+    "accepted": [
+      "loader_match",
+      "minecraft_version_match",
+      "stable_release_required"
+    ],
+    "rejected": [],
+    "warnings": [],
+    "errors": []
+  },
+  "installActionRef": {
+    "actionId": "install_low_spec_survival",
+    "schema": "install-action.schema.json"
+  },
+  "userConfirmation": {
+    "required": true,
+    "confirmed": false
+  }
+}

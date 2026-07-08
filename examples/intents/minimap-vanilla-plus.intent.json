@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "0.1.0",
+  "intentId": "intent_minimap_vanilla_plus",
+  "source": "test-fixture",
+  "locale": "en-US",
+  "prompt": {
+    "rawText": "Create a Fabric 1.20.1 vanilla plus instance with a minimap and small quality-of-life mods.",
+    "redacted": true
+  },
+  "game": {
+    "edition": "java",
+    "minecraftVersions": [
+      "1.20.1"
+    ],
+    "loader": "fabric"
+  },
+  "preferences": {
+    "playStyle": "vanilla-plus",
+    "performanceProfile": "balanced",
+    "resourceTypes": [
+      "mod"
+    ],
+    "requestedFeatures": [
+      "minimap",
+      "quality of life",
+      "mod menu"
+    ],
+    "avoidFeatures": [
+      "large modpack"
+    ]
+  },
+  "constraints": {
+    "modLoaderRequired": true,
+    "maxMemoryMb": 6144,
+    "requireStableReleases": true,
+    "allowOptionalResources": true,
+    "privacy": {
+      "allowTelemetry": false,
+      "allowAnonymousCaseUpload": false
+    }
+  }
+}

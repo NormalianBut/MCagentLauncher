@@ -1,0 +1,9 @@
+{
+  "name": "mcagentlauncher",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:schemas": "node packages/schemas/scripts/validate.mjs"
+  }
+}

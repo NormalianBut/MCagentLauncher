@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "0.1.0",
+  "intentId": "intent_visual_shaders",
+  "source": "test-fixture",
+  "locale": "zh-CN",
+  "prompt": {
+    "rawText": "想要 1.21.1 Fabric 光影生存，画面好看一点，也要基础优化。",
+    "redacted": true
+  },
+  "game": {
+    "edition": "java",
+    "minecraftVersions": [
+      "1.21.1"
+    ],
+    "loader": "fabric"
+  },
+  "preferences": {
+    "playStyle": "visual",
+    "performanceProfile": "visual-quality",
+    "resourceTypes": [
+      "mod",
+      "shaderpack"
+    ],
+    "requestedFeatures": [
+      "shader support",
+      "performance optimization",
+      "visual survival"
+    ],
+    "avoidFeatures": [
+      "experimental alpha releases"
+    ]
+  },
+  "constraints": {
+    "modLoaderRequired": true,
+    "maxMemoryMb": 8192,
+    "requireStableReleases": true,
+    "allowOptionalResources": true,
+    "privacy": {
+      "allowTelemetry": false,
+      "allowAnonymousCaseUpload": false
+    }
+  }
+}

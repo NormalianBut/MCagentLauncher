@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mcagentlauncher.dev/schemas/install-action.schema.json",
+  "title": "MCagentlauncher Install Action",
+  "description": "User-confirmed action plan that the Desktop Local Executor can execute. This schema describes actions, not implementation code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "actionId",
+    "planId",
+    "requiresUserConfirmation",
+    "confirmedByUser",
+    "targetInstance",
+    "steps",
+    "rollback"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "actionId": {
+      "type": "string",
+      "pattern": "^install_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "planId": {
+      "type": "string",
+      "pattern": "^plan_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "requiresUserConfirmation": {
+      "type": "boolean",
+      "const": true
+    },
+    "confirmedByUser": {
+      "type": "boolean"
+    },
+    "targetInstance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instanceName",
+        "minecraftVersion",
+        "loader",
+        "loaderVersion"
+      ],
+      "properties": {
+        "instanceName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "minecraftVersion": {
+          "type": "string",
+          "pattern": "^1\\.[0-9]+(\\.[0-9]+)?$"
+        },
+        "loader": {
+          "type": "string",
+          "const": "fabric"
+        },
+        "loaderVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stepId",
+          "kind",
+          "description",
+          "resourceId",
+          "expectedHash",
+          "destination"
+        ],
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "pattern": "^step_[a-z0-9][a-z0-9_-]{5,63}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "create-instance-directory",
+              "install-minecraft",
+              "install-loader",
+              "download-resource",
+              "write-config",
+              "write-lockfile"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^res_[a-z0-9][a-z0-9_-]{5,63}$"
+          },
+          "expectedHash": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "required": [
+              "algorithm",
+              "value"
+            ],
+            "properties": {
+              "algorithm": {
+                "type": "string",
+                "enum": [
+                  "sha1",
+                  "sha256",
+                  "sha512"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40,128}$"
+              }
+            }
+          },
+          "destination": {
+            "type": "string",
+            "enum": [
+              "instance-root",
+              "mods",
+              "resourcepacks",
+              "shaderpacks",
+              "config",
+              "lockfile"
+            ]
+          }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotBeforeInstall",
+        "removeCreatedFiles",
+        "restorePreviousLockfile"
+      ],
+      "properties": {
+        "snapshotBeforeInstall": {
+          "type": "boolean"
+        },
+        "removeCreatedFiles": {
+          "type": "boolean"
+        },
+        "restorePreviousLockfile": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

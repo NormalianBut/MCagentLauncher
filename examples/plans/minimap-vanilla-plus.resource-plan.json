@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "0.1.0",
+  "planId": "plan_minimap_vanilla_plus",
+  "intentId": "intent_minimap_vanilla_plus",
+  "status": "needs-user-confirmation",
+  "target": {
+    "minecraftVersion": "1.20.1",
+    "loader": "fabric",
+    "loaderVersion": "0.15.11",
+    "javaMajorVersion": 17
+  },
+  "summary": {
+    "title": "Vanilla plus with minimap",
+    "description": "A small Fabric plan with a minimap and quality-of-life UI support while keeping the instance close to vanilla.",
+    "riskLevel": "low",
+    "estimatedMemoryMb": 6144
+  },
+  "resources": [
+    {
+      "resourceId": "res_xaeros_minimap",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Xaero's Minimap",
+        "slug": "xaeros-minimap",
+        "projectId": "1bokaNcj"
+      },
+      "version": {
+        "versionId": "xaeros-minimap-1-20-1-example",
+        "versionNumber": "23.9.7",
+        "releaseType": "release"
+      },
+      "required": true,
+      "reason": "Provides the requested minimap feature.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.20.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "client"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    },
+    {
+      "resourceId": "res_mod_menu",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Mod Menu",
+        "slug": "modmenu",
+        "projectId": "mOgUt4GM"
+      },
+      "version": {
+        "versionId": "mod-menu-1-20-1-example",
+        "versionNumber": "7.2.2",
+        "releaseType": "release"
+      },
+      "required": false,
+      "reason": "Helps users inspect and configure installed Fabric mods.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.20.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "client"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    }
+  ],
+  "ruleResults": {
+    "accepted": [
+      "loader_match",
+      "minecraft_version_match",
+      "resource_type_valid"
+    ],
+    "rejected": [],
+    "warnings": [],
+    "errors": []
+  },
+  "installActionRef": {
+    "actionId": "install_minimap_vanilla_plus",
+    "schema": "install-action.schema.json"
+  },
+  "userConfirmation": {
+    "required": true,
+    "confirmed": false
+  }
+}

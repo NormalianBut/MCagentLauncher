@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mcagentlauncher.dev/schemas/intent.schema.json",
+  "title": "MCagentlauncher Intent",
+  "description": "Structured player requirements parsed from a natural-language request.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "intentId",
+    "source",
+    "locale",
+    "prompt",
+    "game",
+    "preferences",
+    "constraints"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "intentId": {
+      "type": "string",
+      "pattern": "^intent_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "web-preview",
+        "test-fixture"
+      ]
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawText",
+        "redacted"
+      ],
+      "properties": {
+        "rawText": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "redacted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "game": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edition",
+        "minecraftVersions",
+        "loader"
+      ],
+      "properties": {
+        "edition": {
+          "type": "string",
+          "const": "java"
+        },
+        "minecraftVersions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^1\\.[0-9]+(\\.[0-9]+)?$"
+          }
+        },
+        "loader": {
+          "type": "string",
+          "enum": [
+            "fabric",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "playStyle",
+        "performanceProfile",
+        "resourceTypes",
+        "requestedFeatures",
+        "avoidFeatures"
+      ],
+      "properties": {
+        "playStyle": {
+          "type": "string",
+          "enum": [
+            "vanilla-plus",
+            "survival",
+            "building",
+            "exploration",
+            "technical",
+            "low-spec",
+            "visual"
+          ]
+        },
+        "performanceProfile": {
+          "type": "string",
+          "enum": [
+            "low-spec",
+            "balanced",
+            "visual-quality",
+            "unspecified"
+          ]
+        },
+        "resourceTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "mod",
+              "resourcepack",
+              "shaderpack"
+            ]
+          }
+        },
+        "requestedFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "avoidFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modLoaderRequired",
+        "maxMemoryMb",
+        "requireStableReleases",
+        "allowOptionalResources",
+        "privacy"
+      ],
+      "properties": {
+        "modLoaderRequired": {
+          "type": "boolean"
+        },
+        "maxMemoryMb": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65536
+        },
+        "requireStableReleases": {
+          "type": "boolean"
+        },
+        "allowOptionalResources": {
+          "type": "boolean"
+        },
+        "privacy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allowTelemetry",
+            "allowAnonymousCaseUpload"
+          ],
+          "properties": {
+            "allowTelemetry": {
+              "type": "boolean"
+            },
+            "allowAnonymousCaseUpload": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

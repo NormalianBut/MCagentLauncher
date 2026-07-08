@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "0.1.0",
+  "actionId": "install_low_spec_survival",
+  "planId": "plan_low_spec_survival",
+  "requiresUserConfirmation": true,
+  "confirmedByUser": true,
+  "targetInstance": {
+    "instanceName": "Low Spec Survival",
+    "minecraftVersion": "1.20.1",
+    "loader": "fabric",
+    "loaderVersion": "0.15.11"
+  },
+  "steps": [
+    {
+      "stepId": "step_create_instance",
+      "kind": "create-instance-directory",
+      "description": "Create a new local instance directory after user confirmation.",
+      "resourceId": null,
+      "expectedHash": null,
+      "destination": "instance-root"
+    },
+    {
+      "stepId": "step_install_loader",
+      "kind": "install-loader",
+      "description": "Install the selected Fabric loader metadata for the instance.",
+      "resourceId": null,
+      "expectedHash": null,
+      "destination": "instance-root"
+    },
+    {
+      "stepId": "step_download_sodium",
+      "kind": "download-resource",
+      "description": "Download Sodium from the verified source selected in the resource plan.",
+      "resourceId": "res_sodium_core",
+      "expectedHash": {
+        "algorithm": "sha512",
+        "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "destination": "mods"
+    },
+    {
+      "stepId": "step_download_lithium",
+      "kind": "download-resource",
+      "description": "Download Lithium from the verified source selected in the resource plan.",
+      "resourceId": "res_lithium_core",
+      "expectedHash": {
+        "algorithm": "sha512",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "destination": "mods"
+    },
+    {
+      "stepId": "step_write_lockfile",
+      "kind": "write-lockfile",
+      "description": "Write instance-lock.json after all files are verified.",
+      "resourceId": null,
+      "expectedHash": null,
+      "destination": "lockfile"
+    }
+  ],
+  "rollback": {
+    "snapshotBeforeInstall": true,
+    "removeCreatedFiles": true,
+    "restorePreviousLockfile": true
+  }
+}

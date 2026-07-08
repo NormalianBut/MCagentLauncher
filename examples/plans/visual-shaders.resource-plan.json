@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "0.1.0",
+  "planId": "plan_visual_shaders",
+  "intentId": "intent_visual_shaders",
+  "status": "needs-user-confirmation",
+  "target": {
+    "minecraftVersion": "1.21.1",
+    "loader": "fabric",
+    "loaderVersion": "0.16.9",
+    "javaMajorVersion": 21
+  },
+  "summary": {
+    "title": "Fabric visual survival with shader support",
+    "description": "A Fabric profile that adds rendering optimization and shader support. The shaderpack itself remains optional and user-reviewed.",
+    "riskLevel": "medium",
+    "estimatedMemoryMb": 8192
+  },
+  "resources": [
+    {
+      "resourceId": "res_sodium_visual",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Sodium",
+        "slug": "sodium",
+        "projectId": "AANobbMI"
+      },
+      "version": {
+        "versionId": "sodium-1-21-1-example",
+        "versionNumber": "0.6.0",
+        "releaseType": "release"
+      },
+      "required": true,
+      "reason": "Required by the selected shader stack and improves rendering performance.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.21.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "client"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    },
+    {
+      "resourceId": "res_iris_shader_support",
+      "type": "mod",
+      "source": "modrinth",
+      "project": {
+        "name": "Iris Shaders",
+        "slug": "iris",
+        "projectId": "YL57xq9U"
+      },
+      "version": {
+        "versionId": "iris-1-21-1-example",
+        "versionNumber": "1.8.0",
+        "releaseType": "release"
+      },
+      "required": true,
+      "reason": "Adds shaderpack support for Fabric.",
+      "compatibility": {
+        "minecraftVersions": [
+          "1.21.1"
+        ],
+        "loaders": [
+          "fabric"
+        ],
+        "side": "client"
+      },
+      "verification": {
+        "metadataChecked": true,
+        "hashKnown": true,
+        "licenseChecked": true
+      }
+    }
+  ],
+  "ruleResults": {
+    "accepted": [
+      "loader_match",
+      "minecraft_version_match",
+      "required_dependency_present"
+    ],
+    "rejected": [],
+    "warnings": [
+      {
+        "code": "VISUAL_PROFILE_MEMORY",
+        "message": "Shader usage may require more memory and GPU headroom than a low-spec profile."
+      }
+    ],
+    "errors": []
+  },
+  "installActionRef": {
+    "actionId": "install_visual_shaders",
+    "schema": "install-action.schema.json"
+  },
+  "userConfirmation": {
+    "required": true,
+    "confirmed": false
+  }
+}

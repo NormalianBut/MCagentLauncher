@@ -25,6 +25,7 @@ temp/
 
 # Node / web
 node_modules/
+.pnpm-store/
 .next/
 out/
 dist/
@@ -48,4 +49,3 @@ apps/desktop/src-tauri/target/
 # Supabase local
 supabase/.branches/
 supabase/.temp/
-
