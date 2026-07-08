@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./alias": "./src/alias.ts",
     "./plan": "./src/plan.ts",
+    "./resolver": "./src/resolver.ts",
     "./resource-plan": "./src/resource-plan.ts",
     "./resource": "./src/resource.ts"
   },
