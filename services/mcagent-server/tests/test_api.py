@@ -44,40 +44,138 @@ def test_appleskin_enters_required_features() -> None:
     assert intent["constraints"]["requireStableReleases"] is True
 
 
-def test_plan_contains_sodium_iris_and_appleskin() -> None:
-    intent = client.post(
-        "/v1/intent/parse",
-        json={"text": "我想玩 1.20.1，低配光影生存，要优化、小地图、苹果皮。"},
-    ).json()
+def test_old_format_intent_request_still_returns_plan() -> None:
+    intent = low_spec_intent()
     response = client.post("/v1/resources/plan", json=intent)
     assert response.status_code == 200
     plan = response.json()
     names = {item["project"]["name"] for item in plan["resources"]}
     assert {"Sodium", "Iris Shaders", "AppleSkin"}.issubset(names)
     assert plan["userConfirmation"] == {"required": True, "confirmed": False}
-    assert plan["ruleResults"]["warnings"][0]["code"] == "MOCK_PLAN_NOT_RESOLVED"
+    assert plan["ruleResults"]["warnings"][0]["code"] == "PIPELINE_OFFLINE_MOCK_RESOLVER"
     assert validate_response("resource-plan", plan) == plan
 
 
-def test_explain_returns_chinese_summary() -> None:
-    intent = client.post("/v1/intent/parse", json={"text": "低配光影生存 苹果皮"}).json()
-    plan = client.post("/v1/resources/plan", json=intent).json()
-    response = client.post("/v1/explain/plan", json=plan)
+def test_new_wrapper_request_returns_plan_and_diagnostics() -> None:
+    response = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "pipeline",
+                "enableNetwork": False,
+            },
+        },
+    )
     assert response.status_code == 200
     body = response.json()
-    assert "这是一个" in body["summary"]
-    assert body["details"]
-    assert body["warnings"]
+    assert set(body) == {"plan", "diagnostics"}
+    assert body["diagnostics"]["networkUsed"] is False
+    assert body["diagnostics"]["candidatesResolved"] >= 3
+    assert body["diagnostics"]["aliasMatches"]
+    assert body["diagnostics"]["resolverQueries"]
+    assert validate_response("resource-plan", body["plan"]) == body["plan"]
+
+
+def test_default_enable_network_false_for_wrapper() -> None:
+    response = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "pipeline",
+            },
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["diagnostics"]["networkUsed"] is False
+
+
+def test_enable_network_true_does_not_download_install_or_use_network_in_m4() -> None:
+    response = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "pipeline",
+                "enableNetwork": True,
+            },
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    serialized = str(body).lower()
+    assert body["diagnostics"]["networkUsed"] is False
+    assert "ENABLE_NETWORK_IGNORED" in {warning["code"] for warning in body["plan"]["ruleResults"]["warnings"]}
+    assert "download_url" not in serialized
+    assert "downloadurl" not in serialized
+    assert "installpath" not in serialized
+    assert "localpath" not in serialized
+    assert "mods/" not in serialized
+    assert "resourcepacks/" not in serialized
+    assert "shaderpacks/" not in serialized
+
+
+def test_mock_mode_remains_available_with_wrapper() -> None:
+    response = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "mock",
+                "enableNetwork": False,
+            },
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["diagnostics"]["networkUsed"] is False
+    assert validate_response("resource-plan", body["plan"]) == body["plan"]
+
+
+def test_explain_accepts_wrapper_and_returns_chinese_pipeline_summary() -> None:
+    body = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "pipeline",
+                "enableNetwork": False,
+            },
+        },
+    ).json()
+    response = client.post("/v1/explain/plan", json=body)
+    assert response.status_code == 200
+    explanation = response.json()
+    assert "离线资源规划" in explanation["summary"]
+    assert any("不下载资源" in detail for detail in explanation["details"])
+    assert any("networkUsed=false" in warning for warning in explanation["warnings"])
+
+
+def test_explain_accepts_direct_plan() -> None:
+    plan = client.post("/v1/resources/plan", json=low_spec_intent()).json()
+    response = client.post("/v1/explain/plan", json=plan)
+    assert response.status_code == 200
+    assert "离线资源规划" in response.json()["summary"]
 
 
 def test_no_commercial_api_or_download_behavior() -> None:
-    intent = client.post("/v1/intent/parse", json={"text": "低配光影生存 苹果皮"}).json()
-    plan = client.post("/v1/resources/plan", json=intent).json()
-    assert "download_url" not in str(plan).lower()
-    assert "openai" not in str(plan).lower()
-    assert "anthropic" not in str(plan).lower()
-    assert "gemini" not in str(plan).lower()
-    assert all(item["verification"]["hashKnown"] is False for item in plan["resources"])
+    body = client.post(
+        "/v1/resources/plan",
+        json={
+            "intent": low_spec_intent(),
+            "options": {
+                "mode": "pipeline",
+                "enableNetwork": False,
+            },
+        },
+    ).json()
+    serialized = str(body).lower()
+    assert "download_url" not in serialized
+    assert "openai" not in serialized
+    assert "anthropic" not in serialized
+    assert "gemini" not in serialized
+    assert all(item["verification"]["hashKnown"] is False for item in body["plan"]["resources"])
 
 
 def test_intent_schema_validation_failure_is_explicit(monkeypatch) -> None:
@@ -99,13 +197,16 @@ def test_intent_schema_validation_failure_is_explicit(monkeypatch) -> None:
 
 
 def test_plan_schema_validation_failure_is_explicit(monkeypatch) -> None:
-    def invalid_plan(_: dict) -> dict:
+    def invalid_pipeline_plan(_: dict, __: dict | None = None) -> dict:
         return {
-            "schemaVersion": "0.1.0",
-            "planId": "plan_invalid_mock",
+            "plan": {
+                "schemaVersion": "0.1.0",
+                "planId": "plan_invalid_mock",
+            },
+            "diagnostics": {},
         }
 
-    monkeypatch.setattr(plan_router, "generate_plan", invalid_plan)
+    monkeypatch.setattr(plan_router, "generate_pipeline_plan", invalid_pipeline_plan)
 
     response = client.post("/v1/resources/plan", json={"schemaVersion": "0.1.0"})
 
@@ -114,3 +215,38 @@ def test_plan_schema_validation_failure_is_explicit(monkeypatch) -> None:
     assert body["detail"]["error"] == "schema_validation_failed"
     assert body["detail"]["schema"] == "resource-plan.schema.json"
     assert body["detail"]["details"]
+
+
+def low_spec_intent() -> dict:
+    return {
+        "schemaVersion": "0.1.0",
+        "intentId": "intent_low_spec_pipeline",
+        "source": "test-fixture",
+        "locale": "zh-CN",
+        "prompt": {
+            "rawText": "我想玩 1.20.1，低配光影生存，要优化、小地图、苹果皮。",
+            "redacted": True,
+        },
+        "game": {
+            "edition": "java",
+            "minecraftVersions": ["1.20.1"],
+            "loader": "fabric",
+        },
+        "preferences": {
+            "playStyle": "visual",
+            "performanceProfile": "low-spec",
+            "resourceTypes": ["mod", "shaderpack"],
+            "requestedFeatures": ["performance", "shader", "survival", "minimap", "AppleSkin"],
+            "avoidFeatures": [],
+        },
+        "constraints": {
+            "modLoaderRequired": True,
+            "maxMemoryMb": 4096,
+            "requireStableReleases": True,
+            "allowOptionalResources": True,
+            "privacy": {
+                "allowTelemetry": False,
+                "allowAnonymousCaseUpload": False,
+            },
+        },
+    }

@@ -8,7 +8,7 @@ def parse_intent(text: str) -> dict:
     normalized = text.strip()
     lowered = normalized.lower()
     features = _requested_features(normalized, lowered)
-    avoid = _avoid_features(normalized)
+    avoid = _avoid_features(normalized, lowered)
     minecraft_version = _minecraft_version(normalized)
 
     resource_types = ["mod"]
@@ -66,11 +66,11 @@ def _requested_features(text: str, lowered: str) -> list[str]:
     return features or ["vanilla-plus"]
 
 
-def _avoid_features(text: str) -> list[str]:
+def _avoid_features(text: str, lowered: str) -> list[str]:
     avoid: list[str] = []
-    if "不要魔法" in text:
+    if "不要魔法" in text or "no magic" in lowered:
         avoid.append("magic")
-    if "不要科技" in text:
+    if "不要科技" in text or "no technology" in lowered:
         avoid.append("technology")
     return avoid
 
@@ -106,4 +106,3 @@ def _stable_id(text: str) -> str:
 
 def _contains_cjk(text: str) -> bool:
     return any("\u4e00" <= char <= "\u9fff" for char in text)
-
