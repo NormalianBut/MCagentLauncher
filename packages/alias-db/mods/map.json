@@ -1,0 +1,30 @@
+[
+  {
+    "canonicalName": "Xaero's Minimap",
+    "aliases": ["Xaero's Minimap", "Xaero Minimap", "Xaero小地图", "小地图"],
+    "type": "mod",
+    "tags": ["map", "minimap", "qol", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "xaeros-minimap",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Minimap option. Alias '小地图' may also match other minimap mods."
+  },
+  {
+    "canonicalName": "JourneyMap",
+    "aliases": ["JourneyMap", "journeymap", "旅行地图"],
+    "type": "mod",
+    "tags": ["map", "minimap", "world-map", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "journeymap",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Map option. Slug should be verified for the target loader/version."
+  }
+]

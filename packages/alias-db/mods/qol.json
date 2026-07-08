@@ -1,0 +1,44 @@
+[
+  {
+    "canonicalName": "Fabric API",
+    "aliases": ["Fabric API", "fabric api", "FabricAPI"],
+    "type": "mod",
+    "tags": ["dependency", "api", "fabric"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "fabric-api",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Common required dependency for many Fabric mods."
+  },
+  {
+    "canonicalName": "AppleSkin",
+    "aliases": ["AppleSkin", "appleskin", "苹果皮"],
+    "type": "mod",
+    "tags": ["qol", "hud", "survival"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "appleskin",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Food and saturation HUD improvements."
+  },
+  {
+    "canonicalName": "Mod Menu",
+    "aliases": ["Mod Menu", "mod menu", "模组菜单"],
+    "type": "mod",
+    "tags": ["qol", "ui", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "modmenu",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "In-game mod list and configuration entry point."
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "canonicalName": "Sodium",
+    "aliases": ["Sodium", "sodium", "钠", "钠优化"],
+    "type": "mod",
+    "tags": ["performance", "rendering", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "sodium",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Performance rendering mod. Modrinth slug is known; project id should be verified before release automation."
+  },
+  {
+    "canonicalName": "Lithium",
+    "aliases": ["Lithium", "lithium", "锂"],
+    "type": "mod",
+    "tags": ["performance", "logic", "server-compatible"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "lithium",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Game logic optimization mod. Slug is known; project id intentionally left unfilled."
+  },
+  {
+    "canonicalName": "Indium",
+    "aliases": ["Indium", "indium", "铟"],
+    "type": "mod",
+    "tags": ["performance", "rendering", "compatibility"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "indium",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Rendering compatibility mod often used with Sodium."
+  },
+  {
+    "canonicalName": "Entity Culling",
+    "aliases": ["Entity Culling", "entity culling", "实体剔除"],
+    "type": "mod",
+    "tags": ["performance", "rendering", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "entityculling",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Culls entities not visible to the camera."
+  },
+  {
+    "canonicalName": "ImmediatelyFast",
+    "aliases": ["ImmediatelyFast", "immediatelyfast", "Immediately Fast"],
+    "type": "mod",
+    "tags": ["performance", "rendering", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "immediatelyfast",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Client-side rendering and UI performance improvements."
+  },
+  {
+    "canonicalName": "Iris Shaders",
+    "aliases": ["Iris Shaders", "Iris", "iris", "光影支持"],
+    "type": "mod",
+    "tags": ["shader", "visual", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "iris",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Fabric shader support. Slug is known; project id intentionally left unfilled."
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "canonicalName": "Litematica",
+    "aliases": ["Litematica", "litematica", "投影"],
+    "type": "mod",
+    "tags": ["building", "schematic", "client"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "litematica",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "Schematic projection tool for building workflows."
+  },
+  {
+    "canonicalName": "WorldEdit",
+    "aliases": ["WorldEdit", "worldedit", "创世神"],
+    "type": "mod",
+    "tags": ["building", "editing", "tools"],
+    "loaders": ["fabric"],
+    "sourceIds": {
+      "modrinthProjectId": null,
+      "modrinthSlug": "worldedit",
+      "curseforgeId": null
+    },
+    "needsVerification": true,
+    "notes": "World editing tool. Target loader/version support must be checked."
+  }
+]
