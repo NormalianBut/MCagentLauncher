@@ -10,5 +10,10 @@ export function JsonBlock({ value, emptyLabel }: JsonBlockProps) {
     return <div className="empty-state">{emptyLabel}</div>;
   }
 
-  return <pre className="json-block">{JSON.stringify(value, null, 2)}</pre>;
+  return (
+    <details className="raw-json-panel">
+      <summary>Raw JSON</summary>
+      <pre className="json-block">{JSON.stringify(value, null, 2)}</pre>
+    </details>
+  );
 }

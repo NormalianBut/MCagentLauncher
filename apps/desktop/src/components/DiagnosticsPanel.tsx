@@ -13,28 +13,19 @@ export function DiagnosticsPanel({ diagnostics, explanation }: DiagnosticsPanelP
       </div>
       {diagnostics ? (
         <div className="diagnostics-grid">
-          <div>
-            <span className="metric-label">networkUsed</span>
-            <strong>{String(diagnostics.networkUsed)}</strong>
-          </div>
-          <div>
-            <span className="metric-label">aliasMatches</span>
-            <strong>{diagnostics.aliasMatches.length}</strong>
-          </div>
-          <div>
-            <span className="metric-label">resolverQueries</span>
-            <strong>{diagnostics.resolverQueries.length}</strong>
-          </div>
-          <div>
-            <span className="metric-label">candidatesResolved</span>
-            <strong>{diagnostics.candidatesResolved}</strong>
-          </div>
+          <Metric label="networkUsed" value={String(diagnostics.networkUsed)} />
+          <Metric label="aliasMatches" value={String(diagnostics.aliasMatches.length)} />
+          <Metric label="resolverQueries" value={String(diagnostics.resolverQueries.length)} />
+          <Metric label="candidatesResolved" value={String(diagnostics.candidatesResolved)} />
         </div>
       ) : (
         <div className="empty-state">Generate a plan to view diagnostics.</div>
       )}
       {diagnostics?.networkUsed === false ? (
-        <p className="notice-line">当前为离线规划模式，没有联网查询真实资源元数据。</p>
+        <p className="notice-line">Offline planning mode: this plan has not queried fresh Modrinth metadata.</p>
+      ) : null}
+      {diagnostics && diagnostics.candidatesResolved === 0 ? (
+        <p className="notice-line">Current plan may come from the mock/offline pipeline. A future resolver stage will verify live resource metadata.</p>
       ) : null}
       {diagnostics && diagnostics.warnings.length > 0 ? (
         <div className="message-list">
@@ -63,5 +54,14 @@ export function DiagnosticsPanel({ diagnostics, explanation }: DiagnosticsPanelP
         </div>
       ) : null}
     </section>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="metric-label">{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }

@@ -1,20 +1,19 @@
 export function SafetyNotice() {
   const items = [
-    "Current stage is M7 Desktop Shell.",
-    "Only dry-run preview is supported.",
+    "Current stage is v0.1 alpha preview.",
+    "Desktop Shell is dry-run only.",
     "AI does not execute files.",
-    "Web/Desktop shell does not write files.",
-    "Install actions are dry-run.",
-    "User confirmation is required.",
-    "Local executor is disabled.",
-    "No Minecraft or resource files are downloaded.",
-    "Fabric, Forge, and NeoForge are not installed.",
-    "mods/resourcepacks/shaderpacks are not written.",
-    "Minecraft is not launched.",
-    "Confirm Install is preview-only.",
-    "Environment Preview is mock data and is not uploaded.",
-    "No real Java check, disk scan, or Minecraft path read is performed.",
-    "Read-only probe requires explicit consent and remains session-only.",
+    "MCAgent plans; Desktop may execute only in a future milestone.",
+    "No resource download.",
+    "No Minecraft, Fabric, Forge, or NeoForge install.",
+    "No local instance write.",
+    "No mods/resourcepacks/shaderpacks write.",
+    "No Minecraft launch.",
+    "User confirmation is required before any future executor can run.",
+    "Confirm Install is preview-only in v0.1 alpha.",
+    "Environment report is local-only and is not uploaded.",
+    "M8.3 Safe Platform Probe only reads OS, arch, app version, and Tauri availability after consent.",
+    "Java, path, disk, and network probes remain disabled.",
   ];
 
   return (

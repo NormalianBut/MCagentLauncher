@@ -99,3 +99,11 @@ M8.1 adds a user-consented read-only probe flow in the Desktop Shell.
 The Desktop UI now requires a consent modal before generating a `read_only_probe` environment report. The current adapter still assembles a safe local preview report and does not call Tauri commands, shell commands, Java detection, disk scans, or Minecraft directory scans.
 
 The report is session-only, local-only, redacted, not uploaded, and not persisted.
+
+## M9 Alpha Preview Status
+
+M9 improves the Desktop Shell presentation layer only.
+
+The UI now shows summary cards, workflow status, readable diagnostics, install-action review groups, executor dry-run summary, and environment report summary. Raw JSON remains available for audit.
+
+M9 does not enable real execution. Confirm Install remains preview-only. Desktop still does not download resources, install Minecraft or loaders, write local instance files, launch Minecraft, execute shell commands, detect Java, scan paths, scan disks, upload environment reports, or persist environment reports.

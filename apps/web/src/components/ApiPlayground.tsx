@@ -16,7 +16,7 @@ import {
   type PlanOptions,
 } from "@/lib/mcagentClient";
 
-const defaultPrompt = "我想玩 1.20.1，低配光影生存，要优化、小地图、苹果皮，别太复杂。";
+const defaultPrompt = "\u6211\u60f3\u73a9 1.20.1\uff0c\u4f4e\u914d\u5149\u5f71\u751f\u5b58\uff0c\u8981\u4f18\u5316\u3001\u5c0f\u5730\u56fe\u3001\u82f9\u679c\u76ae\uff0c\u522b\u592a\u590d\u6742\u3002";
 
 export function ApiPlayground() {
   const [text, setText] = useState(defaultPrompt);
@@ -31,6 +31,7 @@ export function ApiPlayground() {
   const [error, setError] = useState<string | null>(null);
 
   const diagnostics = getDiagnostics(planResponse);
+  const planSummary = getPlanSummary(planResponse);
   const canGeneratePlan = intent !== null;
   const canExplain = planResponse !== null;
   const canPreviewInstall = extractPlan(planResponse) !== null;
@@ -109,8 +110,8 @@ export function ApiPlayground() {
       <div className="shell">
         <header className="topbar">
           <div>
-            <h1 className="title">MCagentlauncher v0.1 - Natural Instance</h1>
-            <p className="subtitle">API Playground connected to {apiUrl}</p>
+            <h1 className="title">MCagentlauncher v0.1 - Natural Instance API Playground</h1>
+            <p className="subtitle">Connected to {apiUrl}</p>
           </div>
           <div className="chain" aria-label="Current API flow">
             <span>Natural Language</span>
@@ -119,6 +120,10 @@ export function ApiPlayground() {
             <span>Explanation</span>
           </div>
         </header>
+
+        <section className="safety-banner">
+          Web Playground only calls MCAgent planning APIs. It cannot access local files, probe the local environment, install Minecraft, or launch Minecraft.
+        </section>
 
         <div className="main-grid">
           <section className="panel controls">
@@ -142,6 +147,7 @@ export function ApiPlayground() {
               />{" "}
               enableNetwork
             </label>
+            <p className="muted">Default is offline planning. Network use must be enabled explicitly and still does not download resources.</p>
             <div className="buttons">
               <button className="primary" disabled={pending !== null || text.trim().length === 0} onClick={runParseIntent}>
                 {pending === "intent" ? "Parsing" : "Parse Intent"}
@@ -156,6 +162,13 @@ export function ApiPlayground() {
                 Generate Install Preview
               </button>
             </div>
+            <div className="unsupported-list">
+              <strong>Web does not support</strong>
+              <span>Install execution</span>
+              <span>Environment probe</span>
+              <span>Local file access</span>
+              <span>Minecraft launch</span>
+            </div>
             <p className={error ? "status error" : "status"}>
               {error ?? (pending ? "Request in progress." : "Ready.")}
             </p>
@@ -163,14 +176,29 @@ export function ApiPlayground() {
 
           <section className="results">
             <JsonPanel title="Intent JSON" value={intent} />
-            <JsonPanel title="Plan Response JSON" value={planResponse} />
+
+            <section className="panel">
+              <h2>Plan Summary</h2>
+              {planSummary ? (
+                <div className="metrics two">
+                  <Metric label="resources" value={planSummary.resources} />
+                  <Metric label="required" value={planSummary.required} />
+                  <Metric label="warnings" value={planSummary.warnings} />
+                  <Metric label="networkUsed" value={String(diagnostics?.networkUsed ?? false)} />
+                </div>
+              ) : (
+                <p className="muted">Generate a plan to view summary.</p>
+              )}
+            </section>
+
+            <JsonPanel title="Plan Response JSON" value={planResponse} wide />
 
             <section className="panel wide">
               <h2>Diagnostics</h2>
               {diagnostics ? (
                 <>
                   {diagnostics.networkUsed === false ? (
-                    <p className="offline">当前为离线规划模式，没有联网查询真实资源元数据。</p>
+                    <p className="offline">Offline planning mode. The resource plan has not queried fresh Modrinth metadata.</p>
                   ) : null}
                   <div className="metrics">
                     <Metric label="networkUsed" value={String(diagnostics.networkUsed)} />
@@ -178,6 +206,9 @@ export function ApiPlayground() {
                     <Metric label="resolverQueries" value={String(diagnostics.resolverQueries)} />
                     <Metric label="candidatesResolved" value={String(diagnostics.candidatesResolved)} />
                   </div>
+                  {diagnostics.candidatesResolved === 0 ? (
+                    <p className="offline">Current plan may come from the mock/offline pipeline. A future resolver stage will verify live metadata.</p>
+                  ) : null}
                   <MessageList title="Warnings" messages={diagnostics.warnings} />
                   <MessageList title="Errors" messages={diagnostics.errors} />
                 </>
@@ -193,7 +224,7 @@ export function ApiPlayground() {
               {installPreview && executorPreview ? (
                 <>
                   <p className="offline">
-                    dryRun=true，requiresUserConfirmation=true。当前不会下载、不会安装、不会写本地实例。
+                    dryRun=true, requiresUserConfirmation=true, canExecute=false. No download, no install, no local write, no launch.
                   </p>
                   <div className="metrics">
                     <Metric label="actions" value={String(installPreview.actions.length)} />
@@ -236,10 +267,10 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function InlineJson({ title, value }: { title: string; value: JsonValue }) {
   return (
-    <div className="inline-json">
-      <h3>{title}</h3>
+    <details className="inline-json">
+      <summary>{title}</summary>
       <pre>{JSON.stringify(value, null, 2)}</pre>
-    </div>
+    </details>
   );
 }
 
@@ -272,6 +303,20 @@ function getDiagnostics(value: JsonValue | null) {
     candidatesResolved: typeof diagnostics.candidatesResolved === "number" ? diagnostics.candidatesResolved : 0,
     warnings: readMessages(diagnostics.warnings),
     errors: readMessages(diagnostics.errors),
+  };
+}
+
+function getPlanSummary(value: JsonValue | null) {
+  const plan = extractPlan(value);
+  if (!plan) {
+    return null;
+  }
+  const resources = Array.isArray(plan.resources) ? plan.resources.filter(isRecord) : [];
+  const ruleResults = isRecord(plan.ruleResults) ? plan.ruleResults : null;
+  return {
+    resources: String(resources.length),
+    required: String(resources.filter((resource) => resource.required === true).length),
+    warnings: String(Array.isArray(ruleResults?.warnings) ? ruleResults.warnings.length : 0),
   };
 }
 

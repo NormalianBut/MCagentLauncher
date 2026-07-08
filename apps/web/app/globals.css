@@ -119,6 +119,16 @@ pre {
   margin: 8px 0 0;
 }
 
+.safety-banner {
+  margin-top: 18px;
+  border: 1px solid #6f5530;
+  border-radius: 8px;
+  background: #201c14;
+  color: var(--warning);
+  padding: 12px 14px;
+  font-weight: 700;
+}
+
 .chain {
   display: flex;
   flex-wrap: wrap;
@@ -178,6 +188,25 @@ pre {
   color: var(--danger);
 }
 
+.unsupported-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  padding: 12px;
+}
+
+.unsupported-list strong {
+  grid-column: 1 / -1;
+}
+
+.unsupported-list span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .results {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -208,6 +237,10 @@ pre {
   font-size: 18px;
 }
 
+.metrics.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .offline {
   margin: 0 0 12px;
   color: var(--accent-strong);
@@ -223,6 +256,17 @@ pre {
 .warning-list li + li,
 .explain-list li + li {
   margin-top: 6px;
+}
+
+.inline-json {
+  margin-top: 14px;
+}
+
+.inline-json summary {
+  cursor: pointer;
+  color: var(--accent-strong);
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 @media (max-width: 980px) {

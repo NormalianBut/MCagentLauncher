@@ -63,6 +63,21 @@ This is only an API debugging interface. It calls:
 
 The Playground does not download resources, install resources, write local instances, launch Minecraft, or perform Desktop Local Executor work.
 
+M9 polishes the Playground for the v0.1 alpha preview:
+
+- title: `MCagentlauncher v0.1 - Natural Instance API Playground`;
+- safety banner for Web limitations;
+- visible API flow;
+- diagnostics summary for `networkUsed`, warnings, errors, and candidates resolved;
+- raw JSON retained for intent, plan response, explanation, install actions, and executor preview.
+
+Web does not support:
+
+- install execution;
+- environment probe;
+- local file access;
+- Minecraft launch.
+
 ## Install Preview
 
 The Playground can also generate an Install Preview from the current resource plan.

@@ -11,6 +11,8 @@ interface PromptInputProps {
   onExplainPlan: () => void;
   onGeneratePreview: () => void;
   onConfirmInstall: () => void;
+  onGenerateEnvironmentPreview: () => void;
+  onRunSafePlatformProbe: () => void;
 }
 
 export function PromptInput({
@@ -26,6 +28,8 @@ export function PromptInput({
   onExplainPlan,
   onGeneratePreview,
   onConfirmInstall,
+  onGenerateEnvironmentPreview,
+  onRunSafePlatformProbe,
 }: PromptInputProps) {
   return (
     <section className="panel prompt-panel" aria-labelledby="prompt-heading">
@@ -54,6 +58,12 @@ export function PromptInput({
         </button>
         <button type="button" className="secondary" onClick={onConfirmInstall} disabled={pending !== null || !canConfirmPreview}>
           Confirm Install (preview-only)
+        </button>
+        <button type="button" onClick={onGenerateEnvironmentPreview} disabled={pending !== null}>
+          Generate Environment Preview
+        </button>
+        <button type="button" onClick={onRunSafePlatformProbe} disabled={pending !== null}>
+          Run Safe Platform Probe
         </button>
       </div>
       {pending ? <div className="pending-line">{pending}</div> : null}

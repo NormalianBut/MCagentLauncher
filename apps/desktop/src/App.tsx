@@ -21,7 +21,7 @@ import { explainPlan, generatePlan, mcagentBaseUrl, parseIntent } from "./lib/mc
 import { runSafePlatformProbe } from "./lib/safePlatformProbe";
 import type { JsonValue, PlanDiagnostics } from "./lib/types";
 
-const defaultPrompt = "我想玩 1.20.1，低配光影生存，要优化、小地图、苹果皮，别太复杂。";
+const defaultPrompt = "\u6211\u60f3\u73a9 1.20.1\uff0c\u4f4e\u914d\u5149\u5f71\u751f\u5b58\uff0c\u8981\u4f18\u5316\u3001\u5c0f\u5730\u56fe\u3001\u82f9\u679c\u76ae\uff0c\u522b\u592a\u590d\u6742\u3002";
 
 export default function App() {
   const [prompt, setPrompt] = useState(defaultPrompt);
@@ -41,6 +41,14 @@ export default function App() {
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
 
   const diagnostics = useMemo(() => extractDiagnostics(planResponse), [planResponse]);
+  const workflowSteps = useMemo(() => ([
+    { label: "Natural Language", status: prompt.trim().length > 0 ? "ready" : "idle" },
+    { label: "Intent", status: intent ? "success" : "idle" },
+    { label: "Resource Plan", status: diagnostics?.errors.length ? "blocked" : planResponse ? "success" : "idle" },
+    { label: "Install Preview", status: installPreview ? "success" : "idle" },
+    { label: "Executor Dry-run", status: executorPreview ? "warning" : "idle" },
+    { label: "Environment Probe", status: environmentReport ? "success" : "idle" },
+  ]), [diagnostics, environmentReport, executorPreview, installPreview, intent, planResponse, prompt]);
 
   async function runParseIntent() {
     await withPending("Parsing intent...", async () => {
@@ -129,7 +137,7 @@ export default function App() {
   }
 
   function confirmPreviewOnly() {
-    setConfirmationMessage("Current milestone supports dry-run preview only. Real execution is not enabled.");
+    setConfirmationMessage("v0.1 alpha supports dry-run preview only. The real Desktop Local Executor is not enabled.");
   }
 
   function setEnvironmentState(report: EnvironmentReport) {
@@ -157,15 +165,22 @@ export default function App() {
     <main className="app-shell">
       <header className="hero">
         <div>
-          <p className="eyebrow">Desktop Shell / Dry-run Preview</p>
-          <h1>MCagentlauncher v0.1 - Natural Instance</h1>
-          <p className="flow-line">Natural Language -&gt; Intent -&gt; Resource Plan -&gt; Install Preview -&gt; Executor Dry-run -&gt; Environment Preview</p>
+          <p className="eyebrow">Desktop Shell / Dry-run Only</p>
+          <h1>MCagentlauncher</h1>
+          <p className="release-line">v0.1 - Natural Instance Alpha Preview</p>
+          <p className="flow-line">Current status: no download / no install / no local write / no Minecraft launch</p>
         </div>
         <div className="api-box">
           <span>MCAgent API</span>
           <strong>{mcagentBaseUrl()}</strong>
         </div>
       </header>
+
+      <section className="safety-banner" aria-label="Alpha preview safety boundary">
+        v0.1 alpha is a dry-run preview. It will not download resources, install Minecraft, write a local instance, or launch Minecraft.
+      </section>
+
+      <StatusStepper steps={workflowSteps} />
 
       <PromptInput
         text={prompt}
@@ -180,6 +195,8 @@ export default function App() {
         onExplainPlan={runExplainPlan}
         onGeneratePreview={runGenerateInstallPreview}
         onConfirmInstall={confirmPreviewOnly}
+        onGenerateEnvironmentPreview={runGenerateEnvironmentPreview}
+        onRunSafePlatformProbe={openProbeConsent}
       />
 
       {error ? <div className="error-banner">{error}</div> : null}
@@ -207,6 +224,19 @@ export default function App() {
         <ProbeConsentModal onCancel={cancelReadOnlyProbe} onConfirm={confirmReadOnlyProbe} />
       ) : null}
     </main>
+  );
+}
+
+function StatusStepper({ steps }: { steps: Array<{ label: string; status: string }> }) {
+  return (
+    <nav className="stepper" aria-label="Desktop preview workflow">
+      {steps.map((step) => (
+        <div className={`step ${step.status}`} key={step.label}>
+          <span>{step.label}</span>
+          <strong>{step.status}</strong>
+        </div>
+      ))}
+    </nav>
   );
 }
 

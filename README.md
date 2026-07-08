@@ -1,71 +1,120 @@
 # MCagentlauncher
 
-MCagentlauncher is an open-source, community-driven intelligent launcher project for Minecraft Java Edition. It is not a traditional launcher with an AI chat box attached. The v0.1 direction is a Natural Instance flow:
+MCagentlauncher is an open-source, community-driven intelligent launcher project for Minecraft Java Edition.
+
+Current status: **v0.1 alpha preview**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
 
 ```text
-natural language -> resource plan -> user confirmation -> local execution -> launchable Minecraft instance
+natural language -> intent -> resource plan -> explanation -> install dry-run -> executor dry-run -> environment preview
 ```
 
-The project is designed to reduce the need for players to know every mod, loader, version, dependency, and compatibility rule before they can create a playable instance.
+## What Works Now
 
-## v0.1 - Natural Instance
+- MCAgent mock/offline server.
+- Runtime JSON Schema validation.
+- Intent parsing.
+- Resource planning and diagnostics.
+- Resource resolver data structures and Modrinth metadata client.
+- Alias DB and planning pipeline.
+- Web/API Playground.
+- Desktop Shell.
+- Install action dry-run preview.
+- Executor dry-run preview with `canExecute=false`.
+- Environment preview.
+- User-consented safe platform probe for OS, arch, app version, and Tauri availability.
+- GitHub Actions for schema validation and server tests.
 
-The v0.1 goal is to let a user describe what they want to play, generate an auditable resource plan, ask the user to review and confirm it, and then let the Desktop Local Executor create a real launchable Minecraft Fabric instance.
+## What Does Not Work Yet
 
-The expected v0.1 chain is:
+- No Minecraft download.
+- No resource download.
+- No Fabric, Forge, or NeoForge install.
+- No real instance creation.
+- No local instance write.
+- No `mods`, `resourcepacks`, or `shaderpacks` write.
+- No Minecraft launch.
+- No Java detection.
+- No Minecraft directory scan.
+- No environment report upload.
+- No commercial model API requirement.
 
-```text
-user prompt
-  -> intent.json
-  -> resource-plan.json
-  -> install-action.json
-  -> Desktop Local Executor
-  -> instance-lock.json
-  -> Minecraft launch attempt
-```
+## Architecture
 
-## Platform Boundaries
+MCagentlauncher uses a five-layer responsibility model:
 
-MCagentlauncher uses the full GitHub-Vercel-Supabase-MCAgent-Desktop chain:
-
-- GitHub: code, Issues, Pull Requests, Actions, Release, and contributor collaboration.
-- Vercel: website, documentation, Web console, contribution entry points, and Preview deployments.
-- Supabase: community data, Auth, rule library, alias library, anonymous cases, and review status.
-- MCAgent Endpoint: independent, replaceable, self-hostable inference endpoint for intent parsing, resource planning, and plan explanation.
-- Desktop Local Executor: the only component allowed to perform real local instance creation, download, hash verification, installation, launch, snapshot, and rollback.
+- **GitHub**: code, Issues, Pull Requests, Actions, Releases, and collaboration.
+- **Vercel**: Web app, docs, console, and Preview deployments.
+- **Supabase**: community data, Auth, rules, aliases, anonymous cases, and moderation status.
+- **MCAgent Endpoint**: independent, replaceable, self-hostable intent parsing, planning, and explanation.
+- **Desktop Local Executor**: the only future component allowed to create instances, download after confirmation, verify hashes, install, launch, snapshot, and rollback.
 
 Vercel is not the long-term model inference layer. Supabase is not a Minecraft resource mirror. MCAgent does not execute local file operations. Desktop does not blindly trust AI output.
 
-## Core Principles
+## Quick Start
 
-AI does not directly execute. MCAgent can propose, explain, and diagnose plans, but it must not run shell commands, write files, delete files, or download resources directly.
+Install dependencies:
 
-Resources must be verifiable. Resource choices must be checked through metadata, rules, versions, loaders, dependencies, source information, and file hashes before installation.
-
-Every install action requires user confirmation. The user must see what will be installed, why it is needed, where it comes from, what risks exist, whether it is required, and whether rollback is possible.
-
-Privacy is a default constraint. Full logs, local paths, tokens, server addresses, and usernames must not be uploaded by default. Any community case upload must be consent-based and locally redacted first.
-
-The project avoids hard dependency on commercial large models. Commercial models can be used as optional development aids or fallback experiments, but v0.1 must not require them to run.
-
-The long-term goal is a community-built MCAgent: open rules, shared aliases, auditable schemas, anonymized cases, replaceable inference endpoints, and self-hostable community nodes.
-
-## Repository Layout
-
-```text
-apps/desktop/              Desktop application and local executor integration
-apps/web/                  Vercel website, docs, and Web console
-crates/                    Rust local core crates
-services/mcagent-server/   Independent MCAgent inference endpoint
-packages/                  Schemas, rules, alias DB, client, shared types
-supabase/                  Supabase migrations, functions, and seed data
-datasets/                  Intent, planning, and redacted log datasets
-docs/                      Project documentation
-examples/                  Example inputs, plans, and lockfiles
-.github/                   Issue and pull request templates
+```bash
+pnpm install
 ```
 
-## Current Status
+Start MCAgent Server:
 
-This repository is at the v0.1 bootstrap stage. The current contents define structure, responsibilities, contribution expectations, and licensing direction. Complex business logic, third-party resource downloading, model integrations, and local execution code are intentionally not implemented in this initial skeleton.
+```bash
+pnpm dev:server
+```
 
+Start Web/API Playground:
+
+```bash
+pnpm dev:web
+```
+
+Start Desktop Shell:
+
+```bash
+pnpm dev:desktop
+```
+
+## Safety Boundaries
+
+- AI does not directly execute files.
+- MCAgent plans and explains; it does not download resources, write files, or run commands.
+- Web Playground cannot access local files.
+- Desktop Shell is dry-run only in v0.1 alpha.
+- Install actions require user confirmation and are still preview-only.
+- Environment reports are local-only and not uploaded.
+- Safe Platform Probe only reads OS, arch, app version, and Tauri availability after user consent.
+- Java, path, disk, and network probes remain disabled.
+
+## Milestones Completed
+
+- M0: monorepo skeleton.
+- M1: JSON Schemas and examples.
+- M2-M2.1: MCAgent mock server, runtime schema validation, and CI.
+- M3-M3.6: resource resolver data model, alias DB, resolver query flow, and planning pipeline.
+- M4-M4.1: MCAgent planning response wrapper and API preparation.
+- M5: Web/API Playground.
+- M6-M7: install action and Desktop Shell dry-run previews.
+- M8-M8.3: environment report, read-only probe policy, ADRs, and safe platform probe.
+- M9: alpha preview UI/UX polish and release preview docs.
+
+## Roadmap
+
+- M10: release packaging preparation.
+- M11: user-selected directory probe ADR.
+- M12: real read-only Java probe ADR.
+- Future: Desktop Local Executor implementation after policy, confirmation, source verification, hash verification, rollback, and failure handling are complete.
+
+## Contributing
+
+Contributions should preserve the responsibility boundaries in `docs/platform-boundaries.md`. Do not add download, install, local write, launch, Java probe, path scan, upload, commercial model dependency, or secret handling behavior without an explicit milestone and ADR.
+
+## License Draft
+
+See `LICENSE-DRAFT.md`. Current direction:
+
+- Desktop App: GPL-3.0-or-later leaning.
+- MCAgent Server: AGPL-3.0-or-later leaning.
+- Schema / Protocol: MIT or CC0 leaning, pending community ADR.
+- Rules / Dataset / Models: separate discussion.

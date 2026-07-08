@@ -102,6 +102,77 @@ h3 {
   color: #496170;
 }
 
+.release-line {
+  margin-bottom: 8px;
+  color: #245d54;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.safety-banner {
+  margin: 18px 0 0;
+  border: 1px solid #c3aa65;
+  border-radius: 8px;
+  background: #f7efd5;
+  color: #5c4510;
+  padding: 12px 14px;
+  font-weight: 700;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.step {
+  min-height: 74px;
+  border: 1px solid #cbd4dc;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 10px;
+}
+
+.step span,
+.step strong {
+  display: block;
+}
+
+.step span {
+  min-height: 34px;
+  color: #435864;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.step strong {
+  margin-top: 6px;
+  color: #617685;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.step.ready {
+  border-color: #9fb2c4;
+  background: #edf3f8;
+}
+
+.step.success {
+  border-color: #7bb09d;
+  background: #e5f3ee;
+}
+
+.step.warning {
+  border-color: #c3aa65;
+  background: #f7efd5;
+}
+
+.step.blocked {
+  border-color: #c49072;
+  background: #f5e9df;
+}
+
 .api-box {
   min-width: 260px;
   border: 1px solid #cbd4dc;
@@ -254,11 +325,30 @@ textarea {
   gap: 10px;
 }
 
-.diagnostics-grid div {
+.diagnostics-grid div,
+.summary-card {
   border: 1px solid #d8e0e6;
   border-radius: 6px;
   background: #ffffff;
   padding: 10px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.summary-grid.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-card strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
 }
 
 .metric-label {
@@ -281,6 +371,38 @@ textarea {
 .message-list li,
 .check-list li {
   margin: 6px 0;
+}
+
+.muted-line {
+  color: #617685;
+}
+
+.action-review-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.action-group {
+  border: 1px solid #d8e0e6;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.action-group ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.action-group li {
+  margin: 8px 0;
+}
+
+.action-group li span {
+  display: block;
+  color: #617685;
+  font-size: 0.82rem;
 }
 
 .error-list {
@@ -307,6 +429,20 @@ textarea {
   display: inline-block;
   min-width: 180px;
   margin-bottom: 12px;
+}
+
+.raw-json-panel {
+  margin-top: 12px;
+}
+
+.raw-json-panel summary {
+  cursor: pointer;
+  color: #245d54;
+  font-weight: 800;
+}
+
+.raw-json-panel .json-block {
+  margin-top: 10px;
 }
 
 .modal-backdrop {
@@ -352,7 +488,20 @@ textarea {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .stepper,
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .panel.wide {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .stepper,
+  .summary-grid,
+  .summary-grid.compact {
+    grid-template-columns: 1fr;
   }
 }

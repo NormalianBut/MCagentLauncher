@@ -1,8 +1,17 @@
 # MCagentlauncher Desktop Shell
 
-`apps/desktop` is the M7 Desktop Shell for MCagentlauncher v0.1 - Natural Instance. It is a React, TypeScript, and Vite UI with a minimal Tauri native shell placeholder.
+`apps/desktop` is the v0.1 alpha Desktop Shell for MCagentlauncher v0.1 - Natural Instance. It is a React, TypeScript, and Vite UI with a minimal Tauri native shell placeholder.
 
 The current desktop app is a dry-run preview surface. It can call the MCAgent Server API, display intent parsing, display resource planning, generate install-action previews, and show executor dry-run results. It does not perform real local execution.
+
+M9 polishes the Desktop Shell into an alpha preview UI with:
+
+- workflow stepper;
+- safety banner;
+- intent, plan, install, executor, and environment summary cards;
+- collapsible raw JSON panels;
+- readable diagnostics and warning lists;
+- explicit preview-only messaging.
 
 ## Start MCAgent Server
 
@@ -142,3 +151,19 @@ The generated report stays in React state only and keeps:
 - `privacy.uploadAllowed=false`
 
 M8.3 still does not read Java, Minecraft paths, home directories, AppData, PATH, disk state, memory state, network state, browser storage, or filesystem data. It does not upload reports, write files, download resources, install resources, or launch processes.
+
+## M9 Alpha Preview UI
+
+M9 keeps the same safety boundary and only improves presentation.
+
+The Desktop UI now makes these states explicit:
+
+- `dryRun=true`
+- `requiresUserConfirmation=true`
+- `canExecute=false`
+- `localOnly=true`
+- `uploadAllowed=false`
+- `filesWritten=0`
+- `networkRequests=0`
+
+Raw JSON remains available for review, but each module also has a human-readable summary. Confirm Install remains preview-only and only reports that the real Desktop Local Executor is not enabled.
