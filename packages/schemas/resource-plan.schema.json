@@ -333,6 +333,13 @@
               "type": "boolean"
             }
           }
+        },
+        "hashes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },

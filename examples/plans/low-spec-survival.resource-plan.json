@@ -45,6 +45,10 @@
         "metadataChecked": true,
         "hashKnown": true,
         "licenseChecked": true
+      },
+      "hashes": {
+        "sha1": "1111111111111111111111111111111111111111",
+        "sha512": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       }
     },
     {
@@ -76,6 +80,10 @@
         "metadataChecked": true,
         "hashKnown": true,
         "licenseChecked": true
+      },
+      "hashes": {
+        "sha1": "2222222222222222222222222222222222222222",
+        "sha512": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
       }
     }
   ],
