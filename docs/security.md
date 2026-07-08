@@ -34,3 +34,14 @@ Local environment probing must follow these principles:
 - no persistence without a future explicit user export flow.
 
 MCAgent Server and Web Playground must not read or receive local environment reports by default.
+
+The read-only probe security model also forbids:
+
+- background probes;
+- arbitrary shell commands;
+- user-controlled commands;
+- recursive home directory scans;
+- automatic `.minecraft` discovery;
+- execution capabilities before an explicit executor milestone.
+
+Real platform, directory, Java, or network probes must pass a permission policy gate. Java detection and directory access require separate future ADRs.

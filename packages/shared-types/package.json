@@ -10,6 +10,7 @@
     "./executor": "./src/executor.ts",
     "./installActions": "./src/installActions.ts",
     "./plan": "./src/plan.ts",
+    "./probePolicy": "./src/probePolicy.ts",
     "./resolver": "./src/resolver.ts",
     "./resource-plan": "./src/resource-plan.ts",
     "./resource": "./src/resource.ts"

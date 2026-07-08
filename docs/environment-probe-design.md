@@ -89,3 +89,20 @@ Environment report state is session-only unless a future milestone adds an expli
 Reports must be redacted before display or any future export. The shared redaction helper handles Windows user paths, Unix home paths, backslash paths, `.minecraft` paths, email-like values, and token-like strings.
 
 If real Java detection is ever enabled, it needs a separate ADR and explicit permission review.
+
+## M8.2 ADR and Permission Policy
+
+M8.2 introduces:
+
+- [ADR 0001: Read-only Environment Probe](./adr/0001-read-only-environment-probe.md)
+- [Read-only Probe Permission Policy](./read-only-probe-permission-policy.md)
+- a shared probe capability registry in `packages/shared-types/src/probePolicy.ts`
+
+Current M8.2 policy allows only:
+
+- `mock_environment_report`
+- `consented_read_only_preview`
+
+Current M8.2 policy forbids real platform probes, Java probes, network probes, environment report upload, persistence, file writes, process launch, and resource download.
+
+Any future real probe must pass the permission policy gate before it can be implemented.

@@ -106,3 +106,16 @@ Current behavior:
 M8.1 still does not execute real system commands, does not run `java -version`, does not inspect a real Minecraft path, does not scan disks, does not upload reports, does not write reports to files, and does not persist reports in localStorage or sessionStorage.
 
 Environment report is session-only unless a future user explicitly exports it. M8.1 does not implement export.
+
+## M8.2 Probe Policy
+
+M8.2 is still a preview and policy milestone.
+
+Current policy allows only:
+
+- `mock_environment_report`
+- `consented_read_only_preview`
+
+Current policy disables real Java probes, path probes, disk scans, network probes, uploads, persistence, file writes, process launch, and resource downloads.
+
+Future real probes must pass `packages/shared-types/src/probePolicy.ts` and the ADR/permission policy before implementation.
