@@ -1,0 +1,16 @@
+{
+  "name": "@mcagentlauncher/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./modrinth": "./src/modrinth.ts"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@mcagentlauncher/shared-types": "workspace:*"
+  }
+}
