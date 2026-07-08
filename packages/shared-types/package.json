@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./plan": "./src/plan.ts",
     "./resource-plan": "./src/resource-plan.ts",
     "./resource": "./src/resource.ts"
   },
