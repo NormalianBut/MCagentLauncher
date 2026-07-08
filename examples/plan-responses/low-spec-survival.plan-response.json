@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "0.1.0",
+  "plan": {
+    "schemaVersion": "0.1.0",
+    "planId": "plan_generated_low_spec_survival",
+    "intentId": "intent_pipeline_test",
+    "status": "needs-user-confirmation",
+    "target": {
+      "minecraftVersion": "1.20.1",
+      "loader": "fabric",
+      "loaderVersion": "unresolved-fabric-loader",
+      "javaMajorVersion": 17
+    },
+    "summary": {
+      "title": "Resolver generated resource plan",
+      "description": "Alias matches and resolver metadata were mapped into a user-reviewable resource plan.",
+      "riskLevel": "medium",
+      "estimatedMemoryMb": 4096
+    },
+    "resources": [
+      {
+        "resourceId": "res_sodium",
+        "type": "mod",
+        "source": "modrinth",
+        "project": {
+          "name": "Sodium",
+          "slug": "sodium",
+          "projectId": "AANobbMI"
+        },
+        "version": {
+          "versionId": "sodium-version",
+          "versionNumber": "sodium-version",
+          "releaseType": "release"
+        },
+        "required": true,
+        "reason": "Selected by resolver output for the requested plan.",
+        "compatibility": {
+          "minecraftVersions": [
+            "1.20.1"
+          ],
+          "loaders": [
+            "fabric"
+          ],
+          "side": "client"
+        },
+        "verification": {
+          "metadataChecked": true,
+          "hashKnown": true,
+          "licenseChecked": false
+        },
+        "hashes": {
+          "sha1": "1111111111111111111111111111111111111111"
+        }
+      },
+      {
+        "resourceId": "res_iris_shader",
+        "type": "mod",
+        "source": "modrinth",
+        "project": {
+          "name": "Iris Shaders",
+          "slug": "iris",
+          "projectId": "YL57xq9U"
+        },
+        "version": {
+          "versionId": "iris-version",
+          "versionNumber": "iris-version",
+          "releaseType": "release"
+        },
+        "required": true,
+        "reason": "Selected by resolver output for the requested plan.",
+        "compatibility": {
+          "minecraftVersions": [
+            "1.20.1"
+          ],
+          "loaders": [
+            "fabric"
+          ],
+          "side": "client"
+        },
+        "verification": {
+          "metadataChecked": true,
+          "hashKnown": true,
+          "licenseChecked": false
+        },
+        "hashes": {
+          "sha1": "4444444444444444444444444444444444444444"
+        }
+      }
+    ],
+    "ruleResults": {
+      "accepted": [
+        "resolver_candidates_mapped",
+        "project_id_deduplicated",
+        "user_confirmation_required"
+      ],
+      "rejected": [],
+      "warnings": [
+        {
+          "code": "ALIAS_NEEDS_VERIFICATION",
+          "message": "Alias metadata is marked as needing verification before installation."
+        }
+      ],
+      "errors": []
+    },
+    "installActionRef": {
+      "actionId": "install_generated_low_spec_survival",
+      "schema": "install-action.schema.json"
+    },
+    "userConfirmation": {
+      "required": true,
+      "confirmed": false
+    }
+  },
+  "diagnostics": {
+    "aliasMatches": [
+      {
+        "canonicalName": "Sodium",
+        "matchedAliases": [
+          "performance"
+        ]
+      },
+      {
+        "canonicalName": "Iris Shaders",
+        "matchedAliases": [
+          "shader"
+        ]
+      }
+    ],
+    "resolverQueries": [
+      {
+        "source": "modrinth",
+        "canonicalName": "Sodium",
+        "query": "sodium"
+      },
+      {
+        "source": "modrinth",
+        "canonicalName": "Iris Shaders",
+        "query": "iris"
+      }
+    ],
+    "candidatesResolved": 2,
+    "warnings": [
+      {
+        "code": "ALIAS_NEEDS_VERIFICATION",
+        "message": "Alias metadata is marked as needing verification before installation."
+      }
+    ],
+    "errors": [],
+    "networkUsed": false
+  }
+}

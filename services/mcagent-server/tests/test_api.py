@@ -69,12 +69,16 @@ def test_new_wrapper_request_returns_plan_and_diagnostics() -> None:
     )
     assert response.status_code == 200
     body = response.json()
-    assert set(body) == {"plan", "diagnostics"}
+    assert set(body) == {"schemaVersion", "plan", "diagnostics"}
+    assert body["schemaVersion"] == "0.1.0"
     assert body["diagnostics"]["networkUsed"] is False
+    assert isinstance(body["diagnostics"]["warnings"], list)
+    assert isinstance(body["diagnostics"]["errors"], list)
     assert body["diagnostics"]["candidatesResolved"] >= 3
     assert body["diagnostics"]["aliasMatches"]
     assert body["diagnostics"]["resolverQueries"]
     assert validate_response("resource-plan", body["plan"]) == body["plan"]
+    assert validate_response("plan-response", body) == body
 
 
 def test_default_enable_network_false_for_wrapper() -> None:
@@ -106,6 +110,7 @@ def test_enable_network_true_does_not_download_install_or_use_network_in_m4() ->
     body = response.json()
     serialized = str(body).lower()
     assert body["diagnostics"]["networkUsed"] is False
+    assert validate_response("plan-response", body) == body
     assert "ENABLE_NETWORK_IGNORED" in {warning["code"] for warning in body["plan"]["ruleResults"]["warnings"]}
     assert "download_url" not in serialized
     assert "downloadurl" not in serialized
@@ -131,6 +136,7 @@ def test_mock_mode_remains_available_with_wrapper() -> None:
     body = response.json()
     assert body["diagnostics"]["networkUsed"] is False
     assert validate_response("resource-plan", body["plan"]) == body["plan"]
+    assert validate_response("plan-response", body) == body
 
 
 def test_explain_accepts_wrapper_and_returns_chinese_pipeline_summary() -> None:

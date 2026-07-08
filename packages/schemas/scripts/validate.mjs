@@ -7,6 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const schemaFiles = {
   "intent.schema.json": path.join(root, "packages/schemas/intent.schema.json"),
   "resource-plan.schema.json": path.join(root, "packages/schemas/resource-plan.schema.json"),
+  "plan-response.schema.json": path.join(root, "packages/schemas/plan-response.schema.json"),
   "install-action.schema.json": path.join(root, "packages/schemas/install-action.schema.json"),
   "instance-lock.schema.json": path.join(root, "packages/schemas/instance-lock.schema.json")
 };
@@ -21,6 +22,12 @@ const exampleSets = [
     schema: "resource-plan.schema.json",
     directory: path.join(root, "examples/plans"),
     suffix: ".resource-plan.json"
+  },
+  {
+    schema: "plan-response.schema.json",
+    directory: path.join(root, "examples/plan-responses"),
+    suffix: ".plan-response.json",
+    embeddedPlan: true
   },
   {
     schema: "install-action.schema.json",
@@ -63,6 +70,18 @@ for (const set of exampleSets) {
     checked += 1;
     if (result.length > 0) {
       for (const error of result) {
+        errors.push(`${relative(file)} ${error}`);
+      }
+    }
+
+    if (set.embeddedPlan === true) {
+      const planSchema = schemas.get("resource-plan.schema.json");
+      const planResult = validate(planSchema, data.plan, {
+        schemaRoot: planSchema,
+        dataPath: "$.plan",
+        schemaPath: "#"
+      });
+      for (const error of planResult) {
         errors.push(`${relative(file)} ${error}`);
       }
     }

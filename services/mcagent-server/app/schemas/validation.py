@@ -14,6 +14,7 @@ SCHEMA_ROOT = Path(__file__).resolve().parents[4] / "packages" / "schemas"
 SCHEMA_FILES = {
     "intent": "intent.schema.json",
     "resource-plan": "resource-plan.schema.json",
+    "plan-response": "plan-response.schema.json",
     "install-action": "install-action.schema.json",
     "instance-lock": "instance-lock.schema.json",
 }

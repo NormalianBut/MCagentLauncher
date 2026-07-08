@@ -15,19 +15,21 @@ def plan(payload: dict) -> dict:
     if mode == "mock":
         generated_plan = validate_response("resource-plan", generate_plan(intent))
         if wrapped_request:
-            return {
+            return validate_response("plan-response", {
+                "schemaVersion": "0.1.0",
                 "plan": generated_plan,
                 "diagnostics": _mock_diagnostics(),
-            }
+            })
         return generated_plan
 
     generated = generate_pipeline_plan(intent, options)
     validated_plan = validate_response("resource-plan", generated["plan"])
     if wrapped_request:
-        return {
+        return validate_response("plan-response", {
+            "schemaVersion": "0.1.0",
             "plan": validated_plan,
             "diagnostics": generated["diagnostics"],
-        }
+        })
     return validated_plan
 
 
