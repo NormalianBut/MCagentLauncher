@@ -88,6 +88,7 @@ function goalSeed(
     tags: [goal],
     required: false,
     reason: `Seeded resolver query for ${goal} goal.`,
+    riskPreference: context.riskPreference,
     needsVerification: true,
     sourceAlias: goal,
   };

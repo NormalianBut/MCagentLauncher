@@ -20,6 +20,13 @@ export interface ResourceDependency {
   dependencyType: "required" | "optional" | "incompatible" | "embedded" | string;
 }
 
+export interface ResourceResolverMetadata {
+  query: string;
+  reason: string;
+  needsVerification: boolean;
+  sourceAlias: string;
+}
+
 export interface ResourceCandidate {
   source: "modrinth";
   projectId: string;
@@ -39,5 +46,5 @@ export interface ResourceCandidate {
   serverSide: SideSupport;
   metadataChecked: boolean;
   warnings: string[];
+  resolver?: ResourceResolverMetadata;
 }
-

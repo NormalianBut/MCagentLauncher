@@ -22,6 +22,7 @@ export interface ResolverQuery {
   tags: string[];
   required: boolean;
   reason: string;
+  riskPreference: "stable" | "experimental";
   needsVerification: boolean;
   sourceAlias: string;
 }
@@ -46,6 +47,7 @@ export function mapAliasMatchToResolverQuery(
     tags: match.tags,
     required: isRequired(match, context),
     reason: reasonFor(match, context),
+    riskPreference: context.riskPreference,
     needsVerification: match.needsVerification,
     sourceAlias: match.matchedAliases[0] ?? match.canonicalName,
   };
