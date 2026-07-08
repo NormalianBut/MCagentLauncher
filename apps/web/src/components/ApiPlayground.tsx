@@ -1,6 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { ResourcePlan } from "../../../../packages/shared-types/src/plan";
+import { previewInstallActions, type ExecutorPreviewResult } from "../../../../packages/shared-types/src/executor";
+import {
+  buildInstallActionsFromPlan,
+  type InstallActionPreview,
+} from "../../../../packages/shared-types/src/installActions";
 import {
   explainPlan,
   generatePlan,
@@ -17,6 +23,8 @@ export function ApiPlayground() {
   const [intent, setIntent] = useState<JsonValue | null>(null);
   const [planResponse, setPlanResponse] = useState<JsonValue | null>(null);
   const [explanation, setExplanation] = useState<JsonValue | null>(null);
+  const [installPreview, setInstallPreview] = useState<InstallActionPreview | null>(null);
+  const [executorPreview, setExecutorPreview] = useState<ExecutorPreviewResult | null>(null);
   const [mode, setMode] = useState<PlanOptions["mode"]>("pipeline");
   const [enableNetwork, setEnableNetwork] = useState(false);
   const [pending, setPending] = useState<"intent" | "plan" | "explain" | null>(null);
@@ -25,6 +33,7 @@ export function ApiPlayground() {
   const diagnostics = getDiagnostics(planResponse);
   const canGeneratePlan = intent !== null;
   const canExplain = planResponse !== null;
+  const canPreviewInstall = extractPlan(planResponse) !== null;
   const apiUrl = useMemo(() => mcagentBaseUrl(), []);
 
   async function runParseIntent() {
@@ -33,6 +42,8 @@ export function ApiPlayground() {
       setIntent(nextIntent);
       setPlanResponse(null);
       setExplanation(null);
+      setInstallPreview(null);
+      setExecutorPreview(null);
     });
   }
 
@@ -48,6 +59,8 @@ export function ApiPlayground() {
       });
       setPlanResponse(nextPlan);
       setExplanation(null);
+      setInstallPreview(null);
+      setExecutorPreview(null);
     });
   }
 
@@ -59,6 +72,24 @@ export function ApiPlayground() {
     await run("explain", async () => {
       setExplanation(await explainPlan(planResponse));
     });
+  }
+
+  function runGenerateInstallPreview() {
+    const plan = extractPlan(planResponse);
+    if (!plan) {
+      setError("Generate Plan must complete before Generate Install Preview.");
+      return;
+    }
+
+    const nextInstallPreview = buildInstallActionsFromPlan(plan, {
+      dryRun: true,
+      requireConfirmation: true,
+      targetInstanceName: "MCagentlauncher Dry Run Preview",
+      includeLaunchPreview: true,
+    });
+    setInstallPreview(nextInstallPreview);
+    setExecutorPreview(previewInstallActions(nextInstallPreview.actions));
+    setError(null);
   }
 
   async function run(kind: "intent" | "plan" | "explain", task: () => Promise<void>) {
@@ -121,6 +152,9 @@ export function ApiPlayground() {
               <button disabled={pending !== null || !canExplain} onClick={runExplainPlan}>
                 {pending === "explain" ? "Explaining" : "Explain Plan"}
               </button>
+              <button disabled={pending !== null || !canPreviewInstall} onClick={runGenerateInstallPreview}>
+                Generate Install Preview
+              </button>
             </div>
             <p className={error ? "status error" : "status"}>
               {error ?? (pending ? "Request in progress." : "Ready.")}
@@ -153,6 +187,28 @@ export function ApiPlayground() {
             </section>
 
             <JsonPanel title="Explanation" value={explanation} wide />
+
+            <section className="panel wide">
+              <h2>Install Preview</h2>
+              {installPreview && executorPreview ? (
+                <>
+                  <p className="offline">
+                    dryRun=true，requiresUserConfirmation=true。当前不会下载、不会安装、不会写本地实例。
+                  </p>
+                  <div className="metrics">
+                    <Metric label="actions" value={String(installPreview.actions.length)} />
+                    <Metric label="blocked" value={String(executorPreview.blockedActions.length)} />
+                    <Metric label="canExecute" value={String(executorPreview.canExecute)} />
+                    <Metric label="dryRun" value={String(executorPreview.dryRun)} />
+                  </div>
+                  <p className="muted">{executorPreview.summary}</p>
+                  <InlineJson title="Install Actions JSON" value={installPreview as unknown as JsonValue} />
+                  <InlineJson title="Executor Preview JSON" value={executorPreview as unknown as JsonValue} />
+                </>
+              ) : (
+                <p className="muted">Generate a resource plan first, then create a dry-run install preview.</p>
+              )}
+            </section>
           </section>
         </div>
       </div>
@@ -174,6 +230,15 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div className="metric">
       <span className="muted">{label}</span>
       <strong>{value}</strong>
+    </div>
+  );
+}
+
+function InlineJson({ title, value }: { title: string; value: JsonValue }) {
+  return (
+    <div className="inline-json">
+      <h3>{title}</h3>
+      <pre>{JSON.stringify(value, null, 2)}</pre>
     </div>
   );
 }
@@ -208,6 +273,19 @@ function getDiagnostics(value: JsonValue | null) {
     warnings: readMessages(diagnostics.warnings),
     errors: readMessages(diagnostics.errors),
   };
+}
+
+function extractPlan(value: JsonValue | null): ResourcePlan | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+  if (isRecord(value.plan)) {
+    return value.plan as unknown as ResourcePlan;
+  }
+  if (typeof value.schemaVersion === "string" && Array.isArray(value.resources)) {
+    return value as unknown as ResourcePlan;
+  }
+  return null;
 }
 
 function readMessages(value: unknown): string[] {

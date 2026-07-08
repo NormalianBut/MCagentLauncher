@@ -1,66 +1,259 @@
 {
   "schemaVersion": "0.1.0",
-  "actionId": "install_low_spec_survival",
-  "planId": "plan_low_spec_survival",
+  "actionId": "install_low_spec_survival_preview",
+  "sourcePlanId": "plan_low_spec_survival",
+  "dryRun": true,
   "requiresUserConfirmation": true,
-  "confirmedByUser": true,
-  "targetInstance": {
-    "instanceName": "Low Spec Survival",
+  "confirmedByUser": false,
+  "target": {
+    "instanceName": "Low-spec Fabric survival",
     "minecraftVersion": "1.20.1",
     "loader": "fabric",
-    "loaderVersion": "0.15.11"
+    "loaderVersion": "0.15.11",
+    "javaMajorVersion": 17,
+    "minecraftDirectory": null
   },
-  "steps": [
+  "actions": [
     {
-      "stepId": "step_create_instance",
-      "kind": "create-instance-directory",
-      "description": "Create a new local instance directory after user confirmation.",
-      "resourceId": null,
-      "expectedHash": null,
-      "destination": "instance-root"
-    },
-    {
-      "stepId": "step_install_loader",
-      "kind": "install-loader",
-      "description": "Install the selected Fabric loader metadata for the instance.",
-      "resourceId": null,
-      "expectedHash": null,
-      "destination": "instance-root"
-    },
-    {
-      "stepId": "step_download_sodium",
-      "kind": "download-resource",
-      "description": "Download Sodium from the verified source selected in the resource plan.",
-      "resourceId": "res_sodium_core",
-      "expectedHash": {
-        "algorithm": "sha512",
-        "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      "schemaVersion": "0.1.0",
+      "actionId": "act_create_instance_preview",
+      "type": "create_instance",
+      "title": "Create instance",
+      "description": "Preview creating the target instance container.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "instance-root"
       },
-      "destination": "mods"
+      "resourceRef": null,
+      "riskLevel": "low",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "DRY_RUN_PREVIEW_ONLY",
+          "message": "This action is a dry-run preview and will not be executed in M6."
+        }
+      ]
     },
     {
-      "stepId": "step_download_lithium",
-      "kind": "download-resource",
-      "description": "Download Lithium from the verified source selected in the resource plan.",
-      "resourceId": "res_lithium_core",
-      "expectedHash": {
-        "algorithm": "sha512",
-        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      "schemaVersion": "0.1.0",
+      "actionId": "act_install_minecraft_preview",
+      "type": "install_minecraft",
+      "title": "Install Minecraft",
+      "description": "Preview installing Minecraft 1.20.1 metadata for the target instance.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "minecraft-runtime"
       },
-      "destination": "mods"
+      "resourceRef": null,
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "DRY_RUN_PREVIEW_ONLY",
+          "message": "This action is a dry-run preview and will not be executed in M6."
+        }
+      ]
     },
     {
-      "stepId": "step_write_lockfile",
-      "kind": "write-lockfile",
-      "description": "Write instance-lock.json after all files are verified.",
-      "resourceId": null,
-      "expectedHash": null,
-      "destination": "lockfile"
+      "schemaVersion": "0.1.0",
+      "actionId": "act_install_loader_preview",
+      "type": "install_loader",
+      "title": "Install Fabric loader",
+      "description": "Preview installing Fabric loader 0.15.11.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "loader-runtime"
+      },
+      "resourceRef": null,
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "DRY_RUN_PREVIEW_ONLY",
+          "message": "This action is a dry-run preview and will not be executed in M6."
+        }
+      ]
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "actionId": "act_add_sodium_preview",
+      "type": "add_resource",
+      "title": "Add Sodium",
+      "description": "Preview adding Sodium from modrinth to the target instance.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "mods"
+      },
+      "resourceRef": {
+        "resourceId": "res_sodium_core",
+        "name": "Sodium",
+        "source": "modrinth",
+        "projectId": "AANobbMI",
+        "versionId": "sodium-1-20-1-example",
+        "hashes": {
+          "sha1": "1111111111111111111111111111111111111111",
+          "sha512": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "NO_RESOURCE_DOWNLOAD",
+          "message": "This preview does not download resource files."
+        }
+      ]
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "actionId": "act_add_lithium_preview",
+      "type": "add_resource",
+      "title": "Add Lithium",
+      "description": "Preview adding Lithium from modrinth to the target instance.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "mods"
+      },
+      "resourceRef": {
+        "resourceId": "res_lithium_core",
+        "name": "Lithium",
+        "source": "modrinth",
+        "projectId": "gvQqBUqZ",
+        "versionId": "lithium-1-20-1-example",
+        "hashes": {
+          "sha1": "2222222222222222222222222222222222222222",
+          "sha512": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      },
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "NO_RESOURCE_DOWNLOAD",
+          "message": "This preview does not download resource files."
+        }
+      ]
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "actionId": "act_write_config_preview",
+      "type": "write_config",
+      "title": "Write configuration",
+      "description": "Preview writing generated instance configuration.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "config"
+      },
+      "resourceRef": null,
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "NO_LOCAL_INSTANCE_WRITE",
+          "message": "This preview does not write a local Minecraft instance."
+        }
+      ]
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "actionId": "act_create_snapshot_preview",
+      "type": "create_snapshot",
+      "title": "Create rollback snapshot",
+      "description": "Preview creating a rollback snapshot before changes.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "snapshot"
+      },
+      "resourceRef": null,
+      "riskLevel": "low",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": true,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "DRY_RUN_PREVIEW_ONLY",
+          "message": "This action is a dry-run preview and will not be executed in M6."
+        }
+      ]
+    },
+    {
+      "schemaVersion": "0.1.0",
+      "actionId": "act_launch_instance_preview",
+      "type": "launch_instance",
+      "title": "Launch instance",
+      "description": "Preview a future launch attempt after installation.",
+      "sourcePlanId": "plan_low_spec_survival",
+      "target": {
+        "instanceName": "Low-spec Fabric survival",
+        "minecraftVersion": "1.20.1",
+        "loader": "fabric",
+        "destination": "launcher"
+      },
+      "resourceRef": null,
+      "riskLevel": "medium",
+      "requiresUserConfirmation": true,
+      "rollbackSupported": false,
+      "status": "pending",
+      "dryRun": true,
+      "warnings": [
+        {
+          "code": "DRY_RUN_PREVIEW_ONLY",
+          "message": "This action is a dry-run preview and will not launch Minecraft in M6."
+        }
+      ]
     }
   ],
-  "rollback": {
-    "snapshotBeforeInstall": true,
-    "removeCreatedFiles": true,
-    "restorePreviousLockfile": true
+  "diagnostics": {
+    "warnings": [
+      {
+        "code": "DRY_RUN_PREVIEW_ONLY",
+        "message": "This install action file is a preview only."
+      },
+      {
+        "code": "USER_CONFIRMATION_REQUIRED",
+        "message": "A future Desktop Local Executor must require user confirmation before execution."
+      }
+    ],
+    "errors": []
   }
 }

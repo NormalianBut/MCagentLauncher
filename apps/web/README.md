@@ -62,3 +62,18 @@ This is only an API debugging interface. It calls:
 - `POST /v1/explain/plan`
 
 The Playground does not download resources, install resources, write local instances, launch Minecraft, or perform Desktop Local Executor work.
+
+## Install Preview
+
+The Playground can also generate an Install Preview from the current resource plan.
+
+Install Preview is a browser-side dry run:
+
+- `dryRun=true`
+- `requiresUserConfirmation=true`
+- no local file operations
+- no resource downloads
+- no Minecraft installation
+- no Minecraft launch
+
+The preview uses shared pure conversion logic and only displays JSON plus an executor preview summary. It does not call a real executor API.

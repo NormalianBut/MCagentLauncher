@@ -1,19 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mcagentlauncher.dev/schemas/install-action.schema.json",
-  "title": "MCagentlauncher Install Action",
-  "description": "User-confirmed action plan that the Desktop Local Executor can execute. This schema describes actions, not implementation code.",
+  "title": "MCagentlauncher Install Action Preview",
+  "description": "Dry-run install action preview for the future Desktop Local Executor. This is an auditable plan, not executed state.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
     "actionId",
-    "planId",
+    "sourcePlanId",
+    "dryRun",
     "requiresUserConfirmation",
     "confirmedByUser",
-    "targetInstance",
-    "steps",
-    "rollback"
+    "target",
+    "actions",
+    "diagnostics"
   ],
   "properties": {
     "schemaVersion": {
@@ -24,25 +25,32 @@
       "type": "string",
       "pattern": "^install_[a-z0-9][a-z0-9_-]{5,63}$"
     },
-    "planId": {
+    "sourcePlanId": {
       "type": "string",
       "pattern": "^plan_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "const": true
     },
     "requiresUserConfirmation": {
       "type": "boolean",
       "const": true
     },
     "confirmedByUser": {
-      "type": "boolean"
+      "type": "boolean",
+      "const": false
     },
-    "targetInstance": {
+    "target": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "instanceName",
         "minecraftVersion",
         "loader",
-        "loaderVersion"
+        "loaderVersion",
+        "javaMajorVersion",
+        "minecraftDirectory"
       ],
       "properties": {
         "instanceName": {
@@ -61,107 +69,246 @@
         "loaderVersion": {
           "type": "string",
           "minLength": 1
+        },
+        "javaMajorVersion": {
+          "type": "integer",
+          "enum": [
+            17,
+            21
+          ]
+        },
+        "minecraftDirectory": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 240
         }
       }
     },
-    "steps": {
+    "actions": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "stepId",
-          "kind",
-          "description",
-          "resourceId",
-          "expectedHash",
-          "destination"
-        ],
-        "properties": {
-          "stepId": {
-            "type": "string",
-            "pattern": "^step_[a-z0-9][a-z0-9_-]{5,63}$"
-          },
-          "kind": {
-            "type": "string",
-            "enum": [
-              "create-instance-directory",
-              "install-minecraft",
-              "install-loader",
-              "download-resource",
-              "write-config",
-              "write-lockfile"
-            ]
-          },
-          "description": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 500
-          },
-          "resourceId": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "pattern": "^res_[a-z0-9][a-z0-9_-]{5,63}$"
-          },
-          "expectedHash": {
-            "type": [
-              "object",
-              "null"
-            ],
-            "additionalProperties": false,
-            "required": [
-              "algorithm",
-              "value"
-            ],
-            "properties": {
-              "algorithm": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warnings",
+        "errors"
+      ],
+      "properties": {
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "actionId",
+        "type",
+        "title",
+        "description",
+        "sourcePlanId",
+        "target",
+        "resourceRef",
+        "riskLevel",
+        "requiresUserConfirmation",
+        "rollbackSupported",
+        "status",
+        "dryRun",
+        "warnings"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "0.1.0"
+        },
+        "actionId": {
+          "type": "string",
+          "pattern": "^act_[a-z0-9][a-z0-9_-]{5,63}$"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "create_instance",
+            "install_minecraft",
+            "install_loader",
+            "add_resource",
+            "write_config",
+            "create_snapshot",
+            "launch_instance"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "sourcePlanId": {
+          "type": "string",
+          "pattern": "^plan_[a-z0-9][a-z0-9_-]{5,63}$"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "instanceName",
+            "minecraftVersion",
+            "loader",
+            "destination"
+          ],
+          "properties": {
+            "instanceName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "minecraftVersion": {
+              "type": "string",
+              "pattern": "^1\\.[0-9]+(\\.[0-9]+)?$"
+            },
+            "loader": {
+              "type": "string",
+              "const": "fabric"
+            },
+            "destination": {
+              "type": "string",
+              "enum": [
+                "instance-root",
+                "minecraft-runtime",
+                "loader-runtime",
+                "mods",
+                "resourcepacks",
+                "shaderpacks",
+                "config",
+                "snapshot",
+                "launcher"
+              ]
+            }
+          }
+        },
+        "resourceRef": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "resourceId",
+            "name",
+            "source",
+            "projectId",
+            "versionId",
+            "hashes"
+          ],
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "pattern": "^res_[a-z0-9][a-z0-9_-]{5,63}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "modrinth",
+                "manual",
+                "community-rule"
+              ]
+            },
+            "projectId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "versionId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hashes": {
+              "type": "object",
+              "additionalProperties": {
                 "type": "string",
-                "enum": [
-                  "sha1",
-                  "sha256",
-                  "sha512"
-                ]
-              },
-              "value": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{40,128}$"
+                "minLength": 1
               }
             }
-          },
-          "destination": {
-            "type": "string",
-            "enum": [
-              "instance-root",
-              "mods",
-              "resourcepacks",
-              "shaderpacks",
-              "config",
-              "lockfile"
-            ]
+          }
+        },
+        "riskLevel": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "requiresUserConfirmation": {
+          "type": "boolean",
+          "const": true
+        },
+        "rollbackSupported": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "preview",
+            "blocked"
+          ]
+        },
+        "dryRun": {
+          "type": "boolean",
+          "const": true
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
           }
         }
       }
     },
-    "rollback": {
+    "message": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "snapshotBeforeInstall",
-        "removeCreatedFiles",
-        "restorePreviousLockfile"
+        "code",
+        "message"
       ],
       "properties": {
-        "snapshotBeforeInstall": {
-          "type": "boolean"
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]{3,80}$"
         },
-        "removeCreatedFiles": {
-          "type": "boolean"
-        },
-        "restorePreviousLockfile": {
-          "type": "boolean"
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
         }
       }
     }
