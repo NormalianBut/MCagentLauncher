@@ -291,6 +291,24 @@ textarea {
   background: #f2f6f4;
 }
 
+.environment-panel {
+  background: #f7faf9;
+}
+
+.summary-line,
+.readiness-line {
+  border: 1px solid #d8e0e6;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.readiness-line {
+  display: inline-block;
+  min-width: 180px;
+  margin-bottom: 12px;
+}
+
 @media (max-width: 900px) {
   .app-shell {
     width: min(100vw - 20px, 720px);

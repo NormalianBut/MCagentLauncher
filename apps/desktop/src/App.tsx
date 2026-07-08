@@ -1,11 +1,18 @@
 import { useMemo, useState } from "react";
 import { DiagnosticsPanel } from "./components/DiagnosticsPanel";
+import { EnvironmentPanel } from "./components/EnvironmentPanel";
 import { ExecutorPreviewPanel } from "./components/ExecutorPreviewPanel";
 import { InstallPreviewPanel } from "./components/InstallPreviewPanel";
 import { IntentPanel } from "./components/IntentPanel";
 import { PlanPanel } from "./components/PlanPanel";
 import { PromptInput } from "./components/PromptInput";
 import { SafetyNotice } from "./components/SafetyNotice";
+import {
+  createMockEnvironmentReport,
+  summarizeEnvironmentReport,
+  type EnvironmentBlocker,
+  type EnvironmentWarning,
+} from "../../../packages/shared-types/src/environment";
 import { buildDesktopInstallPreview } from "./lib/installPreview";
 import { explainPlan, generatePlan, mcagentBaseUrl, parseIntent } from "./lib/mcagentClient";
 import type { JsonValue, PlanDiagnostics } from "./lib/types";
@@ -19,6 +26,11 @@ export default function App() {
   const [explanation, setExplanation] = useState<JsonValue | null>(null);
   const [installPreview, setInstallPreview] = useState<JsonValue | null>(null);
   const [executorPreview, setExecutorPreview] = useState<JsonValue | null>(null);
+  const [environmentReport, setEnvironmentReport] = useState<JsonValue | null>(null);
+  const [environmentSummary, setEnvironmentSummary] = useState<string | null>(null);
+  const [environmentReadiness, setEnvironmentReadiness] = useState<string | null>(null);
+  const [environmentWarnings, setEnvironmentWarnings] = useState<EnvironmentWarning[]>([]);
+  const [environmentBlockers, setEnvironmentBlockers] = useState<EnvironmentBlocker[]>([]);
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
@@ -73,6 +85,27 @@ export default function App() {
     });
   }
 
+  function runGenerateEnvironmentPreview() {
+    const report = createMockEnvironmentReport({
+      reportId: "env_desktop_shell_preview",
+      platform: {
+        os: "unknown",
+        arch: "unknown",
+      },
+      runtime: {
+        app: "MCagentlauncher Desktop Shell",
+        tauriAvailable: false,
+      },
+    });
+
+    setEnvironmentReport(report as unknown as JsonValue);
+    setEnvironmentSummary(summarizeEnvironmentReport(report));
+    setEnvironmentReadiness(report.readiness.level);
+    setEnvironmentWarnings(report.readiness.warnings);
+    setEnvironmentBlockers(report.readiness.blockers);
+    setConfirmationMessage(null);
+  }
+
   function confirmPreviewOnly() {
     setConfirmationMessage("当前阶段仅支持 dry-run preview，真实执行器尚未启用。");
   }
@@ -96,7 +129,7 @@ export default function App() {
         <div>
           <p className="eyebrow">Desktop Shell / Dry-run Preview</p>
           <h1>MCagentlauncher v0.1 - Natural Instance</h1>
-          <p className="flow-line">Natural Language -&gt; Intent -&gt; Resource Plan -&gt; Install Preview -&gt; Executor Dry-run</p>
+          <p className="flow-line">Natural Language -&gt; Intent -&gt; Resource Plan -&gt; Install Preview -&gt; Executor Dry-run -&gt; Environment Preview</p>
         </div>
         <div className="api-box">
           <span>MCAgent API</span>
@@ -126,6 +159,14 @@ export default function App() {
         <IntentPanel intent={intent} />
         <DiagnosticsPanel diagnostics={diagnostics} explanation={explanation} />
         <PlanPanel planResponse={planResponse} />
+        <EnvironmentPanel
+          report={environmentReport}
+          summary={environmentSummary}
+          readinessLevel={environmentReadiness}
+          warnings={environmentWarnings}
+          blockers={environmentBlockers}
+          onGeneratePreview={runGenerateEnvironmentPreview}
+        />
         <InstallPreviewPanel preview={installPreview} />
         <ExecutorPreviewPanel preview={executorPreview} />
         <SafetyNotice />

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "0.1.0",
+  "reportId": "env_mock_windows_preview",
+  "createdAt": "2026-07-08T00:00:00.000Z",
+  "source": {
+    "mode": "mock",
+    "generatedBy": "desktop",
+    "uploaded": false
+  },
+  "platform": {
+    "os": "windows",
+    "arch": "x64",
+    "family": "desktop"
+  },
+  "runtime": {
+    "app": "MCagentlauncher Desktop Shell",
+    "tauriAvailable": false,
+    "nodeAvailable": null
+  },
+  "java": {
+    "status": "not_checked",
+    "version": null,
+    "path": null,
+    "checkedBy": "mock"
+  },
+  "minecraft": {
+    "directoryStatus": "not_checked",
+    "candidateDirectories": [
+      "<minecraft-directory-not-checked>"
+    ],
+    "containsSensitivePath": false
+  },
+  "disk": {
+    "status": "not_checked",
+    "freeSpaceGb": null
+  },
+  "memory": {
+    "status": "not_checked",
+    "totalGb": null
+  },
+  "network": {
+    "status": "not_checked",
+    "checked": false
+  },
+  "permissions": {
+    "canWriteInstanceDirectory": false,
+    "canLaunchProcess": false,
+    "canDownload": false
+  },
+  "readiness": {
+    "level": "preview_ready",
+    "warnings": [
+      {
+        "code": "MOCK_ENVIRONMENT_REPORT",
+        "message": "This report is mock data and does not reflect real local system state."
+      },
+      {
+        "code": "JAVA_NOT_CHECKED",
+        "message": "Java was not checked in M8."
+      },
+      {
+        "code": "MINECRAFT_DIRECTORY_NOT_CHECKED",
+        "message": "No real Minecraft directory was read or scanned."
+      }
+    ],
+    "blockers": [
+      {
+        "code": "REAL_PROBE_DISABLED",
+        "message": "Read-only environment probing is reserved for a later milestone."
+      }
+    ]
+  },
+  "privacy": {
+    "localOnly": true,
+    "uploadAllowed": false,
+    "containsUserPath": false,
+    "redacted": true
+  }
+}

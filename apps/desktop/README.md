@@ -67,3 +67,22 @@ M7 does not:
 All generated install actions are dry-run previews with `dryRun=true` and `requiresUserConfirmation=true`.
 
 The Confirm Install button is preview-only. Clicking it only shows that real execution is not enabled in M7. A real Desktop Local Executor will be introduced in a later milestone after explicit confirmation, rollback, hash verification, and local execution design are complete.
+
+## Environment Preview
+
+M8 adds a `Generate Environment Preview` control.
+
+The current environment report is mock data generated in the Desktop UI. It is used to preview the shape of a future read-only local environment report.
+
+The current Environment Preview:
+
+- does not read a real Minecraft path;
+- does not check a real Java installation;
+- does not scan the disk;
+- does not call a Tauri command;
+- does not upload local environment information;
+- keeps `localOnly=true`;
+- keeps `uploadAllowed=false`;
+- redacts path-like values in the shared helper contract.
+
+Future real read-only probing will require explicit user consent and will remain a Desktop Local Executor responsibility.

@@ -83,3 +83,11 @@ The Desktop Shell can:
 M7 still does not enable real local execution. The Confirm Install control is preview-only and does not call a Tauri command, write files, download resources, install resources, create instances, or launch Minecraft.
 
 The Tauri shell is a minimal native placeholder. Real Desktop Local Executor commands remain reserved for a later milestone after dry-run review, explicit user confirmation, path selection, hash verification, rollback, and failure handling are complete.
+
+## M8 Environment Preview Status
+
+M8 adds an Environment Preview to the Desktop Shell.
+
+The preview can show a mock environment report, readiness warnings, blockers, and privacy flags. It is used to shape the future read-only probe contract.
+
+M8 still does not run a real local probe. It does not read local paths, check Java, scan disks, upload environment information, write files, download resources, install resources, or launch Minecraft.

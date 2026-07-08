@@ -9,7 +9,8 @@ const schemaFiles = {
   "resource-plan.schema.json": path.join(root, "packages/schemas/resource-plan.schema.json"),
   "plan-response.schema.json": path.join(root, "packages/schemas/plan-response.schema.json"),
   "install-action.schema.json": path.join(root, "packages/schemas/install-action.schema.json"),
-  "instance-lock.schema.json": path.join(root, "packages/schemas/instance-lock.schema.json")
+  "instance-lock.schema.json": path.join(root, "packages/schemas/instance-lock.schema.json"),
+  "environment-report.schema.json": path.join(root, "packages/schemas/environment-report.schema.json")
 };
 
 const exampleSets = [
@@ -38,6 +39,11 @@ const exampleSets = [
     schema: "instance-lock.schema.json",
     directory: path.join(root, "examples/locks"),
     suffix: ".instance-lock.json"
+  },
+  {
+    schema: "environment-report.schema.json",
+    directory: path.join(root, "examples/environment-reports"),
+    suffix: ".environment-report.json"
   }
 ];
 

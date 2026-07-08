@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alias": "./src/alias.ts",
+    "./environment": "./src/environment.ts",
     "./executor": "./src/executor.ts",
     "./installActions": "./src/installActions.ts",
     "./plan": "./src/plan.ts",

@@ -12,6 +12,8 @@ export function SafetyNotice() {
     "mods/resourcepacks/shaderpacks are not written.",
     "Minecraft is not launched.",
     "Confirm Install is preview-only.",
+    "Environment Preview is mock data and is not uploaded.",
+    "No real Java check, disk scan, or Minecraft path read is performed.",
   ];
 
   return (

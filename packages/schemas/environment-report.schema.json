@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mcagentlauncher.dev/schemas/environment-report.schema.json",
+  "title": "MCagentlauncher Environment Report",
+  "description": "Dry-run local environment report shape for Desktop preview. M8 examples are mock data and do not represent real system probing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "createdAt",
+    "source",
+    "platform",
+    "runtime",
+    "java",
+    "minecraft",
+    "disk",
+    "memory",
+    "network",
+    "permissions",
+    "readiness",
+    "privacy"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "reportId": {
+      "type": "string",
+      "pattern": "^env_[a-z0-9][a-z0-9_-]{5,63}$"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "generatedBy",
+        "uploaded"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "mock",
+            "read_only_probe"
+          ]
+        },
+        "generatedBy": {
+          "type": "string",
+          "const": "desktop"
+        },
+        "uploaded": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "os",
+        "arch",
+        "family"
+      ],
+      "properties": {
+        "os": {
+          "type": "string",
+          "enum": [
+            "windows",
+            "macos",
+            "linux",
+            "unknown"
+          ]
+        },
+        "arch": {
+          "type": "string",
+          "enum": [
+            "x64",
+            "arm64",
+            "unknown"
+          ]
+        },
+        "family": {
+          "type": "string",
+          "enum": [
+            "desktop",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "app",
+        "tauriAvailable",
+        "nodeAvailable"
+      ],
+      "properties": {
+        "app": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "tauriAvailable": {
+          "type": "boolean"
+        },
+        "nodeAvailable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "java": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "version",
+        "path",
+        "checkedBy"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "not_checked",
+            "detected",
+            "missing"
+          ]
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 240
+        },
+        "checkedBy": {
+          "type": "string",
+          "enum": [
+            "mock",
+            "future_probe"
+          ]
+        }
+      }
+    },
+    "minecraft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directoryStatus",
+        "candidateDirectories",
+        "containsSensitivePath"
+      ],
+      "properties": {
+        "directoryStatus": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "candidate_only",
+            "missing",
+            "unknown"
+          ]
+        },
+        "candidateDirectories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        },
+        "containsSensitivePath": {
+          "type": "boolean"
+        }
+      }
+    },
+    "disk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "freeSpaceGb"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "estimated",
+            "unknown"
+          ]
+        },
+        "freeSpaceGb": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "totalGb"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "estimated",
+            "unknown"
+          ]
+        },
+        "totalGb": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checked"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "offline",
+            "online",
+            "unknown"
+          ]
+        },
+        "checked": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canWriteInstanceDirectory",
+        "canLaunchProcess",
+        "canDownload"
+      ],
+      "properties": {
+        "canWriteInstanceDirectory": {
+          "type": "boolean",
+          "const": false
+        },
+        "canLaunchProcess": {
+          "type": "boolean",
+          "const": false
+        },
+        "canDownload": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "warnings",
+        "blockers"
+      ],
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "not_ready",
+            "preview_ready",
+            "ready_later"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "localOnly",
+        "uploadAllowed",
+        "containsUserPath",
+        "redacted"
+      ],
+      "properties": {
+        "localOnly": {
+          "type": "boolean",
+          "const": true
+        },
+        "uploadAllowed": {
+          "type": "boolean",
+          "const": false
+        },
+        "containsUserPath": {
+          "type": "boolean",
+          "const": false
+        },
+        "redacted": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]{3,80}$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}
