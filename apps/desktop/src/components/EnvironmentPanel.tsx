@@ -36,10 +36,10 @@ export function EnvironmentPanel({
         </button>
       </div>
       <p className="notice-line">
-        Mock/read-only preview only. Run Read-only Probe requires explicit consent first. No real Minecraft directory is read, no Java command is run, no disk scan is performed, no environment report is uploaded, and no process is launched.
+        Mock/read-only preview only. Run Read-only Probe requires explicit consent first. M8.3 may read only OS, architecture, app version, and Tauri runtime availability.
       </p>
       <p className="notice-line">
-        Current probe policy: M8.2 allows mock_environment_report and consented_read_only_preview only. Real Java, path, disk, network, upload, persistence, and execution capabilities are disabled by policy.
+        Current probe policy: M8.3 Safe Platform Probe. Java, paths, disk, network, upload, persistence, file write, download, install, and process launch remain disabled by policy.
       </p>
       {summary ? <p className="summary-line">{summary}</p> : null}
       {readinessLevel ? (

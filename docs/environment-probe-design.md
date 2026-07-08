@@ -106,3 +106,30 @@ Current M8.2 policy allows only:
 Current M8.2 policy forbids real platform probes, Java probes, network probes, environment report upload, persistence, file writes, process launch, and resource download.
 
 Any future real probe must pass the permission policy gate before it can be implemented.
+
+## M8.3 Safe Platform Probe
+
+M8.3 enables the first minimal real read-only probe after explicit user consent.
+
+Allowed data is limited to:
+
+- OS/platform family;
+- architecture hint;
+- Desktop app version;
+- Tauri runtime availability as a boolean.
+
+The probe still must not:
+
+- read Java version or Java paths;
+- read Minecraft paths or scan `.minecraft`;
+- read home directories, AppData, PATH, or other sensitive environment values;
+- scan disk or memory;
+- make network requests;
+- upload reports;
+- write files;
+- persist reports to browser storage;
+- download, install, or launch anything.
+
+The report remains in React state only. `probe.commandsExecuted=[]`, `probe.filesWritten=0`, `probe.networkRequests=0`, `privacy.localOnly=true`, and `privacy.uploadAllowed=false`.
+
+M8.3 is documented by [ADR 0002: Safe Platform Probe](./adr/0002-safe-platform-probe.md). Future Level 3 or Level 4 probes require separate ADRs and must not be added by expanding this capability silently.

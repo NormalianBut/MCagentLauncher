@@ -10,6 +10,7 @@ import {
 } from "./probePolicy.ts";
 
 const policy = getProbePolicyForMilestone("M8.2");
+const m83Policy = getProbePolicyForMilestone("M8.3");
 
 test("M8.2 policy allows only mock and consented read-only preview", () => {
   assert.equal(isCapabilityAllowed("mock_environment_report", policy).allowed, true);
@@ -29,6 +30,37 @@ test("M8.2 policy forbids real probe and execution capabilities", () => {
 
   for (const capability of forbidden) {
     assert.equal(isCapabilityAllowed(capability, policy).allowed, false, capability);
+  }
+});
+
+test("M8.3 policy allows only safe platform metadata capabilities", () => {
+  const allowed: ProbeCapabilityId[] = [
+    "mock_environment_report",
+    "consented_read_only_preview",
+    "read_os_arch",
+    "read_app_version",
+    "check_tauri_runtime",
+  ];
+
+  for (const capability of allowed) {
+    assert.equal(isCapabilityAllowed(capability, m83Policy).allowed, true, capability);
+  }
+});
+
+test("M8.3 policy still forbids directory, runtime binary, network, upload, and execution capabilities", () => {
+  const forbidden: ProbeCapabilityId[] = [
+    "user_selected_directory_exists",
+    "user_selected_directory_disk_space",
+    "java_version_probe",
+    "network_connectivity_probe",
+    "environment_report_upload",
+    "file_write",
+    "process_launch",
+    "resource_download",
+  ];
+
+  for (const capability of forbidden) {
+    assert.equal(isCapabilityAllowed(capability, m83Policy).allowed, false, capability);
   }
 });
 

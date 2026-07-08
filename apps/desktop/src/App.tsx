@@ -10,15 +10,15 @@ import { PromptInput } from "./components/PromptInput";
 import { SafetyNotice } from "./components/SafetyNotice";
 import {
   createMockEnvironmentReport,
-  createReadOnlyProbeReport,
   summarizeEnvironmentReport,
-  validateReadOnlyProbeSafety,
+  validateSafePlatformProbeSafety,
   type EnvironmentBlocker,
   type EnvironmentReport,
   type EnvironmentWarning,
 } from "../../../packages/shared-types/src/environment";
 import { buildDesktopInstallPreview } from "./lib/installPreview";
 import { explainPlan, generatePlan, mcagentBaseUrl, parseIntent } from "./lib/mcagentClient";
+import { runSafePlatformProbe } from "./lib/safePlatformProbe";
 import type { JsonValue, PlanDiagnostics } from "./lib/types";
 
 const defaultPrompt = "我想玩 1.20.1，低配光影生存，要优化、小地图、苹果皮，别太复杂。";
@@ -112,41 +112,24 @@ export default function App() {
 
   function cancelReadOnlyProbe() {
     setShowProbeConsent(false);
-    setConfirmationMessage("Read-only probe cancelled. No report was generated.");
+    setConfirmationMessage("Safe platform probe cancelled. No report was generated.");
   }
 
   function confirmReadOnlyProbe() {
-    const report = createReadOnlyProbeReport({
-      consent: {
-        required: true,
-        granted: true,
-        grantedAt: "2026-07-08T00:00:00.000Z",
-        statementVersion: "0.1.0",
-      },
-      reportId: "env_desktop_read_only_probe",
-      platform: {
-        os: "unknown",
-        arch: "unknown",
-      },
-      runtime: {
-        app: "MCagentlauncher Desktop Shell",
-        tauriAvailable: false,
-        appVersion: "0.1.0",
-      },
-    });
-    const safety = validateReadOnlyProbeSafety(report);
+    const report = runSafePlatformProbe(true);
+    const safety = validateSafePlatformProbeSafety(report);
 
     setShowProbeConsent(false);
     setEnvironmentState(report);
     setConfirmationMessage(
       safety.accepted
-        ? "Read-only probe preview generated locally. No upload, persistence, command, file write, download, install, or launch occurred."
-        : "Read-only probe preview was generated, but safety validation reported blockers.",
+        ? "Safe platform probe generated locally. No upload, persistence, command, file write, download, install, or launch occurred."
+        : "Safe platform probe was generated, but safety validation reported blockers.",
     );
   }
 
   function confirmPreviewOnly() {
-    setConfirmationMessage("当前阶段仅支持 dry-run preview，真实执行器尚未启用。");
+    setConfirmationMessage("Current milestone supports dry-run preview only. Real execution is not enabled.");
   }
 
   function setEnvironmentState(report: EnvironmentReport) {

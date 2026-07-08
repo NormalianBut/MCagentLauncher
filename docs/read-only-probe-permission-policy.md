@@ -1,6 +1,6 @@
 # Read-only Probe Permission Policy
 
-This policy defines permission levels for MCagentlauncher Desktop environment probing. M8.2 is a policy-only milestone and does not implement real system probing.
+This policy defines permission levels for MCagentlauncher Desktop environment probing. M8.3 enables only a minimal safe platform metadata probe after explicit user consent.
 
 ## Level 0: Mock Only
 
@@ -28,12 +28,12 @@ This policy defines permission levels for MCagentlauncher Desktop environment pr
 
 ## Level 2: Safe Platform Probe
 
-- Future use: possible M8.3.
+- Current use: M8.3.
 - requiredConsent: true
 - allowedData: OS, architecture, app version, Tauri runtime availability.
 - forbiddenData: user paths, home directory, Minecraft directory, Java path.
-- allowedOperations: fixed platform metadata read through approved Desktop API.
-- forbiddenOperations: shell execution, network access, path scanning.
+- allowedOperations: fixed browser/Tauri-safe platform metadata read.
+- forbiddenOperations: shell execution, process launch, network access, path scanning, storage persistence, file writes.
 - uploadAllowed: false
 - persistenceAllowed: false
 - redactionRequired: true
@@ -82,3 +82,40 @@ M8.2 allows only:
 - `consented_read_only_preview`
 
 M8.2 forbids real Java probing, path scanning, upload, persistence, file writes, process launch, and resource download.
+
+## M8.3 Effective Policy
+
+M8.3 allows:
+
+- `mock_environment_report`
+- `consented_read_only_preview`
+- `read_os_arch`
+- `read_app_version`
+- `check_tauri_runtime`
+
+M8.3 still forbids:
+
+- `user_selected_directory_exists`
+- `user_selected_directory_disk_space`
+- `java_version_probe`
+- `network_connectivity_probe`
+- `environment_report_upload`
+- `file_write`
+- `process_launch`
+- `resource_download`
+
+Safe platform probe reports must keep:
+
+- `source.mode=read_only_probe`
+- `source.consentGranted=true`
+- `probe.readOnly=true`
+- `probe.commandsExecuted=[]`
+- `probe.filesWritten=0`
+- `probe.networkRequests=0`
+- `network.checked=false`
+- `privacy.localOnly=true`
+- `privacy.uploadAllowed=false`
+- `privacy.containsUserPath=false`
+- `privacy.redacted=true`
+
+M8.3 does not authorize Java probing, directory probing, disk probing, network probing, report upload, persistence, download, install, or launch behavior.

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "0.1.0",
+  "reportId": "env_safe_platform_probe",
+  "createdAt": "2026-07-08T00:00:00.000Z",
+  "source": {
+    "mode": "read_only_probe",
+    "generatedBy": "desktop",
+    "uploaded": false,
+    "consentRequired": true,
+    "consentGranted": true
+  },
+  "probe": {
+    "startedAt": "2026-07-08T00:00:00.000Z",
+    "completedAt": "2026-07-08T00:00:00.000Z",
+    "probeVersion": "0.1.0",
+    "readOnly": true,
+    "commandsExecuted": [],
+    "filesWritten": 0,
+    "networkRequests": 0
+  },
+  "platform": {
+    "os": "unknown",
+    "arch": "unknown",
+    "family": "desktop"
+  },
+  "runtime": {
+    "app": "MCagentlauncher Desktop Shell",
+    "tauriAvailable": false,
+    "nodeAvailable": null,
+    "appVersion": "0.1.0"
+  },
+  "java": {
+    "status": "not_checked",
+    "version": null,
+    "path": null,
+    "checkedBy": "read_only_probe",
+    "detectionMethod": "not_checked"
+  },
+  "minecraft": {
+    "directoryStatus": "not_checked",
+    "candidateDirectories": [
+      "<minecraft-directory-not-checked>"
+    ],
+    "containsSensitivePath": false,
+    "scannedRecursively": false
+  },
+  "disk": {
+    "status": "not_checked",
+    "freeSpaceGb": null,
+    "checkedPath": null
+  },
+  "memory": {
+    "status": "not_checked",
+    "totalGb": null
+  },
+  "network": {
+    "status": "not_checked",
+    "checked": false,
+    "requestsMade": 0
+  },
+  "permissions": {
+    "canWriteInstanceDirectory": false,
+    "canLaunchProcess": false,
+    "canDownload": false,
+    "readOnlyProbeAllowed": true
+  },
+  "readiness": {
+    "level": "ready_later",
+    "warnings": [
+      {
+        "code": "SAFE_PLATFORM_PROBE",
+        "message": "M8.3 collected only low-risk platform metadata after user consent."
+      },
+      {
+        "code": "NO_LOCAL_ENVIRONMENT_SCAN",
+        "message": "No directory, runtime binary, disk, network, download, install, launch, or upload check was performed."
+      }
+    ],
+    "blockers": []
+  },
+  "privacy": {
+    "localOnly": true,
+    "uploadAllowed": false,
+    "containsUserPath": false,
+    "redacted": true
+  }
+}

@@ -6,9 +6,11 @@ import { resolve } from "node:path";
 import {
   createMockEnvironmentReport,
   createReadOnlyProbeReport,
+  createSafePlatformProbeReport,
   redactEnvironmentReport,
   summarizeEnvironmentReport,
   validateReadOnlyProbeSafety,
+  validateSafePlatformProbeSafety,
   type EnvironmentReport,
 } from "./environment.ts";
 
@@ -227,6 +229,98 @@ test("read-only probe example passes schema validation", () => {
   );
 
   assert.deepEqual(validateSchema(environmentSchema, example, environmentSchema), []);
+});
+
+test("safe platform probe report can be generated after consent", () => {
+  const report = createSafePlatformProbeReport({
+    consent: {
+      required: true,
+      granted: true,
+      grantedAt: "2026-07-08T00:00:00.000Z",
+      statementVersion: "0.1.0",
+    },
+    now: "2026-07-08T00:00:00.000Z",
+    reportId: "env_safe_platform_test",
+    os: "windows",
+    arch: "x64",
+    appVersion: "0.1.0",
+    tauriAvailable: false,
+    nodeAvailable: null,
+  });
+
+  assert.equal(report.source.mode, "read_only_probe");
+  assert.equal(report.source.consentGranted, true);
+  assert.equal(report.platform.os, "windows");
+  assert.equal(report.platform.arch, "x64");
+  assert.equal(report.runtime.appVersion, "0.1.0");
+  assert.equal(report.runtime.tauriAvailable, false);
+  assert.deepEqual(report.probe.commandsExecuted, []);
+  assert.equal(validateSafePlatformProbeSafety(report).accepted, true);
+  assert.deepEqual(validateSchema(environmentSchema, report, environmentSchema), []);
+});
+
+test("safe platform probe requires consent", () => {
+  const report = createSafePlatformProbeReport({
+    consent: {
+      required: true,
+      granted: false,
+      grantedAt: null,
+      statementVersion: "0.1.0",
+    },
+    os: "unknown",
+    arch: "unknown",
+    appVersion: "0.1.0",
+    tauriAvailable: false,
+    nodeAvailable: null,
+  });
+
+  const safety = validateSafePlatformProbeSafety(report);
+
+  assert.equal(report.source.consentGranted, false);
+  assert.equal(report.permissions.readOnlyProbeAllowed, false);
+  assert.equal(safety.accepted, false);
+  assert.ok(safety.errors.some((error) => error.code === "CONSENT_REQUIRED"));
+});
+
+test("validateSafePlatformProbeSafety rejects unsafe reports", () => {
+  const safeReport = createSafePlatformProbeReport({
+    consent: {
+      required: true,
+      granted: true,
+      grantedAt: "2026-07-08T00:00:00.000Z",
+      statementVersion: "0.1.0",
+    },
+    os: "linux",
+    arch: "arm64",
+    appVersion: "0.1.0",
+    tauriAvailable: true,
+    nodeAvailable: null,
+  });
+
+  const unsafeReports: EnvironmentReport[] = [
+    { ...safeReport, probe: { ...safeReport.probe, commandsExecuted: ["consented_read_only_probe_preview"] } },
+    { ...safeReport, java: { ...safeReport.java, status: "detected" } },
+    { ...safeReport, minecraft: { ...safeReport.minecraft, directoryStatus: "candidate_only" } },
+    { ...safeReport, disk: { ...safeReport.disk, status: "checked" } },
+    { ...safeReport, network: { ...safeReport.network, checked: true as false } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canDownload: true as false } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canLaunchProcess: true as false } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canWriteInstanceDirectory: true as false } },
+    { ...safeReport, privacy: { ...safeReport.privacy, containsUserPath: true } },
+  ];
+
+  for (const report of unsafeReports) {
+    assert.equal(validateSafePlatformProbeSafety(report).accepted, false);
+  }
+});
+
+test("safe platform probe example passes schema validation and safety validation", () => {
+  const example = JSON.parse(
+    readFileSync(resolve("../../examples/environment-reports/safe-platform-probe.environment-report.json"), "utf8"),
+  );
+
+  assert.deepEqual(validateSchema(environmentSchema, example, environmentSchema), []);
+  assert.equal(validateSafePlatformProbeSafety(example).accepted, true);
 });
 
 test("environment helpers do not perform file or network operations", () => {

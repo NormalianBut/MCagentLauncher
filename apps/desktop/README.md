@@ -119,3 +119,26 @@ Current policy allows only:
 Current policy disables real Java probes, path probes, disk scans, network probes, uploads, persistence, file writes, process launch, and resource downloads.
 
 Future real probes must pass `packages/shared-types/src/probePolicy.ts` and the ADR/permission policy before implementation.
+
+## M8.3 Safe Platform Probe
+
+M8.3 upgrades `Run Read-only Probe` from a pure preview to a minimal consented safe platform probe.
+
+After the user confirms the modal, Desktop may read only:
+
+- OS/platform family from browser-safe platform metadata;
+- architecture hint from browser-safe platform metadata;
+- app version from `VITE_APP_VERSION` or the local fallback;
+- Tauri runtime availability as a boolean.
+
+The generated report stays in React state only and keeps:
+
+- `source.mode=read_only_probe`
+- `source.consentGranted=true`
+- `probe.commandsExecuted=[]`
+- `probe.filesWritten=0`
+- `probe.networkRequests=0`
+- `privacy.localOnly=true`
+- `privacy.uploadAllowed=false`
+
+M8.3 still does not read Java, Minecraft paths, home directories, AppData, PATH, disk state, memory state, network state, browser storage, or filesystem data. It does not upload reports, write files, download resources, install resources, or launch processes.

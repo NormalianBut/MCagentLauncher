@@ -53,6 +53,26 @@ export interface EnvironmentProbeResult {
   memory?: Partial<EnvironmentReport["memory"]>;
 }
 
+export interface SafePlatformProbeInput {
+  consent: EnvironmentProbeConsent;
+  now?: string;
+  reportId?: string;
+  probeVersion?: string;
+  os: EnvironmentReport["platform"]["os"];
+  arch: EnvironmentReport["platform"]["arch"];
+  family?: EnvironmentReport["platform"]["family"];
+  appVersion: string | null;
+  tauriAvailable: boolean;
+  nodeAvailable: boolean | null;
+}
+
+export interface SafePlatformProbeResult {
+  consent: EnvironmentProbeConsent;
+  diagnostics: ReadOnlyProbeDiagnostics;
+  platform: EnvironmentReport["platform"];
+  runtime: EnvironmentReport["runtime"];
+}
+
 export interface ReadOnlyProbeSafetyResult {
   accepted: boolean;
   warnings: EnvironmentWarning[];
@@ -297,6 +317,140 @@ export function createReadOnlyProbeReport(input: EnvironmentProbeOptions): Envir
   }));
 }
 
+export function createSafePlatformProbeReport(input: SafePlatformProbeInput): EnvironmentReport {
+  const now = input.now ?? "2026-07-08T00:00:00.000Z";
+  const result: SafePlatformProbeResult = {
+    consent: input.consent,
+    diagnostics: {
+      readOnly: true,
+      commandsExecuted: [],
+      filesWritten: 0,
+      networkRequests: 0,
+    },
+    platform: {
+      os: input.os,
+      arch: input.arch,
+      family: input.family ?? "desktop",
+    },
+    runtime: {
+      app: "MCagentlauncher Desktop Shell",
+      tauriAvailable: input.tauriAvailable,
+      nodeAvailable: input.nodeAvailable,
+      appVersion: input.appVersion,
+    },
+  };
+  const base = createMockEnvironmentReport({
+    now,
+    reportId: input.reportId ?? "env_safe_platform_probe",
+  });
+
+  return mergeSafePlatformProbeIntoEnvironmentReport(base, result, {
+    now,
+    probeVersion: input.probeVersion ?? schemaVersion,
+  });
+}
+
+export function mergeSafePlatformProbeIntoEnvironmentReport(
+  baseReport: EnvironmentReport,
+  result: SafePlatformProbeResult,
+  options: { now?: string; probeVersion?: string } = {},
+): EnvironmentReport {
+  const now = options.now ?? baseReport.createdAt;
+  const consentGranted = result.consent.granted === true;
+  const report: EnvironmentReport = {
+    ...baseReport,
+    source: {
+      mode: "read_only_probe",
+      generatedBy: "desktop",
+      uploaded: false,
+      consentRequired: result.consent.required,
+      consentGranted,
+    },
+    probe: {
+      startedAt: consentGranted ? result.consent.grantedAt ?? now : null,
+      completedAt: consentGranted ? now : null,
+      probeVersion: options.probeVersion ?? schemaVersion,
+      readOnly: true,
+      commandsExecuted: [],
+      filesWritten: 0,
+      networkRequests: 0,
+    },
+    platform: result.platform,
+    runtime: result.runtime,
+    java: {
+      status: "not_checked",
+      version: null,
+      path: null,
+      checkedBy: "read_only_probe",
+      detectionMethod: "not_checked",
+    },
+    minecraft: {
+      directoryStatus: "not_checked",
+      candidateDirectories: ["<minecraft-directory-not-checked>"],
+      containsSensitivePath: false,
+      scannedRecursively: false,
+    },
+    disk: {
+      status: "not_checked",
+      freeSpaceGb: null,
+      checkedPath: null,
+    },
+    memory: {
+      status: "not_checked",
+      totalGb: null,
+    },
+    network: {
+      status: "not_checked",
+      checked: false,
+      requestsMade: 0,
+    },
+    permissions: {
+      canWriteInstanceDirectory: false,
+      canLaunchProcess: false,
+      canDownload: false,
+      readOnlyProbeAllowed: consentGranted,
+    },
+    readiness: consentGranted
+      ? {
+          level: "ready_later",
+          warnings: [
+            {
+              code: "SAFE_PLATFORM_PROBE",
+              message: "M8.3 collected only low-risk platform metadata after user consent.",
+            },
+            {
+              code: "NO_LOCAL_ENVIRONMENT_SCAN",
+              message: "No directory, runtime binary, disk, network, download, install, launch, or upload check was performed.",
+            },
+          ],
+          blockers: [],
+        }
+      : {
+          level: "not_ready",
+          warnings: [
+            {
+              code: "CONSENT_NOT_GRANTED",
+              message: "Safe platform probe was not run because user consent was not granted.",
+            },
+          ],
+          blockers: [
+            {
+              code: "USER_CONSENT_REQUIRED",
+              message: "Explicit user consent is required before safe platform metadata can be collected.",
+            },
+          ],
+        },
+    privacy: {
+      localOnly: true,
+      uploadAllowed: false,
+      containsUserPath: false,
+      redacted: true,
+    },
+  };
+
+  return redactEnvironmentReport(report);
+}
+
 export function mergeProbeResultIntoEnvironmentReport(
   baseReport: EnvironmentReport,
   probeResult: EnvironmentProbeResult,
@@ -424,6 +578,43 @@ export function validateReadOnlyProbeSafety(report: EnvironmentReport): ReadOnly
   }
   if (report.source.mode === "read_only_probe" && report.source.consentGranted !== true) {
     warnings.push({ code: "CONSENT_NOT_GRANTED", message: "Read-only probe report was not consent-granted." });
+  }
+
+  return {
+    accepted: errors.length === 0,
+    warnings,
+    errors,
+  };
+}
+
+export function validateSafePlatformProbeSafety(report: EnvironmentReport): ReadOnlyProbeSafetyResult {
+  const result = validateReadOnlyProbeSafety(report);
+  const errors = [...result.errors];
+  const warnings = [...result.warnings];
+
+  if (report.source.mode !== "read_only_probe") {
+    errors.push({ code: "READ_ONLY_PROBE_MODE_REQUIRED", message: "Safe platform probe must use read_only_probe mode." });
+  }
+  if (report.source.consentGranted !== true || report.source.consentRequired !== true) {
+    errors.push({ code: "CONSENT_REQUIRED", message: "Safe platform probe requires explicit granted consent." });
+  }
+  if (report.probe.commandsExecuted.length !== 0) {
+    errors.push({ code: "COMMANDS_BLOCKED", message: "Safe platform probe must not execute or record commands." });
+  }
+  if (report.java.status !== "not_checked" || report.java.version !== null || report.java.path !== null) {
+    errors.push({ code: "JAVA_CHECK_BLOCKED", message: "Safe platform probe must not detect Java." });
+  }
+  if (report.minecraft.directoryStatus !== "not_checked" || report.minecraft.candidateDirectories.length !== 1) {
+    errors.push({ code: "MINECRAFT_PATH_CHECK_BLOCKED", message: "Safe platform probe must not inspect Minecraft directories." });
+  }
+  if (report.disk.status !== "not_checked" || report.disk.freeSpaceGb !== null || report.disk.checkedPath !== null) {
+    errors.push({ code: "DISK_CHECK_BLOCKED", message: "Safe platform probe must not check disk state." });
+  }
+  if (report.network.checked !== false || report.network.status !== "not_checked") {
+    errors.push({ code: "NETWORK_CHECK_BLOCKED", message: "Safe platform probe must not check network state." });
+  }
+  if (report.privacy.containsUserPath !== false || report.privacy.redacted !== true) {
+    errors.push({ code: "PRIVACY_REDACTION_REQUIRED", message: "Safe platform probe must not contain user paths and must remain redacted." });
   }
 
   return {
