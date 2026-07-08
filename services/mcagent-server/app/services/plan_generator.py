@@ -135,7 +135,7 @@ def _resources_for_features(features: list[str], minecraft_version: str) -> list
 def _resource_candidate(resource: dict, minecraft_version: str) -> dict:
     slug = resource["slug"].replace("-", "_")
     return {
-        "resourceId": f"res_{slug}",
+        "resourceId": f"res_{slug}_mock",
         "type": "mod",
         "source": "community-rule",
         "project": {
@@ -166,4 +166,3 @@ def _resource_candidate(resource: dict, minecraft_version: str) -> dict:
 def _stable_id(value: str) -> str:
     digest = hashlib.sha1(value.encode("utf-8")).hexdigest()[:12]
     return f"mock_{digest}"
-

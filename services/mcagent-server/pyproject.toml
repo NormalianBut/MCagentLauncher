@@ -5,6 +5,7 @@ description = "Rule-based MCAgent mock server for MCagentlauncher v0.1."
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115.0",
+  "jsonschema>=4.22.0",
   "uvicorn[standard]>=0.30.0"
 ]
 
@@ -17,4 +18,3 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-

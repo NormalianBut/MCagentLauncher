@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+from app.schemas.validation import validate_response
 from app.services.intent_parser import parse_intent
 
 router = APIRouter()
@@ -12,5 +13,4 @@ class ParseIntentRequest(BaseModel):
 
 @router.post("/parse")
 def parse(request: ParseIntentRequest) -> dict:
-    return parse_intent(request.text)
-
+    return validate_response("intent", parse_intent(request.text))

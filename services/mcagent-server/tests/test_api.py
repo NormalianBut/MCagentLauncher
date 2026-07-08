@@ -1,6 +1,9 @@
 from fastapi.testclient import TestClient
 
+import app.routers.intent as intent_router
+import app.routers.plan as plan_router
 from app.main import app
+from app.schemas.validation import validate_response
 
 client = TestClient(app)
 
@@ -29,6 +32,7 @@ def test_parse_low_spec_shader_survival() -> None:
     assert "shader" in features
     assert "survival" in features
     assert "minimap" in features
+    assert validate_response("intent", intent) == intent
 
 
 def test_appleskin_enters_required_features() -> None:
@@ -52,6 +56,7 @@ def test_plan_contains_sodium_iris_and_appleskin() -> None:
     assert {"Sodium", "Iris Shaders", "AppleSkin"}.issubset(names)
     assert plan["userConfirmation"] == {"required": True, "confirmed": False}
     assert plan["ruleResults"]["warnings"][0]["code"] == "MOCK_PLAN_NOT_RESOLVED"
+    assert validate_response("resource-plan", plan) == plan
 
 
 def test_explain_returns_chinese_summary() -> None:
@@ -74,3 +79,38 @@ def test_no_commercial_api_or_download_behavior() -> None:
     assert "gemini" not in str(plan).lower()
     assert all(item["verification"]["hashKnown"] is False for item in plan["resources"])
 
+
+def test_intent_schema_validation_failure_is_explicit(monkeypatch) -> None:
+    def invalid_intent(_: str) -> dict:
+        return {
+            "schemaVersion": "0.1.0",
+            "intentId": "intent_invalid_mock",
+        }
+
+    monkeypatch.setattr(intent_router, "parse_intent", invalid_intent)
+
+    response = client.post("/v1/intent/parse", json={"text": "低配生存"})
+
+    assert response.status_code == 500
+    body = response.json()
+    assert body["detail"]["error"] == "schema_validation_failed"
+    assert body["detail"]["schema"] == "intent.schema.json"
+    assert body["detail"]["details"]
+
+
+def test_plan_schema_validation_failure_is_explicit(monkeypatch) -> None:
+    def invalid_plan(_: dict) -> dict:
+        return {
+            "schemaVersion": "0.1.0",
+            "planId": "plan_invalid_mock",
+        }
+
+    monkeypatch.setattr(plan_router, "generate_plan", invalid_plan)
+
+    response = client.post("/v1/resources/plan", json={"schemaVersion": "0.1.0"})
+
+    assert response.status_code == 500
+    body = response.json()
+    assert body["detail"]["error"] == "schema_validation_failed"
+    assert body["detail"]["schema"] == "resource-plan.schema.json"
+    assert body["detail"]["details"]
