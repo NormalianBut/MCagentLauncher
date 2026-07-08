@@ -5,8 +5,10 @@ import { resolve } from "node:path";
 
 import {
   createMockEnvironmentReport,
+  createReadOnlyProbeReport,
   redactEnvironmentReport,
   summarizeEnvironmentReport,
+  validateReadOnlyProbeSafety,
   type EnvironmentReport,
 } from "./environment.ts";
 
@@ -65,6 +67,7 @@ test("redactEnvironmentReport removes path-like values and keeps upload disabled
       version: "21",
       path: "C:\\Users\\Example\\.jdks\\java.exe",
       checkedBy: "future_probe",
+      detectionMethod: "manual_user_input",
     },
     minecraft: {
       directoryStatus: "candidate_only",
@@ -85,8 +88,8 @@ test("redactEnvironmentReport removes path-like values and keeps upload disabled
   const redacted = redactEnvironmentReport(unsafeReport);
   const serialized = JSON.stringify(redacted).toLowerCase();
 
-  assert.equal(redacted.java.path, "<redacted-path>");
-  assert.deepEqual(redacted.minecraft.candidateDirectories, ["<redacted-path>", "<redacted-path>"]);
+  assert.equal(redacted.java.path, "<redacted-value>");
+  assert.deepEqual(redacted.minecraft.candidateDirectories, ["<redacted-value>", "<redacted-value>"]);
   assert.equal(redacted.minecraft.containsSensitivePath, false);
   assert.equal(redacted.privacy.containsUserPath, false);
   assert.equal(redacted.privacy.redacted, true);
@@ -101,12 +104,126 @@ test("summarizeEnvironmentReport returns user-readable summary", () => {
 
   assert.match(summary, /Environment report/);
   assert.match(summary, /local-only/);
-  assert.match(summary, /No download, install, launch, shell command, disk scan, or upload was performed/);
+  assert.match(summary, /No download, install, launch, shell command, disk scan, upload, or persistence was performed/);
 });
 
 test("environment report example passes schema validation", () => {
   const example = JSON.parse(
     readFileSync(resolve("../../examples/environment-reports/mock-windows-preview.environment-report.json"), "utf8"),
+  );
+
+  assert.deepEqual(validateSchema(environmentSchema, example, environmentSchema), []);
+});
+
+test("read-only probe report can be generated after consent", () => {
+  const report = createReadOnlyProbeReport({
+    consent: {
+      required: true,
+      granted: true,
+      grantedAt: "2026-07-08T00:00:00.000Z",
+      statementVersion: "0.1.0",
+    },
+    reportId: "env_read_only_test_report",
+  });
+
+  assert.equal(report.source.mode, "read_only_probe");
+  assert.equal(report.source.consentGranted, true);
+  assert.equal(report.privacy.localOnly, true);
+  assert.equal(report.privacy.uploadAllowed, false);
+  assert.equal(report.probe.readOnly, true);
+  assert.equal(report.probe.filesWritten, 0);
+  assert.equal(report.probe.networkRequests, 0);
+  assert.equal(report.network.requestsMade, 0);
+  assert.equal(report.permissions.canDownload, false);
+  assert.equal(report.permissions.canLaunchProcess, false);
+  assert.equal(report.permissions.canWriteInstanceDirectory, false);
+  assert.deepEqual(validateSchema(environmentSchema, report, environmentSchema), []);
+});
+
+test("consent false blocks read-only probe report readiness", () => {
+  const report = createReadOnlyProbeReport({
+    consent: {
+      required: true,
+      granted: false,
+      grantedAt: null,
+      statementVersion: "0.1.0",
+    },
+  });
+
+  assert.equal(report.source.mode, "read_only_probe");
+  assert.equal(report.source.consentGranted, false);
+  assert.equal(report.permissions.readOnlyProbeAllowed, false);
+  assert.equal(report.readiness.level, "not_ready");
+  assert.ok(report.readiness.blockers.some((blocker) => blocker.code === "USER_CONSENT_REQUIRED"));
+});
+
+test("redaction removes Unix home path and email-like values", () => {
+  const unsafeReport: EnvironmentReport = {
+    ...createMockEnvironmentReport(),
+    java: {
+      status: "error",
+      version: null,
+      path: "/home/example/.jdks/java",
+      checkedBy: "future_probe",
+      detectionMethod: "manual_user_input",
+    },
+    disk: {
+      status: "checked",
+      freeSpaceGb: 120,
+      checkedPath: "owner@example.test",
+    },
+  };
+
+  const redacted = redactEnvironmentReport(unsafeReport);
+
+  assert.equal(redacted.java.path, "<redacted-value>");
+  assert.equal(redacted.disk.checkedPath, "<redacted-value>");
+  assert.equal(JSON.stringify(redacted).includes("/home/example"), false);
+  assert.equal(JSON.stringify(redacted).includes("owner@example.test"), false);
+});
+
+test("validateReadOnlyProbeSafety accepts safe consented report", () => {
+  const report = createReadOnlyProbeReport({
+    consent: {
+      required: true,
+      granted: true,
+      grantedAt: "2026-07-08T00:00:00.000Z",
+      statementVersion: "0.1.0",
+    },
+  });
+  const result = validateReadOnlyProbeSafety(report);
+
+  assert.equal(result.accepted, true);
+  assert.deepEqual(result.errors, []);
+});
+
+test("validateReadOnlyProbeSafety rejects unsafe reports", () => {
+  const safeReport = createReadOnlyProbeReport({
+    consent: {
+      required: true,
+      granted: true,
+      grantedAt: "2026-07-08T00:00:00.000Z",
+      statementVersion: "0.1.0",
+    },
+  });
+
+  const unsafeReports: EnvironmentReport[] = [
+    { ...safeReport, privacy: { ...safeReport.privacy, uploadAllowed: true as false } },
+    { ...safeReport, probe: { ...safeReport.probe, filesWritten: 1 as 0 } },
+    { ...safeReport, probe: { ...safeReport.probe, networkRequests: 1 as 0 } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canDownload: true as false } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canLaunchProcess: true as false } },
+    { ...safeReport, permissions: { ...safeReport.permissions, canWriteInstanceDirectory: true as false } },
+  ];
+
+  for (const report of unsafeReports) {
+    assert.equal(validateReadOnlyProbeSafety(report).accepted, false);
+  }
+});
+
+test("read-only probe example passes schema validation", () => {
+  const example = JSON.parse(
+    readFileSync(resolve("../../examples/environment-reports/read-only-probe-preview.environment-report.json"), "utf8"),
   );
 
   assert.deepEqual(validateSchema(environmentSchema, example, environmentSchema), []);

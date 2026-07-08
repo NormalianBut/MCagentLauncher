@@ -20,3 +20,17 @@ Desktop Local Executor performs local actions only after user confirmation and a
 
 Secrets, tokens, private keys, and API keys must not be committed. Example environment files may list variable names but must not contain real secret values.
 
+## Local Environment Probe Safety
+
+Local environment probing must follow these principles:
+
+- explicit consent before any read-only probe;
+- least privilege;
+- read-only behavior only;
+- local-only results by default;
+- redaction before display or export;
+- no background probe;
+- no upload by default;
+- no persistence without a future explicit user export flow.
+
+MCAgent Server and Web Playground must not read or receive local environment reports by default.

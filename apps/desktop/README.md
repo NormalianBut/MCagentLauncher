@@ -86,3 +86,23 @@ The current Environment Preview:
 - redacts path-like values in the shared helper contract.
 
 Future real read-only probing will require explicit user consent and will remain a Desktop Local Executor responsibility.
+
+## User-consented Read-only Probe
+
+M8.1 adds `Run Read-only Probe`.
+
+Current behavior:
+
+- clicking the button opens a consent modal first;
+- canceling does not generate a read-only report;
+- confirming generates a local read-only preview report in React state;
+- `source.mode=read_only_probe`;
+- `source.consentGranted=true`;
+- `privacy.localOnly=true`;
+- `privacy.uploadAllowed=false`;
+- `probe.filesWritten=0`;
+- `probe.networkRequests=0`.
+
+M8.1 still does not execute real system commands, does not run `java -version`, does not inspect a real Minecraft path, does not scan disks, does not upload reports, does not write reports to files, and does not persist reports in localStorage or sessionStorage.
+
+Environment report is session-only unless a future user explicitly exports it. M8.1 does not implement export.

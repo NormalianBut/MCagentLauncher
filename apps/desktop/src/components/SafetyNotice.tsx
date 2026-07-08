@@ -14,6 +14,7 @@ export function SafetyNotice() {
     "Confirm Install is preview-only.",
     "Environment Preview is mock data and is not uploaded.",
     "No real Java check, disk scan, or Minecraft path read is performed.",
+    "Read-only probe requires explicit consent and remains session-only.",
   ];
 
   return (

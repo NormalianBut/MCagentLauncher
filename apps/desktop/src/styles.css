@@ -309,6 +309,31 @@ textarea {
   margin-bottom: 12px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: rgba(24, 32, 42, 0.55);
+  padding: 20px;
+}
+
+.modal {
+  width: min(620px, 100%);
+  max-height: min(720px, calc(100vh - 40px));
+  overflow: auto;
+  border: 1px solid #cbd4dc;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 20px;
+  box-shadow: 0 24px 80px rgba(24, 32, 42, 0.28);
+}
+
+.modal-actions {
+  justify-content: flex-end;
+}
+
 @media (max-width: 900px) {
   .app-shell {
     width: min(100vw - 20px, 720px);

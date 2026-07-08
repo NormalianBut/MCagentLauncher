@@ -10,6 +10,7 @@
     "reportId",
     "createdAt",
     "source",
+    "probe",
     "platform",
     "runtime",
     "java",
@@ -40,7 +41,9 @@
       "required": [
         "mode",
         "generatedBy",
-        "uploaded"
+        "uploaded",
+        "consentRequired",
+        "consentGranted"
       ],
       "properties": {
         "mode": {
@@ -57,6 +60,69 @@
         "uploaded": {
           "type": "boolean",
           "const": false
+        },
+        "consentRequired": {
+          "type": "boolean"
+        },
+        "consentGranted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startedAt",
+        "completedAt",
+        "probeVersion",
+        "readOnly",
+        "commandsExecuted",
+        "filesWritten",
+        "networkRequests"
+      ],
+      "properties": {
+        "startedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "probeVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "readOnly": {
+          "type": "boolean",
+          "const": true
+        },
+        "commandsExecuted": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "mock_environment_preview",
+              "consented_read_only_probe_preview"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "filesWritten": {
+          "type": "integer",
+          "const": 0
+        },
+        "networkRequests": {
+          "type": "integer",
+          "const": 0
         }
       }
     },
@@ -117,6 +183,13 @@
             "boolean",
             "null"
           ]
+        },
+        "appVersion": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40
         }
       }
     },
@@ -127,7 +200,8 @@
         "status",
         "version",
         "path",
-        "checkedBy"
+        "checkedBy",
+        "detectionMethod"
       ],
       "properties": {
         "status": {
@@ -136,7 +210,8 @@
             "unknown",
             "not_checked",
             "detected",
-            "missing"
+            "missing",
+            "error"
           ]
         },
         "version": {
@@ -157,7 +232,17 @@
           "type": "string",
           "enum": [
             "mock",
-            "future_probe"
+            "future_probe",
+            "read_only_probe"
+          ]
+        },
+        "detectionMethod": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "safe_path_lookup",
+            "tauri_plugin",
+            "manual_user_input"
           ]
         }
       }
@@ -168,7 +253,8 @@
       "required": [
         "directoryStatus",
         "candidateDirectories",
-        "containsSensitivePath"
+        "containsSensitivePath",
+        "scannedRecursively"
       ],
       "properties": {
         "directoryStatus": {
@@ -176,6 +262,7 @@
           "enum": [
             "not_checked",
             "candidate_only",
+            "user_selected_candidate",
             "missing",
             "unknown"
           ]
@@ -190,6 +277,10 @@
         },
         "containsSensitivePath": {
           "type": "boolean"
+        },
+        "scannedRecursively": {
+          "type": "boolean",
+          "const": false
         }
       }
     },
@@ -198,7 +289,8 @@
       "additionalProperties": false,
       "required": [
         "status",
-        "freeSpaceGb"
+        "freeSpaceGb",
+        "checkedPath"
       ],
       "properties": {
         "status": {
@@ -206,6 +298,7 @@
           "enum": [
             "not_checked",
             "estimated",
+            "checked",
             "unknown"
           ]
         },
@@ -215,6 +308,13 @@
             "null"
           ],
           "minimum": 0
+        },
+        "checkedPath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 240
         }
       }
     },
@@ -231,6 +331,7 @@
           "enum": [
             "not_checked",
             "estimated",
+            "checked",
             "unknown"
           ]
         },
@@ -248,7 +349,8 @@
       "additionalProperties": false,
       "required": [
         "status",
-        "checked"
+        "checked",
+        "requestsMade"
       ],
       "properties": {
         "status": {
@@ -263,6 +365,10 @@
         "checked": {
           "type": "boolean",
           "const": false
+        },
+        "requestsMade": {
+          "type": "integer",
+          "const": 0
         }
       }
     },
@@ -272,7 +378,8 @@
       "required": [
         "canWriteInstanceDirectory",
         "canLaunchProcess",
-        "canDownload"
+        "canDownload",
+        "readOnlyProbeAllowed"
       ],
       "properties": {
         "canWriteInstanceDirectory": {
@@ -286,6 +393,9 @@
         "canDownload": {
           "type": "boolean",
           "const": false
+        },
+        "readOnlyProbeAllowed": {
+          "type": "boolean"
         }
       }
     },
@@ -340,8 +450,7 @@
           "const": false
         },
         "containsUserPath": {
-          "type": "boolean",
-          "const": false
+          "type": "boolean"
         },
         "redacted": {
           "type": "boolean",

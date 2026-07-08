@@ -8,6 +8,7 @@ interface EnvironmentPanelProps {
   warnings: Array<{ code: string; message: string }>;
   blockers: Array<{ code: string; message: string }>;
   onGeneratePreview: () => void;
+  onRunReadOnlyProbe: () => void;
 }
 
 export function EnvironmentPanel({
@@ -17,6 +18,7 @@ export function EnvironmentPanel({
   warnings,
   blockers,
   onGeneratePreview,
+  onRunReadOnlyProbe,
 }: EnvironmentPanelProps) {
   return (
     <section className="panel wide environment-panel" aria-labelledby="environment-heading">
@@ -29,12 +31,12 @@ export function EnvironmentPanel({
         <button type="button" onClick={onGeneratePreview}>
           Generate Environment Preview
         </button>
-        <button type="button" className="secondary" disabled>
-          Run Real Probe (disabled)
+        <button type="button" className="secondary" onClick={onRunReadOnlyProbe}>
+          Run Read-only Probe
         </button>
       </div>
       <p className="notice-line">
-        Mock/read-only preview only. No real Minecraft directory is read, no Java check is run, no disk scan is performed, no environment report is uploaded, and no process is launched.
+        Mock/read-only preview only. Run Read-only Probe requires explicit consent first. No real Minecraft directory is read, no Java command is run, no disk scan is performed, no environment report is uploaded, and no process is launched.
       </p>
       {summary ? <p className="summary-line">{summary}</p> : null}
       {readinessLevel ? (

@@ -91,3 +91,11 @@ M8 adds an Environment Preview to the Desktop Shell.
 The preview can show a mock environment report, readiness warnings, blockers, and privacy flags. It is used to shape the future read-only probe contract.
 
 M8 still does not run a real local probe. It does not read local paths, check Java, scan disks, upload environment information, write files, download resources, install resources, or launch Minecraft.
+
+## M8.1 Read-only Probe Status
+
+M8.1 adds a user-consented read-only probe flow in the Desktop Shell.
+
+The Desktop UI now requires a consent modal before generating a `read_only_probe` environment report. The current adapter still assembles a safe local preview report and does not call Tauri commands, shell commands, Java detection, disk scans, or Minecraft directory scans.
+
+The report is session-only, local-only, redacted, not uploaded, and not persisted.

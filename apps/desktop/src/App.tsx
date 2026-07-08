@@ -5,12 +5,16 @@ import { ExecutorPreviewPanel } from "./components/ExecutorPreviewPanel";
 import { InstallPreviewPanel } from "./components/InstallPreviewPanel";
 import { IntentPanel } from "./components/IntentPanel";
 import { PlanPanel } from "./components/PlanPanel";
+import { ProbeConsentModal } from "./components/ProbeConsentModal";
 import { PromptInput } from "./components/PromptInput";
 import { SafetyNotice } from "./components/SafetyNotice";
 import {
   createMockEnvironmentReport,
+  createReadOnlyProbeReport,
   summarizeEnvironmentReport,
+  validateReadOnlyProbeSafety,
   type EnvironmentBlocker,
+  type EnvironmentReport,
   type EnvironmentWarning,
 } from "../../../packages/shared-types/src/environment";
 import { buildDesktopInstallPreview } from "./lib/installPreview";
@@ -31,6 +35,7 @@ export default function App() {
   const [environmentReadiness, setEnvironmentReadiness] = useState<string | null>(null);
   const [environmentWarnings, setEnvironmentWarnings] = useState<EnvironmentWarning[]>([]);
   const [environmentBlockers, setEnvironmentBlockers] = useState<EnvironmentBlocker[]>([]);
+  const [showProbeConsent, setShowProbeConsent] = useState(false);
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
@@ -86,7 +91,7 @@ export default function App() {
   }
 
   function runGenerateEnvironmentPreview() {
-    const report = createMockEnvironmentReport({
+    setEnvironmentState(createMockEnvironmentReport({
       reportId: "env_desktop_shell_preview",
       platform: {
         os: "unknown",
@@ -96,18 +101,60 @@ export default function App() {
         app: "MCagentlauncher Desktop Shell",
         tauriAvailable: false,
       },
-    });
+    }));
+    setConfirmationMessage(null);
+  }
 
+  function openProbeConsent() {
+    setShowProbeConsent(true);
+    setConfirmationMessage(null);
+  }
+
+  function cancelReadOnlyProbe() {
+    setShowProbeConsent(false);
+    setConfirmationMessage("Read-only probe cancelled. No report was generated.");
+  }
+
+  function confirmReadOnlyProbe() {
+    const report = createReadOnlyProbeReport({
+      consent: {
+        required: true,
+        granted: true,
+        grantedAt: "2026-07-08T00:00:00.000Z",
+        statementVersion: "0.1.0",
+      },
+      reportId: "env_desktop_read_only_probe",
+      platform: {
+        os: "unknown",
+        arch: "unknown",
+      },
+      runtime: {
+        app: "MCagentlauncher Desktop Shell",
+        tauriAvailable: false,
+        appVersion: "0.1.0",
+      },
+    });
+    const safety = validateReadOnlyProbeSafety(report);
+
+    setShowProbeConsent(false);
+    setEnvironmentState(report);
+    setConfirmationMessage(
+      safety.accepted
+        ? "Read-only probe preview generated locally. No upload, persistence, command, file write, download, install, or launch occurred."
+        : "Read-only probe preview was generated, but safety validation reported blockers.",
+    );
+  }
+
+  function confirmPreviewOnly() {
+    setConfirmationMessage("当前阶段仅支持 dry-run preview，真实执行器尚未启用。");
+  }
+
+  function setEnvironmentState(report: EnvironmentReport) {
     setEnvironmentReport(report as unknown as JsonValue);
     setEnvironmentSummary(summarizeEnvironmentReport(report));
     setEnvironmentReadiness(report.readiness.level);
     setEnvironmentWarnings(report.readiness.warnings);
     setEnvironmentBlockers(report.readiness.blockers);
-    setConfirmationMessage(null);
-  }
-
-  function confirmPreviewOnly() {
-    setConfirmationMessage("当前阶段仅支持 dry-run preview，真实执行器尚未启用。");
   }
 
   async function withPending(label: string, action: () => Promise<void>) {
@@ -166,11 +213,16 @@ export default function App() {
           warnings={environmentWarnings}
           blockers={environmentBlockers}
           onGeneratePreview={runGenerateEnvironmentPreview}
+          onRunReadOnlyProbe={openProbeConsent}
         />
         <InstallPreviewPanel preview={installPreview} />
         <ExecutorPreviewPanel preview={executorPreview} />
         <SafetyNotice />
       </div>
+
+      {showProbeConsent ? (
+        <ProbeConsentModal onCancel={cancelReadOnlyProbe} onConfirm={confirmReadOnlyProbe} />
+      ) : null}
     </main>
   );
 }
