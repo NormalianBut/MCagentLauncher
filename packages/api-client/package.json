@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./modrinth": "./src/modrinth.ts"
+    "./modrinth": "./src/modrinth.ts",
+    "./planningPipeline": "./src/planningPipeline.ts",
+    "./resourceResolver": "./src/resourceResolver.ts"
   },
   "scripts": {
     "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
