@@ -66,3 +66,20 @@ MCAgent Server is an independent planning endpoint. It must remain replaceable a
 Actions must be auditable, traceable to a source plan, and designed for rollback. The dry-run preview makes these actions visible before any future executor receives permission to run.
 
 M6 does not download resources, install resources, launch Minecraft, or write local instance files.
+
+## M7 Desktop Shell Status
+
+M7 adds a Desktop Shell preview surface in `apps/desktop`.
+
+The Desktop Shell can:
+
+- accept a natural-language prompt;
+- call MCAgent Server for intent parsing;
+- call MCAgent Server for a resource-plan response;
+- call MCAgent Server for plan explanation;
+- generate install-action preview JSON from the resource plan;
+- show executor dry-run preview output.
+
+M7 still does not enable real local execution. The Confirm Install control is preview-only and does not call a Tauri command, write files, download resources, install resources, create instances, or launch Minecraft.
+
+The Tauri shell is a minimal native placeholder. Real Desktop Local Executor commands remain reserved for a later milestone after dry-run review, explicit user confirmation, path selection, hash verification, rollback, and failure handling are complete.
