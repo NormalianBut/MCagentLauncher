@@ -8,6 +8,17 @@ Current status: **v0.1 alpha preview**. It demonstrates the Natural Instance pla
 natural language -> intent -> resource plan -> explanation -> install dry-run -> executor dry-run -> environment preview
 ```
 
+## v0.1 Alpha Preview
+
+- Current tag: `v0.1-alpha-preview`
+- Release notes: `docs/releases/v0.1-alpha-preview.md`
+- GitHub Release draft: `docs/releases/v0.1-alpha-github-release-draft.md`
+- Demo guide: `docs/demo/v0.1-alpha-demo-flow.md`
+- Release candidate checklist: `docs/releases/v0.1-alpha-release-candidate-checklist.md`
+- Known limitations: `docs/releases/v0.1-alpha-known-limitations.md`
+
+This alpha preview does not download, install, write local instances, or launch Minecraft.
+
 ## What Works Now
 
 - MCAgent mock/offline server.

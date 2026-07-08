@@ -1,0 +1,39 @@
+# MCagentlauncher Docs
+
+This directory documents the MCagentlauncher v0.1 alpha preview.
+
+## Architecture
+
+- [Architecture](./architecture.md)
+- [Platform Boundaries](./platform-boundaries.md)
+- [Desktop Executor Design](./desktop-executor-design.md)
+- [API Playground Prep](./api-playground-prep.md)
+
+## Security
+
+- [Security](./security.md)
+- [Environment Probe Design](./environment-probe-design.md)
+- [Read-only Probe Permission Policy](./read-only-probe-permission-policy.md)
+
+## ADRs
+
+- [ADR 0001: Read-only Environment Probe](./adr/0001-read-only-environment-probe.md)
+- [ADR 0002: Safe Platform Probe](./adr/0002-safe-platform-probe.md)
+
+## Releases
+
+- [v0.1 Alpha Preview Notes](./releases/v0.1-alpha-preview.md)
+- [v0.1 Alpha GitHub Release Draft](./releases/v0.1-alpha-github-release-draft.md)
+- [v0.1 Alpha Release Candidate Checklist](./releases/v0.1-alpha-release-candidate-checklist.md)
+- [v0.1 Alpha Checklist](./releases/v0.1-alpha-checklist.md)
+- [v0.1 Alpha Manual Review Notes](./releases/v0.1-alpha-manual-review.md)
+- [v0.1 Alpha Screenshot Checklist](./releases/v0.1-alpha-screenshot-checklist.md)
+- [v0.1 Alpha Known Limitations](./releases/v0.1-alpha-known-limitations.md)
+
+## Demo
+
+- [v0.1 Alpha Demo Flow](./demo/v0.1-alpha-demo-flow.md)
+
+## Alpha Boundary
+
+v0.1 alpha preview does not install or launch Minecraft. It does not download resources, write local instances, detect Java, scan Minecraft directories, or upload environment reports.

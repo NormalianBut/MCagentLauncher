@@ -123,6 +123,7 @@ export function ApiPlayground() {
 
         <section className="safety-banner">
           Web Playground only calls MCAgent planning APIs. It cannot access local files, probe the local environment, install Minecraft, or launch Minecraft.
+          Release notes: docs/releases/v0.1-alpha-preview.md. Demo guide: docs/demo/v0.1-alpha-demo-flow.md.
         </section>
 
         <div className="main-grid">

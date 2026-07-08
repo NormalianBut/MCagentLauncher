@@ -178,6 +178,7 @@ export default function App() {
 
       <section className="safety-banner" aria-label="Alpha preview safety boundary">
         v0.1 alpha is a dry-run preview. It will not download resources, install Minecraft, write a local instance, or launch Minecraft.
+        Release notes: docs/releases/v0.1-alpha-preview.md. Demo guide: docs/demo/v0.1-alpha-demo-flow.md.
       </section>
 
       <StatusStepper steps={workflowSteps} />
