@@ -20,6 +20,8 @@ python -m uvicorn app.main:app --reload
 
 The default local URL is `http://127.0.0.1:8000`.
 
+Development CORS is restricted to the known Web Playground origins, the Desktop Vite origin on port `1420`, and the current Tauri v2 local origins. It does not use a wildcard origin.
+
 ## Run Tests
 
 ```bash
@@ -38,4 +40,3 @@ python -m pytest
 This is only an M2 mock server. It maps simple natural-language keywords to schema-compatible JSON so the Desktop and Web layers can test the v0.1 flow.
 
 Before installation, every resource plan must still pass a later Resource Resolver stage that verifies real metadata, loader compatibility, version compatibility, licenses, and hashes.
-

@@ -52,6 +52,8 @@ VITE_MCAGENT_API_URL=http://127.0.0.1:8000
 
 If the variable is not set, the default is `http://127.0.0.1:8000`.
 
+The development UI uses the fixed origin `http://localhost:1420`. The local MCAgent Server explicitly allows that origin, its `127.0.0.1` equivalent, and the current Tauri v2 local origins. Start the server before using the API workflow buttons.
+
 ## Build
 
 ```bash

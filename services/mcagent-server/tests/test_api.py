@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+import pytest
 
 import app.routers.intent as intent_router
 import app.routers.plan as plan_router
@@ -16,6 +17,43 @@ def test_health() -> None:
         "service": "mcagent-server",
         "version": "0.1.0",
     }
+
+
+@pytest.mark.parametrize(
+    "origin",
+    [
+        "http://localhost:1420",
+        "http://127.0.0.1:1420",
+        "http://tauri.localhost",
+        "tauri://localhost",
+    ],
+)
+def test_desktop_origins_pass_cors_preflight(origin: str) -> None:
+    response = client.options(
+        "/v1/intent/parse",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
+
+
+def test_unknown_origin_is_not_allowed_by_cors() -> None:
+    response = client.options(
+        "/v1/intent/parse",
+        headers={
+            "Origin": "https://untrusted.example",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 400
+    assert "access-control-allow-origin" not in response.headers
 
 
 def test_parse_low_spec_shader_survival() -> None:
