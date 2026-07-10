@@ -6,6 +6,8 @@ Lightweight Next.js playground for the v0.1 MCAgent API flow:
 Natural Language -> Intent -> Resource Plan -> Explanation
 ```
 
+The v0.1 Alpha Preview has been released. M11 adds a lightweight planner-only Service Status based on `GET /v1/meta`. An incompatible endpoint blocks planning buttons.
+
 ## Configure
 
 Copy `.env.example` if you want a local env file:
@@ -25,6 +27,8 @@ pnpm dev:server
 ```
 
 The default MCAgent URL is `http://127.0.0.1:8000`.
+
+This is a development fallback. Web does not assume a local server exists in deployed environments and does not contain a hard-coded production endpoint.
 
 ## Start Web
 
@@ -60,6 +64,7 @@ This is only an API debugging interface. It calls:
 - `POST /v1/intent/parse`
 - `POST /v1/resources/plan`
 - `POST /v1/explain/plan`
+- `GET /v1/meta` for API/schema/capability negotiation
 
 The Playground does not download resources, install resources, write local instances, launch Minecraft, or perform Desktop Local Executor work.
 
@@ -77,6 +82,8 @@ Web does not support:
 - environment probe;
 - local file access;
 - Minecraft launch.
+
+Service Status displays only planner metadata. It does not request Desktop-local capabilities, run environment probes, access files, or upload environment reports. M12 investigates native Desktop packaging; M13 advances live planning/resolver capability negotiation.
 
 ## Install Preview
 

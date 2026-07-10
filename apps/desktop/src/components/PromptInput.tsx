@@ -1,6 +1,7 @@
 interface PromptInputProps {
   text: string;
   pending: string | null;
+  serverReady: boolean;
   canGeneratePlan: boolean;
   canExplainPlan: boolean;
   canGeneratePreview: boolean;
@@ -18,6 +19,7 @@ interface PromptInputProps {
 export function PromptInput({
   text,
   pending,
+  serverReady,
   canGeneratePlan,
   canExplainPlan,
   canGeneratePreview,
@@ -44,13 +46,13 @@ export function PromptInput({
         aria-label="Natural language Minecraft instance request"
       />
       <div className="button-row">
-        <button type="button" onClick={onParseIntent} disabled={pending !== null || text.trim().length === 0}>
+        <button type="button" onClick={onParseIntent} disabled={pending !== null || !serverReady || text.trim().length === 0}>
           Parse Intent
         </button>
-        <button type="button" onClick={onGeneratePlan} disabled={pending !== null || !canGeneratePlan}>
+        <button type="button" onClick={onGeneratePlan} disabled={pending !== null || !serverReady || !canGeneratePlan}>
           Generate Plan
         </button>
-        <button type="button" onClick={onExplainPlan} disabled={pending !== null || !canExplainPlan}>
+        <button type="button" onClick={onExplainPlan} disabled={pending !== null || !serverReady || !canExplainPlan}>
           Explain Plan
         </button>
         <button type="button" onClick={onGeneratePreview} disabled={pending !== null || !canGeneratePreview}>

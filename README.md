@@ -4,6 +4,8 @@ MCagentlauncher is an open-source, community-driven intelligent launcher project
 
 Current status: **v0.1 alpha preview**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
 
+The v0.1 Alpha Preview has been released. M11 is post-alpha stabilization: it adds a versioned runtime contract between Desktop/Web clients and the planner-only MCAgent endpoint.
+
 ```text
 natural language -> intent -> resource plan -> explanation -> install dry-run -> executor dry-run -> environment preview
 ```
@@ -34,6 +36,8 @@ This alpha preview does not download, install, write local instances, or launch 
 - Environment preview.
 - User-consented safe platform probe for OS, arch, app version, and Tauri availability.
 - GitHub Actions for schema validation and server tests.
+- `GET /v1/meta` service discovery and compatibility negotiation.
+- Configurable MCAgent endpoint connection status in Desktop and Web.
 
 ## What Does Not Work Yet
 
@@ -87,6 +91,8 @@ Start Desktop Shell:
 pnpm dev:desktop
 ```
 
+Source development requires MCAgent Server to be started separately. The local `http://127.0.0.1:8000` fallback is for development; packaged Desktop does not yet include or launch a Python sidecar.
+
 ## Safety Boundaries
 
 - AI does not directly execute files.
@@ -109,12 +115,13 @@ pnpm dev:desktop
 - M6-M7: install action and Desktop Shell dry-run previews.
 - M8-M8.3: environment report, read-only probe policy, ADRs, and safe platform probe.
 - M9: alpha preview UI/UX polish and release preview docs.
+- M10: release candidate preparation and alpha manual review.
+- M11: post-alpha runtime contract, connection compatibility, and feedback infrastructure.
 
 ## Roadmap
 
-- M10: release packaging preparation.
-- M11: user-selected directory probe ADR.
-- M12: real read-only Java probe ADR.
+- M12: Native Desktop Packaging Preview investigation.
+- M13: live planning and resolver integration behind explicit capability negotiation.
 - Future: Desktop Local Executor implementation after policy, confirmation, source verification, hash verification, rollback, and failure handling are complete.
 
 ## Contributing

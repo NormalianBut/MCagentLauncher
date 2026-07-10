@@ -7,3 +7,4 @@ export * from "./probePolicy.ts";
 export * from "./resolver.ts";
 export * from "./resource.ts";
 export * from "./resource-plan.ts";
+export * from "./serviceInfo.ts";

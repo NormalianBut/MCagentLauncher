@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DiagnosticsPanel } from "./components/DiagnosticsPanel";
 import { EnvironmentPanel } from "./components/EnvironmentPanel";
 import { ExecutorPreviewPanel } from "./components/ExecutorPreviewPanel";
@@ -9,6 +9,10 @@ import { ProbeConsentModal } from "./components/ProbeConsentModal";
 import { PromptInput } from "./components/PromptInput";
 import { SafetyNotice } from "./components/SafetyNotice";
 import {
+  ServiceConnectionPanel,
+  type ServiceConnectionState,
+} from "./components/ServiceConnectionPanel";
+import {
   createMockEnvironmentReport,
   summarizeEnvironmentReport,
   validateSafePlatformProbeSafety,
@@ -17,7 +21,15 @@ import {
   type EnvironmentWarning,
 } from "../../../packages/shared-types/src/environment";
 import { buildDesktopInstallPreview } from "./lib/installPreview";
-import { explainPlan, generatePlan, mcagentBaseUrl, parseIntent } from "./lib/mcagentClient";
+import {
+  checkMcagentConnection,
+  explainPlan,
+  generatePlan,
+  mcagentBaseUrl,
+  parseIntent,
+  ServiceCompatibilityError,
+  ServiceConnectionError,
+} from "./lib/mcagentClient";
 import { runSafePlatformProbe } from "./lib/safePlatformProbe";
 import type { JsonValue, PlanDiagnostics } from "./lib/types";
 
@@ -39,8 +51,17 @@ export default function App() {
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
+  const [serviceConnection, setServiceConnection] = useState<ServiceConnectionState>({
+    status: "idle",
+    serviceInfo: null,
+    compatibility: null,
+    lastCheckedAt: null,
+    errorCode: null,
+    errorMessage: null,
+  });
 
   const diagnostics = useMemo(() => extractDiagnostics(planResponse), [planResponse]);
+  const serverReady = serviceConnection.status === "connected" || serviceConnection.status === "degraded";
   const workflowSteps = useMemo(() => ([
     { label: "Natural Language", status: prompt.trim().length > 0 ? "ready" : "idle" },
     { label: "Intent", status: intent ? "success" : "idle" },
@@ -50,7 +71,67 @@ export default function App() {
     { label: "Environment Probe", status: environmentReport ? "success" : "idle" },
   ]), [diagnostics, environmentReport, executorPreview, installPreview, intent, planResponse, prompt]);
 
+  useEffect(() => {
+    void runCheckConnection();
+  }, []);
+
+  async function runCheckConnection() {
+    setServiceConnection((current) => ({
+      ...current,
+      status: "checking",
+      errorCode: null,
+      errorMessage: null,
+    }));
+    try {
+      const result = await checkMcagentConnection();
+      setServiceConnection({
+        status: result.compatibility.status === "degraded" ? "degraded" : "connected",
+        serviceInfo: result.serviceInfo,
+        compatibility: result.compatibility,
+        lastCheckedAt: new Date().toISOString(),
+        errorCode: null,
+        errorMessage: null,
+      });
+    } catch (caught) {
+      const checkedAt = new Date().toISOString();
+      if (caught instanceof ServiceCompatibilityError) {
+        setServiceConnection({
+          status: "incompatible",
+          serviceInfo: caught.serviceInfo,
+          compatibility: caught.compatibility,
+          lastCheckedAt: checkedAt,
+          errorCode: caught.code,
+          errorMessage: caught.message,
+        });
+        return;
+      }
+      if (caught instanceof ServiceConnectionError) {
+        setServiceConnection({
+          status: caught.code === "INVALID_SERVICE_INFO" ? "incompatible" : "unreachable",
+          serviceInfo: null,
+          compatibility: null,
+          lastCheckedAt: checkedAt,
+          errorCode: caught.code,
+          errorMessage: caught.message,
+        });
+        return;
+      }
+      setServiceConnection({
+        status: "unreachable",
+        serviceInfo: null,
+        compatibility: null,
+        lastCheckedAt: checkedAt,
+        errorCode: "CONNECTION_ERROR",
+        errorMessage: caught instanceof Error ? caught.message : String(caught),
+      });
+    }
+  }
+
   async function runParseIntent() {
+    if (!serverReady) {
+      setError("MCAgent endpoint must be compatible before parsing intent.");
+      return;
+    }
     await withPending("Parsing intent...", async () => {
       const parsed = await parseIntent(prompt);
       setIntent(parsed);
@@ -62,9 +143,13 @@ export default function App() {
   }
 
   async function runGeneratePlan() {
-    const activeIntent = intent ?? (await parseIntent(prompt));
-    setIntent(activeIntent);
+    if (!serverReady) {
+      setError("MCAgent endpoint must be compatible before generating a plan.");
+      return;
+    }
     await withPending("Generating resource plan...", async () => {
+      const activeIntent = intent ?? (await parseIntent(prompt));
+      setIntent(activeIntent);
       const response = await generatePlan(activeIntent, { mode: "pipeline", enableNetwork: false });
       setPlanResponse(response);
       setExplanation(null);
@@ -74,7 +159,7 @@ export default function App() {
   }
 
   async function runExplainPlan() {
-    if (!planResponse) {
+    if (!serverReady || !planResponse) {
       return;
     }
     await withPending("Explaining plan...", async () => {
@@ -155,6 +240,15 @@ export default function App() {
     try {
       await action();
     } catch (caught) {
+      if (caught instanceof ServiceConnectionError) {
+        setServiceConnection((current) => ({
+          ...current,
+          status: "unreachable",
+          lastCheckedAt: new Date().toISOString(),
+          errorCode: caught.code,
+          errorMessage: caught.message,
+        }));
+      }
       setError(caught instanceof Error ? caught.message : String(caught));
     } finally {
       setPending(null);
@@ -183,9 +277,16 @@ export default function App() {
 
       <StatusStepper steps={workflowSteps} />
 
+      <ServiceConnectionPanel
+        endpoint={mcagentBaseUrl()}
+        state={serviceConnection}
+        onCheck={() => { void runCheckConnection(); }}
+      />
+
       <PromptInput
         text={prompt}
         pending={pending}
+        serverReady={serverReady}
         canGeneratePlan={prompt.trim().length > 0}
         canExplainPlan={planResponse !== null}
         canGeneratePreview={planResponse !== null}

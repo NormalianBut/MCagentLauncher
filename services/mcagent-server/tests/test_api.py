@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 import app.routers.intent as intent_router
+import app.routers.meta as meta_router
 import app.routers.plan as plan_router
 from app.main import app
 from app.schemas.validation import validate_response
@@ -19,9 +20,54 @@ def test_health() -> None:
     }
 
 
+def test_service_meta_is_schema_valid_and_planner_only() -> None:
+    response = client.get("/v1/meta")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert validate_response("service-info", body) == body
+    assert body["mode"]["networkEnabledByDefault"] is False
+    assert body["capabilities"] == {
+        "intentParse": True,
+        "resourcePlan": True,
+        "planExplanation": True,
+        "liveResourceResolver": False,
+        "installExecution": False,
+        "localFileAccess": False,
+        "environmentProbe": False,
+        "minecraftLaunch": False,
+    }
+    assert body["safety"] == {
+        "plannerOnly": True,
+        "canDownload": False,
+        "canWriteLocalFiles": False,
+        "canLaunchProcesses": False,
+    }
+
+
+def test_service_meta_runtime_validation_failure_is_explicit(monkeypatch) -> None:
+    invalid = meta_router.service_info()
+    invalid["unexpected"] = True
+    monkeypatch.setattr(meta_router, "service_info", lambda: invalid)
+
+    response = client.get("/v1/meta")
+
+    assert response.status_code == 500
+    assert response.json()["detail"]["schema"] == "service-info.schema.json"
+
+
+def test_service_info_schema_can_express_unsafe_claim_for_client_rejection() -> None:
+    unsafe = meta_router.service_info()
+    unsafe["capabilities"]["installExecution"] = True
+
+    assert validate_response("service-info", unsafe) == unsafe
+
+
 @pytest.mark.parametrize(
     "origin",
     [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
         "http://localhost:1420",
         "http://127.0.0.1:1420",
         "http://tauri.localhost",
@@ -54,6 +100,14 @@ def test_unknown_origin_is_not_allowed_by_cors() -> None:
 
     assert response.status_code == 400
     assert "access-control-allow-origin" not in response.headers
+
+
+@pytest.mark.parametrize("origin", ["http://localhost:3000", "http://localhost:1420", "http://tauri.localhost"])
+def test_service_meta_allows_known_web_and_desktop_origins(origin: str) -> None:
+    response = client.get("/v1/meta", headers={"Origin": origin})
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
 
 
 def test_parse_low_spec_shader_survival() -> None:

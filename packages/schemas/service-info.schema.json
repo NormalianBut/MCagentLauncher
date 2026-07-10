@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mcagentlauncher.dev/schemas/service-info.schema.json",
+  "title": "MCagentlauncher Service Info",
+  "description": "Versioned capability declaration for an MCAgent planning endpoint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "service", "api", "mode", "capabilities", "safety"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0" },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "environment"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$" },
+        "environment": { "type": "string", "enum": ["development", "test", "production", "self-hosted"] }
+      }
+    },
+    "api": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "supportedSchemaVersions"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+        "supportedSchemaVersions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+        }
+      }
+    },
+    "mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["planning", "networkEnabledByDefault"],
+      "properties": {
+        "planning": { "type": "string", "enum": ["offline", "live", "hybrid"] },
+        "networkEnabledByDefault": { "type": "boolean" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intentParse", "resourcePlan", "planExplanation", "liveResourceResolver",
+        "installExecution", "localFileAccess", "environmentProbe", "minecraftLaunch"
+      ],
+      "properties": {
+        "intentParse": { "type": "boolean" },
+        "resourcePlan": { "type": "boolean" },
+        "planExplanation": { "type": "boolean" },
+        "liveResourceResolver": { "type": "boolean" },
+        "installExecution": { "type": "boolean" },
+        "localFileAccess": { "type": "boolean" },
+        "environmentProbe": { "type": "boolean" },
+        "minecraftLaunch": { "type": "boolean" }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plannerOnly", "canDownload", "canWriteLocalFiles", "canLaunchProcesses"],
+      "properties": {
+        "plannerOnly": { "type": "boolean" },
+        "canDownload": { "type": "boolean" },
+        "canWriteLocalFiles": { "type": "boolean" },
+        "canLaunchProcesses": { "type": "boolean" }
+      }
+    }
+  }
+}

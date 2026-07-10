@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { ClientCompatibility, ServiceInfo } from "../../../../packages/shared-types/src/serviceInfo";
 import type { ResourcePlan } from "../../../../packages/shared-types/src/plan";
 import { previewInstallActions, type ExecutorPreviewResult } from "../../../../packages/shared-types/src/executor";
 import {
@@ -10,13 +11,18 @@ import {
 import {
   explainPlan,
   generatePlan,
+  checkMcagentConnection,
   mcagentBaseUrl,
   parseIntent,
+  ServiceCompatibilityError,
+  ServiceConnectionError,
   type JsonValue,
   type PlanOptions,
 } from "@/lib/mcagentClient";
 
 const defaultPrompt = "\u6211\u60f3\u73a9 1.20.1\uff0c\u4f4e\u914d\u5149\u5f71\u751f\u5b58\uff0c\u8981\u4f18\u5316\u3001\u5c0f\u5730\u56fe\u3001\u82f9\u679c\u76ae\uff0c\u522b\u592a\u590d\u6742\u3002";
+
+type WebServiceStatus = "idle" | "checking" | "connected" | "degraded" | "incompatible" | "unreachable";
 
 export function ApiPlayground() {
   const [text, setText] = useState(defaultPrompt);
@@ -29,15 +35,56 @@ export function ApiPlayground() {
   const [enableNetwork, setEnableNetwork] = useState(false);
   const [pending, setPending] = useState<"intent" | "plan" | "explain" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [serviceStatus, setServiceStatus] = useState<WebServiceStatus>("idle");
+  const [serviceInfo, setServiceInfo] = useState<ServiceInfo | null>(null);
+  const [serviceCompatibility, setServiceCompatibility] = useState<ClientCompatibility | null>(null);
+  const [serviceError, setServiceError] = useState<string | null>(null);
 
   const diagnostics = getDiagnostics(planResponse);
   const planSummary = getPlanSummary(planResponse);
-  const canGeneratePlan = intent !== null;
-  const canExplain = planResponse !== null;
+  const serverReady = serviceStatus === "connected" || serviceStatus === "degraded";
+  const canGeneratePlan = serverReady && intent !== null;
+  const canExplain = serverReady && planResponse !== null;
   const canPreviewInstall = extractPlan(planResponse) !== null;
   const apiUrl = useMemo(() => mcagentBaseUrl(), []);
 
+  useEffect(() => {
+    void runConnectionCheck();
+  }, []);
+
+  async function runConnectionCheck() {
+    setServiceStatus("checking");
+    setServiceError(null);
+    try {
+      const result = await checkMcagentConnection();
+      setServiceInfo(result.serviceInfo);
+      setServiceCompatibility(result.compatibility);
+      setServiceStatus(result.compatibility.status === "degraded" ? "degraded" : "connected");
+    } catch (caught) {
+      if (caught instanceof ServiceCompatibilityError) {
+        setServiceInfo(caught.serviceInfo);
+        setServiceCompatibility(caught.compatibility);
+        setServiceStatus("incompatible");
+        setServiceError(`${caught.code}: ${caught.message}`);
+      } else if (caught instanceof ServiceConnectionError) {
+        setServiceInfo(null);
+        setServiceCompatibility(null);
+        setServiceStatus(caught.code === "INVALID_SERVICE_INFO" ? "incompatible" : "unreachable");
+        setServiceError(`${caught.code}: ${caught.message}`);
+      } else {
+        setServiceInfo(null);
+        setServiceCompatibility(null);
+        setServiceStatus("unreachable");
+        setServiceError(caught instanceof Error ? caught.message : String(caught));
+      }
+    }
+  }
+
   async function runParseIntent() {
+    if (!serverReady) {
+      setError("A compatible MCAgent endpoint is required before parsing intent.");
+      return;
+    }
     await run("intent", async () => {
       const nextIntent = await parseIntent(text);
       setIntent(nextIntent);
@@ -99,6 +146,10 @@ export function ApiPlayground() {
     try {
       await task();
     } catch (caught) {
+      if (caught instanceof ServiceConnectionError) {
+        setServiceStatus("unreachable");
+        setServiceError(`${caught.code}: ${caught.message}`);
+      }
       setError(caught instanceof Error ? caught.message : "Unknown request error.");
     } finally {
       setPending(null);
@@ -126,6 +177,32 @@ export function ApiPlayground() {
           Release notes: docs/releases/v0.1-alpha-preview.md. Demo guide: docs/demo/v0.1-alpha-demo-flow.md.
         </section>
 
+        <section className="panel service-status-panel" aria-labelledby="web-service-status-heading">
+          <div className="service-status-heading">
+            <div>
+              <h2 id="web-service-status-heading">Service Status</h2>
+              <p className="muted">Planner metadata only. This check does not request Desktop-local capabilities.</p>
+            </div>
+            <strong className={`service-state ${serviceStatus}`}>{serviceStatus}</strong>
+          </div>
+          <div className="metrics service-metrics">
+            <Metric label="endpoint" value={apiUrl} />
+            <Metric label="server" value={serviceInfo ? `${serviceInfo.service.name} ${serviceInfo.service.version}` : "not checked"} />
+            <Metric label="API" value={serviceInfo?.api.version ?? "not checked"} />
+            <Metric label="planning" value={serviceInfo?.mode.planning ?? "not checked"} />
+            <Metric label="network enabled" value={serviceInfo ? String(serviceInfo.mode.networkEnabledByDefault) : "not checked"} />
+            <Metric label="planner-only" value={serviceInfo ? String(serviceInfo.safety.plannerOnly) : "not checked"} />
+          </div>
+          <button type="button" onClick={() => { void runConnectionCheck(); }} disabled={serviceStatus === "checking"}>
+            {serviceStatus === "checking" ? "Checking Connection" : serviceStatus === "idle" ? "Check MCAgent Connection" : "Retry Connection"}
+          </button>
+          {serviceError ? <p className="status error">{serviceError}</p> : null}
+          {serviceCompatibility?.issues.length ? (
+            <MessageList title="Compatibility notes" messages={serviceCompatibility.issues.map((issue) => `${issue.code}: ${issue.message}`)} />
+          ) : null}
+          {serviceInfo ? <InlineJson title="Raw Service Metadata JSON" value={serviceInfo as unknown as JsonValue} /> : null}
+        </section>
+
         <div className="main-grid">
           <section className="panel controls">
             <h2>Request</h2>
@@ -150,7 +227,7 @@ export function ApiPlayground() {
             </label>
             <p className="muted">Default is offline planning. Network use must be enabled explicitly and still does not download resources.</p>
             <div className="buttons">
-              <button className="primary" disabled={pending !== null || text.trim().length === 0} onClick={runParseIntent}>
+              <button className="primary" disabled={pending !== null || !serverReady || text.trim().length === 0} onClick={runParseIntent}>
                 {pending === "intent" ? "Parsing" : "Parse Intent"}
               </button>
               <button disabled={pending !== null || !canGeneratePlan} onClick={runGeneratePlan}>

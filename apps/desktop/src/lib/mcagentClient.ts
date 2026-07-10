@@ -1,7 +1,19 @@
 import type { JsonValue, PlanOptions } from "./types";
+import {
+  checkServiceCompatibility,
+  ServiceCompatibilityError,
+  ServiceConnectionError,
+} from "../../../../packages/api-client/src/serviceInfo";
+import type { ServiceCompatibilityResult } from "../../../../packages/api-client/src/serviceInfo";
+
+export { ServiceCompatibilityError, ServiceConnectionError };
 
 export function mcagentBaseUrl(): string {
   return (import.meta.env.VITE_MCAGENT_API_URL ?? "http://127.0.0.1:8000").replace(/\/+$/, "");
+}
+
+export function checkMcagentConnection(): Promise<ServiceCompatibilityResult> {
+  return checkServiceCompatibility({ baseUrl: mcagentBaseUrl() });
 }
 
 export async function parseIntent(text: string): Promise<JsonValue> {
@@ -23,13 +35,22 @@ export async function explainPlan(plan: JsonValue): Promise<JsonValue> {
 }
 
 async function requestJson(path: string, body: JsonValue): Promise<JsonValue> {
-  const response = await fetch(`${mcagentBaseUrl()}${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${mcagentBaseUrl()}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (cause) {
+    throw new ServiceConnectionError(
+      "CORS_REJECTED_OR_NETWORK_BLOCKED",
+      "MCAgent request could not reach the configured endpoint. Check the connection status and confirm the server is running.",
+      { cause },
+    );
+  }
   const text = await response.text();
   let payload: JsonValue | string = text;
 

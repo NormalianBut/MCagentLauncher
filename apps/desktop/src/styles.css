@@ -413,6 +413,74 @@ textarea {
   background: #f2f6f4;
 }
 
+.service-panel {
+  margin: 18px 0;
+}
+
+.connection-status {
+  border: 1px solid #b8c5ce;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.connection-status.connected {
+  border-color: #77a99a;
+  background: #e6f2ee;
+  color: #245d54;
+}
+
+.connection-status.checking,
+.connection-status.degraded {
+  border-color: #c7a65a;
+  background: #fff8df;
+  color: #72571f;
+}
+
+.connection-status.incompatible,
+.connection-status.unreachable {
+  border-color: #c78888;
+  background: #fff0f0;
+  color: #842d2d;
+}
+
+.connection-blocker,
+.connection-error,
+.connection-warning {
+  border-left: 3px solid #b44a4a;
+  padding: 8px 10px;
+}
+
+.connection-warning {
+  border-left-color: #b08a36;
+}
+
+.capability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.capability-list {
+  border: 1px solid #d8e0e6;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.capability-list h3 {
+  margin: 0 0 8px;
+  font-size: 0.86rem;
+}
+
+.capability-list ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
 .environment-panel {
   background: #f7faf9;
 }
@@ -491,6 +559,10 @@ textarea {
   .stepper,
   .summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .capability-grid {
+    grid-template-columns: 1fr;
   }
 
   .panel.wide {

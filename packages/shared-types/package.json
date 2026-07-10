@@ -13,7 +13,8 @@
     "./probePolicy": "./src/probePolicy.ts",
     "./resolver": "./src/resolver.ts",
     "./resource-plan": "./src/resource-plan.ts",
-    "./resource": "./src/resource.ts"
+    "./resource": "./src/resource.ts",
+    "./serviceInfo": "./src/serviceInfo.ts"
   },
   "scripts": {
     "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""

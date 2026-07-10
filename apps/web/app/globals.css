@@ -129,6 +129,45 @@ pre {
   font-weight: 700;
 }
 
+.service-status-panel {
+  margin-top: 18px;
+}
+
+.service-status-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.service-state {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.service-state.connected {
+  border-color: #4e9477;
+  color: var(--accent-strong);
+}
+
+.service-state.checking,
+.service-state.degraded {
+  border-color: #8c6e36;
+  color: var(--warning);
+}
+
+.service-state.incompatible,
+.service-state.unreachable {
+  border-color: #934f4f;
+  color: var(--danger);
+}
+
+.service-metrics {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .chain {
   display: flex;
   flex-wrap: wrap;
@@ -287,6 +326,10 @@ pre {
 
   .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .service-status-heading {
+    display: block;
   }
 }
 

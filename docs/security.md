@@ -45,3 +45,13 @@ The read-only probe security model also forbids:
 - execution capabilities before an explicit executor milestone.
 
 Real platform, directory, Java, or network probes must pass a permission policy gate. Java detection and directory access require separate future ADRs.
+
+## Endpoint Trust
+
+An endpoint is not trusted merely because it responds. M11 clients validate `GET /v1/meta`, require compatible API/schema versions and planning capabilities, and reject server declarations that include local execution, file access, download, environment probe, or process-launch authority.
+
+Metadata requests contain no environment report, local path, token, API key, or user information. CORS uses an exact origin allowlist rather than a wildcard.
+
+## Security Feedback
+
+Public issues must not contain exploits, credentials, private paths, or sensitive environment data. Contributors should use GitHub private vulnerability reporting only when the repository UI shows that it is available, or another maintainer-published private contact. The project does not automatically collect telemetry, logs, or environment reports.

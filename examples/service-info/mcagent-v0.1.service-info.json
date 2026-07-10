@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "0.1.0",
+  "service": {
+    "name": "mcagent-server",
+    "version": "0.1.0",
+    "environment": "development"
+  },
+  "api": {
+    "version": "v1",
+    "supportedSchemaVersions": ["0.1.0"]
+  },
+  "mode": {
+    "planning": "offline",
+    "networkEnabledByDefault": false
+  },
+  "capabilities": {
+    "intentParse": true,
+    "resourcePlan": true,
+    "planExplanation": true,
+    "liveResourceResolver": false,
+    "installExecution": false,
+    "localFileAccess": false,
+    "environmentProbe": false,
+    "minecraftLaunch": false
+  },
+  "safety": {
+    "plannerOnly": true,
+    "canDownload": false,
+    "canWriteLocalFiles": false,
+    "canLaunchProcesses": false
+  }
+}

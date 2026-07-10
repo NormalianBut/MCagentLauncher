@@ -17,6 +17,7 @@ SCHEMA_FILES = {
     "plan-response": "plan-response.schema.json",
     "install-action": "install-action.schema.json",
     "instance-lock": "instance-lock.schema.json",
+    "service-info": "service-info.schema.json",
 }
 
 

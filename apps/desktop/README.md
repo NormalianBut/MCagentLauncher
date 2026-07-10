@@ -4,6 +4,8 @@
 
 The current desktop app is a dry-run preview surface. It can call the MCAgent Server API, display intent parsing, display resource planning, generate install-action previews, and show executor dry-run results. It does not perform real local execution.
 
+The v0.1 Alpha Preview has been released. M11 adds post-alpha endpoint discovery and compatibility gating through `GET /v1/meta`. MCAgent Server remains planner-only and Desktop Local Executor remains disabled.
+
 M9 polishes the Desktop Shell into an alpha preview UI with:
 
 - workflow stepper;
@@ -50,9 +52,13 @@ The Desktop Shell reads:
 VITE_MCAGENT_API_URL=http://127.0.0.1:8000
 ```
 
-If the variable is not set, the default is `http://127.0.0.1:8000`.
+If the variable is not set, the development fallback is `http://127.0.0.1:8000`.
+
+The fallback is a source-development convenience, not a packaged-runtime guarantee. Packaged Desktop does not include a Python sidecar in M11 and must not assume a local server exists. A compatible local or remote endpoint may be configured explicitly; Desktop validates API/schema versions and capabilities before enabling planning.
 
 The development UI uses the fixed origin `http://localhost:1420`. The local MCAgent Server explicitly allows that origin, its `127.0.0.1` equivalent, and the current Tauri v2 local origins. Start the server before using the API workflow buttons.
+
+If MCAgent Server is unavailable or incompatible, Parse Intent, Generate Plan, and Explain Plan are blocked with a classified connection message. Environment Preview and Safe Platform Probe remain Desktop-local and available; the probe still requires explicit consent. Endpoint and last-check state remain in the current session and are not saved to browser storage.
 
 ## Build
 

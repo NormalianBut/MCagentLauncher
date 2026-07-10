@@ -1,0 +1,73 @@
+name: Alpha bug report
+description: Report a reproducible v0.1 Alpha application or API problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, tokens, API keys, complete local paths, private host details, or full environment reports. Redact logs before submitting.
+  - type: dropdown
+    id: component
+    attributes:
+      label: App component
+      options:
+        - Desktop Shell
+        - Web Playground
+        - MCAgent Server
+        - Schemas or shared packages
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or tag
+      placeholder: v0.1-alpha-preview
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: OS family and version only. Do not include username or device identifiers.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: Provide the smallest repeatable sequence.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant redacted logs
+      description: Include only the minimum relevant excerpt. Do not upload a full environment report.
+      render: text
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety impact
+      description: State whether this affected consent, dry-run, local-only, or planner-only boundaries.
+  - type: checkboxes
+    id: redaction
+    attributes:
+      label: Redaction confirmation
+      options:
+        - label: I removed secrets, tokens, API keys, complete local paths, usernames, private host details, and full environment reports.
+          required: true
+        - label: I understand that sensitive security reports should not contain exploit details in a public issue.
+          required: true

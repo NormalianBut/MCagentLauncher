@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import explain, health, intent, plan
+from app.routers import explain, health, intent, meta, plan
 
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(meta.router, prefix="/v1", tags=["metadata"])
 app.include_router(intent.router, prefix="/v1/intent", tags=["intent"])
 app.include_router(plan.router, prefix="/v1/resources", tags=["resources"])
 app.include_router(explain.router, prefix="/v1/explain", tags=["explain"])
