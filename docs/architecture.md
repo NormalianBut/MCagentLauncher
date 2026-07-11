@@ -55,6 +55,22 @@ The Planner owns intent and requirements. The Resolver normalizes metadata, eval
 
 The Resolver has no download, upload, filesystem, execution, telemetry, Java, path-scan, or launcher authority. Default network policy is offline. Future metadata-only networking requires explicit policy and capability negotiation. See [ADR 0005](./adr/0005-resource-resolver-architecture.md).
 
+## M14 Modrinth Metadata Provider
+
+M14 implements Modrinth as the first M13 `MetadataProvider` adapter:
+
+```text
+ResourceRequirement[]
+  -> MetadataResourceResolver
+  -> MetadataProviderRegistry
+  -> ModrinthMetadataProvider
+  -> normalized ResourceCandidate[] + ResolverIssue[]
+```
+
+The provider reads only Modrinth API metadata after an explicit `metadata-only` network policy. `offline` performs no request. Project, version, compatibility, dependency, file URL, and hash claims are strictly parsed and normalized; file URLs are never fetched.
+
+The Python MCAgent Server remains on its offline adapter and continues to advertise `liveResourceResolver=false`. M14 adds no cross-language process bridge and does not change Desktop behavior. See [ADR 0006](./adr/0006-modrinth-metadata-provider.md).
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.

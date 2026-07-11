@@ -67,3 +67,11 @@ The Windows artifact is unsigned, current-user scoped, and for manual testing. N
 Resource Resolver contracts are metadata-only and remain in the Planner Plane. Every declared provider capability fixes download, upload, filesystem access, execution, and telemetry to `false`. Resolver requests contain requirements and public source hints only; they must not contain environment reports, local paths, tokens, or user credentials.
 
 M13 adds no network implementation. Future metadata-only access must be explicit, capability-negotiated, rate-limit aware, and must preserve incomplete or ambiguous metadata rather than fabricating trusted values. CurseForge remains an unimplemented future provider.
+
+## M14 Modrinth Provider Controls
+
+The Modrinth adapter permits metadata requests only under explicit `networkPolicy="metadata-only"`; offline policy makes zero fetch calls. Its API surface covers search, project, and version JSON metadata only. Returned file URLs are recorded but never requested.
+
+Strict parsing rejects malformed project/version records and preserves missing hashes as incomplete metadata. HTTP and rate-limit failures become diagnostics without automatic retry. The provider imports no filesystem, shell, child-process, download, installer, Java, launcher, telemetry, or paid AI dependency.
+
+MCAgent Server remains offline and declares `liveResourceResolver=false`, so packaged clients do not gain an implicit live-network capability in M14.

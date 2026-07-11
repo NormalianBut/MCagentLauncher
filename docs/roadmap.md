@@ -26,4 +26,5 @@ Initial milestones:
 - M11: runtime topology and endpoint capability negotiation (complete).
 - M12: Windows-first native Desktop packaging preview (complete).
 - M13: provider-neutral Resource Resolver architecture and contracts (design).
-- M14 preparation: provider conformance fixtures, deterministic offline orchestration, and capability negotiation; no downloads or execution.
+- M14: Modrinth metadata provider, strict normalization, deterministic registry/orchestration, and metadata-only policy.
+- M15 preparation: explicit MCAgent live-resolver capability integration, cache policy, and end-to-end provider diagnostics; no downloads or execution.
