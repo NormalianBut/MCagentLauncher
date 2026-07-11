@@ -5,10 +5,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./compatibilityAnalyzer": "./src/compatibilityAnalyzer.ts",
+    "./compatibilityPlanning": "./src/compatibilityPlanning.ts",
     "./modrinth": "./src/modrinth.ts",
     "./metadataResourceResolver": "./src/metadataResourceResolver.ts",
     "./planningPipeline": "./src/planningPipeline.ts",
     "./resourceResolver": "./src/resourceResolver.ts",
+    "./resolveAndAnalyzeMetadata": "./src/resolveAndAnalyzeMetadata.ts",
     "./providerRegistry": "./src/providerRegistry.ts",
     "./providers/modrinth": "./src/providers/modrinthMetadataProvider.ts",
     "./serviceInfo": "./src/serviceInfo.ts"

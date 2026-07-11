@@ -1,5 +1,6 @@
 export * from "./alias.ts";
 export * from "./buildInfo.ts";
+export * from "./compatibility.ts";
 export * from "./executor.ts";
 export * from "./environment.ts";
 export * from "./installActions.ts";

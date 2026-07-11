@@ -24,6 +24,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and the
 - [ADR 0004: Native Desktop Packaging Preview](./adr/0004-native-desktop-packaging-preview.md)
 - [ADR 0005: Resource Resolver Architecture](./adr/0005-resource-resolver-architecture.md)
 - [ADR 0006: Modrinth Metadata Provider](./adr/0006-modrinth-metadata-provider.md)
+- [ADR 0007: Compatibility Analysis Engine](./adr/0007-compatibility-analysis-engine.md)
 
 ## Releases
 
@@ -37,6 +38,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and the
 - [v0.1 Alpha Feedback Guide](./releases/v0.1-alpha-feedback.md)
 - [M12 Native Desktop Preview Checklist](./releases/m12-native-desktop-preview-checklist.md)
 - [M14 Modrinth Provider Review](./releases/v0.2-m14-review.md)
+- [M15 Compatibility Analysis Review](./releases/v0.2-m15-review.md)
 
 ## Demo
 

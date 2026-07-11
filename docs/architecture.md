@@ -71,6 +71,21 @@ The provider reads only Modrinth API metadata after an explicit `metadata-only` 
 
 The Python MCAgent Server remains on its offline adapter and continues to advertise `liveResourceResolver=false`. M14 adds no cross-language process bridge and does not change Desktop behavior. See [ADR 0006](./adr/0006-modrinth-metadata-provider.md).
 
+## M15 Compatibility Analysis Engine
+
+M15 adds a pure, provider-neutral analysis layer after resolution and before plan mapping:
+
+```text
+ResourceCandidate[]
+  -> Compatibility Analysis Engine
+  -> CompatibilityAnalysisResult
+  -> compatibility-aware Resource Plan
+```
+
+Providers normalize metadata but do not decide final compatibility. The Analyzer uses exact Minecraft version, loader, side, dependency, duplicate, and explicit rule evidence. Unknown metadata remains unknown, and conflicts require a rule or normalized incompatible dependency source.
+
+Resolver and Analyzer compose through an explicit wrapper; offline resolution remains zero-fetch. Compatibility blockers can be mapped to plan errors and high risk without changing the resource-plan schema. M15 does not repair choices, download resources, access local instances, or enable the Executor. See [ADR 0007](./adr/0007-compatibility-analysis-engine.md).
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.
