@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "desktop-preview-core",
+  "description": "Core window capabilities only for the M12 native preview UI.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

@@ -1,0 +1,8 @@
+# M12 ships only the desktop icon formats referenced by tauri.conf.json.
+StoreLogo.png
+Square*.png
+icon.icns
+icon.png
+64x64.png
+ios/
+android/

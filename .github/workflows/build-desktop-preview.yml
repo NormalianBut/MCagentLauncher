@@ -1,0 +1,68 @@
+name: Build Desktop Unsigned Preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.10.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.96.0
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Desktop identity and permissions
+        run: |
+          pnpm check:desktop-version
+          pnpm check:desktop-security
+
+      - name: Validate contracts
+        run: |
+          pnpm validate:schemas
+          pnpm test:shared-types
+          pnpm test:api-client
+
+      - name: Build Desktop frontend
+        run: pnpm --dir apps/desktop build
+
+      - name: Check Tauri application
+        run: cargo check --locked --manifest-path apps/desktop/src-tauri/Cargo.toml
+
+      - name: Build unsigned Windows preview
+        run: pnpm package:desktop:windows
+
+      - name: Summarize safety boundary
+        shell: bash
+        run: |
+          echo "Artifact: MCagentlauncher 0.1.0 Windows x64 unsigned preview"
+          echo "Server bundled: false; executor enabled: false; updater enabled: false"
+
+      - name: Upload unsigned preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MCagentlauncher-0.1.0-windows-x64-unsigned-preview
+          path: artifacts/desktop-preview/*
+          if-no-files-found: error
+          retention-days: 14
