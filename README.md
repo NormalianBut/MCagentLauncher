@@ -4,7 +4,7 @@ MCagentlauncher is an open-source, community-driven intelligent launcher project
 
 Current status: **v0.1 alpha preview**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
 
-The v0.1 Alpha Preview has been released. M11 added a versioned runtime contract, M12 added a Windows-first unsigned Tauri Native Desktop Preview, and M13 defines the provider-neutral Resource Resolver architecture.
+The v0.1 Alpha Preview has been released. M11 added a versioned runtime contract, M12 added a Windows-first unsigned Tauri Native Desktop Preview, M13 defined the provider-neutral Resource Resolver architecture, and M14 implements its first metadata-only Modrinth provider.
 
 ```text
 natural language -> intent -> resource plan -> explanation -> install dry-run -> executor dry-run -> environment preview
@@ -27,7 +27,7 @@ This alpha preview does not download, install, write local instances, or launch 
 - Runtime JSON Schema validation.
 - Intent parsing.
 - Resource planning and diagnostics.
-- Resource resolver data structures and Modrinth metadata client.
+- Resource Resolver contracts, deterministic provider registry, and Modrinth metadata provider.
 - Alias DB and planning pipeline.
 - Web/API Playground.
 - Desktop Shell.
@@ -119,11 +119,12 @@ Source development and packaged Desktop require MCAgent Server to be started sep
 - M11: post-alpha runtime contract, connection compatibility, and feedback infrastructure.
 - M12: Windows-first unsigned Native Desktop Packaging Preview.
 - M13: Resource Resolver architecture, provider capabilities, and deterministic metadata contracts.
+- M14: strict Modrinth metadata provider and metadata-only Resolver integration.
 
 ## Roadmap
 
-- M14: provider conformance fixtures and deterministic offline resolver orchestration.
-- Future: opt-in metadata-only provider networking behind explicit capability negotiation.
+- M15: explicit MCAgent live-resolver capability integration and cache policy.
+- Future: additional metadata providers behind explicit capability negotiation.
 - Future: Desktop Local Executor implementation after policy, confirmation, source verification, hash verification, rollback, and failure handling are complete.
 
 ## Contributing

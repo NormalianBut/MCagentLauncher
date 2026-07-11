@@ -65,6 +65,13 @@ export async function searchProjects(
   return hits;
 }
 
+export async function getProject(
+  projectIdOrSlug: string,
+  options: ModrinthClientOptions = {},
+): Promise<unknown> {
+  return requestJson(`/project/${encodeURIComponent(projectIdOrSlug)}`, options);
+}
+
 export async function getProjectVersions(
   projectId: string,
   options: VersionQueryOptions & ModrinthClientOptions = {},
@@ -158,7 +165,7 @@ export function selectBestVersion(
   loader: string,
   preference: "stable" | "experimental" = "stable",
 ): any {
-  const compatible = versions
+  const compatible = (versions as Array<Record<string, any>>)
     .filter((version: any) => readStringArray(version, "game_versions").includes(minecraftVersion))
     .filter((version: any) => readStringArray(version, "loaders").includes(loader));
 
@@ -227,8 +234,8 @@ async function requestJson(path: string, options: ModrinthClientOptions): Promis
     throw new ModrinthApiError("No fetch implementation available", 0);
   }
 
-  const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
-  const response = await fetchImpl(new URL(path, baseUrl), {
+  const baseUrl = ensureTrailingSlash(options.baseUrl ?? DEFAULT_BASE_URL);
+  const response = await fetchImpl(new URL(path.replace(/^\/+/, ""), baseUrl), {
     headers: {
       "User-Agent": options.userAgent ?? MODRINTH_USER_AGENT,
       Accept: "application/json",
@@ -243,6 +250,10 @@ async function requestJson(path: string, options: ModrinthClientOptions): Promis
   }
 
   return response.json();
+}
+
+function ensureTrailingSlash(value: string): string {
+  return value.endsWith("/") ? value : `${value}/`;
 }
 
 function normalizeFiles(files: unknown): ResourceFile[] {
