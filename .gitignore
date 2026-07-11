@@ -34,6 +34,7 @@ coverage/
 # Rust
 target/
 Cargo.lock
+!apps/desktop/src-tauri/Cargo.lock
 
 # Python
 __pycache__/
@@ -46,6 +47,8 @@ venv/
 # Tauri / desktop builds
 src-tauri/target/
 apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+artifacts/desktop-preview/
 
 # Supabase local
 supabase/.branches/

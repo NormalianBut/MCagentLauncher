@@ -5,11 +5,13 @@ import {
   ServiceConnectionError,
 } from "../../../../packages/api-client/src/serviceInfo";
 import type { ServiceCompatibilityResult } from "../../../../packages/api-client/src/serviceInfo";
+import { validateConfiguredEndpoint } from "../../../../packages/shared-types/src/buildInfo";
 
 export { ServiceCompatibilityError, ServiceConnectionError };
 
 export function mcagentBaseUrl(): string {
-  return (import.meta.env.VITE_MCAGENT_API_URL ?? "http://127.0.0.1:8000").replace(/\/+$/, "");
+  const configured = import.meta.env.VITE_MCAGENT_API_URL ?? "http://127.0.0.1:8000";
+  return validateConfiguredEndpoint(configured).href.replace(/\/$/, "");
 }
 
 export function checkMcagentConnection(): Promise<ServiceCompatibilityResult> {

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DiagnosticsPanel } from "./components/DiagnosticsPanel";
+import { BuildInfoPanel } from "./components/BuildInfoPanel";
 import { EnvironmentPanel } from "./components/EnvironmentPanel";
 import { ExecutorPreviewPanel } from "./components/ExecutorPreviewPanel";
 import { InstallPreviewPanel } from "./components/InstallPreviewPanel";
@@ -21,6 +22,7 @@ import {
   type EnvironmentWarning,
 } from "../../../packages/shared-types/src/environment";
 import { buildDesktopInstallPreview } from "./lib/installPreview";
+import { getDesktopBuildInfo } from "./lib/buildInfo";
 import {
   checkMcagentConnection,
   explainPlan,
@@ -61,6 +63,7 @@ export default function App() {
   });
 
   const diagnostics = useMemo(() => extractDiagnostics(planResponse), [planResponse]);
+  const buildInfo = useMemo(() => getDesktopBuildInfo(), []);
   const serverReady = serviceConnection.status === "connected" || serviceConnection.status === "degraded";
   const workflowSteps = useMemo(() => ([
     { label: "Natural Language", status: prompt.trim().length > 0 ? "ready" : "idle" },
@@ -305,6 +308,7 @@ export default function App() {
       {confirmationMessage ? <div className="notice-banner">{confirmationMessage}</div> : null}
 
       <div className="grid">
+        <BuildInfoPanel info={buildInfo} />
         <IntentPanel intent={intent} />
         <DiagnosticsPanel diagnostics={diagnostics} explanation={explanation} />
         <PlanPanel planResponse={planResponse} />

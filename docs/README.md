@@ -1,6 +1,6 @@
 # MCagentlauncher Docs
 
-This directory documents the released MCagentlauncher v0.1 Alpha Preview and M11 post-alpha stabilization contract.
+This directory documents the released MCagentlauncher v0.1 Alpha Preview, the M11 runtime contract, and the M12 native packaging preview.
 
 ## Architecture
 
@@ -8,6 +8,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and M11
 - [Platform Boundaries](./platform-boundaries.md)
 - [Desktop Executor Design](./desktop-executor-design.md)
 - [API Playground Prep](./api-playground-prep.md)
+- [Native Desktop Packaging Preview](./native-desktop-packaging-preview.md)
 
 ## Security
 
@@ -20,6 +21,8 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and M11
 - [ADR 0001: Read-only Environment Probe](./adr/0001-read-only-environment-probe.md)
 - [ADR 0002: Safe Platform Probe](./adr/0002-safe-platform-probe.md)
 - [ADR 0003: Post-alpha Runtime Topology](./adr/0003-beta-runtime-topology.md)
+- [ADR 0004: Native Desktop Packaging Preview](./adr/0004-native-desktop-packaging-preview.md)
+- [ADR 0005: Resource Resolver Architecture](./adr/0005-resource-resolver-architecture.md)
 
 ## Releases
 
@@ -31,6 +34,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and M11
 - [v0.1 Alpha Screenshot Checklist](./releases/v0.1-alpha-screenshot-checklist.md)
 - [v0.1 Alpha Known Limitations](./releases/v0.1-alpha-known-limitations.md)
 - [v0.1 Alpha Feedback Guide](./releases/v0.1-alpha-feedback.md)
+- [M12 Native Desktop Preview Checklist](./releases/m12-native-desktop-preview-checklist.md)
 
 ## Demo
 

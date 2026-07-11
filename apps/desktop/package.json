@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:version": "node scripts/check-version.mjs",
+    "check:security": "node scripts/check-tauri-security.mjs",
+    "tauri:dev": "tauri dev",
+    "package": "pnpm check:version && pnpm check:security && tauri build --bundles nsis && node scripts/prepare-preview-artifacts.mjs",
+    "package:windows": "pnpm package"
   },
   "dependencies": {
     "react": "^19.2.3",
@@ -14,6 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.2",
+    "@tauri-apps/cli": "2.11.4",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3",

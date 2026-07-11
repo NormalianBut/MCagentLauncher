@@ -37,6 +37,24 @@ Incompatible endpoints block server-dependent planning. Desktop-local Environmen
 
 MCAgent Server is the Planner Plane. The future Desktop Local Executor is the Execution Plane. M11 does not bundle a Python sidecar or enable execution. M12 investigates native packaging; M13 advances live planning/resolver capability negotiation.
 
+## M12 Native Packaging
+
+M12 packages the existing dry-run UI as a Windows-first Tauri Native Desktop Preview. The packaged application still depends on an independently operated, compatible MCAgent endpoint and does not bundle or start Python. Its Tauri capability is limited to core window behavior; no filesystem, shell, process, updater, autostart, download, installation, or launch capability is enabled.
+
+The workflow artifact is unsigned and intended only for manual project review. macOS and Linux are not validated in M12. Sidecar, signing/notarization, updater, and Local Executor designs remain separate future decisions. See [ADR 0004](./adr/0004-native-desktop-packaging-preview.md).
+
+## M13 Resource Resolver Architecture
+
+M13 defines a provider-neutral metadata boundary inside the Planner Plane:
+
+```text
+Intent -> Planner -> ResourceRequirement[] -> Resource Resolver -> Metadata Providers
+```
+
+The Planner owns intent and requirements. The Resolver normalizes metadata, evaluates compatibility claims, ranks candidates deterministically, and returns diagnostics. Provider adapters translate Modrinth, GitHub Releases, and MC百科 metadata into shared contracts; CurseForge remains a future contract only.
+
+The Resolver has no download, upload, filesystem, execution, telemetry, Java, path-scan, or launcher authority. Default network policy is offline. Future metadata-only networking requires explicit policy and capability negotiation. See [ADR 0005](./adr/0005-resource-resolver-architecture.md).
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.

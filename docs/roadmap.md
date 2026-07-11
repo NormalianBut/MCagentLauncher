@@ -21,3 +21,9 @@ Initial milestones:
 - Self-hostable MCAgent nodes.
 - Broader loader and resource type support after the Fabric-first flow is stable.
 
+## v0.2 Beta Planning
+
+- M11: runtime topology and endpoint capability negotiation (complete).
+- M12: Windows-first native Desktop packaging preview (complete).
+- M13: provider-neutral Resource Resolver architecture and contracts (design).
+- M14 preparation: provider conformance fixtures, deterministic offline orchestration, and capability negotiation; no downloads or execution.

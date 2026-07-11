@@ -413,6 +413,18 @@ textarea {
   background: #f2f6f4;
 }
 
+.build-info-panel {
+  background: #f4f7f8;
+}
+
+.build-boundary {
+  margin: 12px 0 0;
+  border-left: 3px solid #7f5126;
+  padding: 8px 10px;
+  color: #5c4510;
+  font-weight: 700;
+}
+
 .service-panel {
   margin: 18px 0;
 }

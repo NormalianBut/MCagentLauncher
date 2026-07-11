@@ -55,3 +55,15 @@ Metadata requests contain no environment report, local path, token, API key, or 
 ## Security Feedback
 
 Public issues must not contain exploits, credentials, private paths, or sensitive environment data. Contributors should use GitHub private vulnerability reporting only when the repository UI shows that it is available, or another maintainer-published private contact. The project does not automatically collect telemetry, logs, or environment reports.
+
+## M12 Packaging Controls
+
+The Native Desktop Preview exposes only Tauri `core:default` capability to the main window. A repository check rejects filesystem, shell, process, updater, and autostart plugins, command handlers, and sidecars. The explicit CSP allows application resources and HTTP(S) requests to the configured MCAgent endpoint; endpoint URLs containing credentials are rejected.
+
+The Windows artifact is unsigned, current-user scoped, and for manual testing. No certificate, signing password, token, telemetry, updater, Python runtime, or server is included. Artifact checksums and a non-sensitive manifest are generated after the native build. These build-time file operations are not linked into Desktop runtime behavior.
+
+## M13 Resolver Controls
+
+Resource Resolver contracts are metadata-only and remain in the Planner Plane. Every declared provider capability fixes download, upload, filesystem access, execution, and telemetry to `false`. Resolver requests contain requirements and public source hints only; they must not contain environment reports, local paths, tokens, or user credentials.
+
+M13 adds no network implementation. Future metadata-only access must be explicit, capability-negotiated, rate-limit aware, and must preserve incomplete or ambiguous metadata rather than fabricating trusted values. CurseForge remains an unimplemented future provider.

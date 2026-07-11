@@ -6,12 +6,14 @@
   "exports": {
     ".": "./src/index.ts",
     "./alias": "./src/alias.ts",
+    "./buildInfo": "./src/buildInfo.ts",
     "./environment": "./src/environment.ts",
     "./executor": "./src/executor.ts",
     "./installActions": "./src/installActions.ts",
     "./plan": "./src/plan.ts",
     "./probePolicy": "./src/probePolicy.ts",
     "./resolver": "./src/resolver.ts",
+    "./resolverContract": "./src/resolverContract.ts",
     "./resource-plan": "./src/resource-plan.ts",
     "./resource": "./src/resource.ts",
     "./serviceInfo": "./src/serviceInfo.ts"

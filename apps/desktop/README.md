@@ -1,6 +1,6 @@
-# MCagentlauncher Desktop Shell
+# MCagentlauncher Native Desktop Preview
 
-`apps/desktop` is the v0.1 alpha Desktop Shell for MCagentlauncher v0.1 - Natural Instance. It is a React, TypeScript, and Vite UI with a minimal Tauri native shell placeholder.
+`apps/desktop` is the v0.1 alpha Desktop Shell for MCagentlauncher v0.1 - Natural Instance. M12 packages the React, TypeScript, and Vite UI as a Windows-first Tauri Native Desktop Preview.
 
 The current desktop app is a dry-run preview surface. It can call the MCAgent Server API, display intent parsing, display resource planning, generate install-action previews, and show executor dry-run results. It does not perform real local execution.
 
@@ -67,6 +67,22 @@ pnpm --dir apps/desktop build
 ```
 
 This validates the React/Vite Desktop Shell. The Tauri native build is intentionally not required for M7 because native packaging can require platform-specific toolchains.
+
+## M12 Native Packaging Preview
+
+The packaged Desktop remains dry-run and depends on an independently started compatible MCAgent endpoint. It does not bundle or automatically start Python, and it includes no Local Executor or updater.
+
+```powershell
+pnpm check:desktop-version
+pnpm check:desktop-security
+pnpm package:desktop:windows
+```
+
+The Windows x64 NSIS output is copied to `artifacts/desktop-preview/` with an unsigned-preview filename, SHA-256 checksum, and non-sensitive artifact manifest. It is a manual test artifact, not a stable Release. See `docs/native-desktop-packaging-preview.md`.
+
+`VITE_MCAGENT_API_URL` remains a build-time override. The URL must use HTTP(S) and cannot contain credentials. The packaged app performs one startup `/v1/meta` check and only retries when the user requests it. It never stores endpoint or environment-report data in browser storage.
+
+Tauri permissions remain core-only. There are no filesystem, shell, process, updater, autostart, sidecar, download, installation, instance-write, Java-probe, path-scan, or Minecraft-launch commands.
 
 ## Current Safety Boundary
 

@@ -1,6 +1,7 @@
 {
   "name": "mcagentlauncher",
   "version": "0.1.0",
+  "packageManager": "pnpm@11.10.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +10,10 @@
     "build:web": "pnpm --dir apps/web build",
     "dev:desktop": "pnpm --dir apps/desktop dev",
     "build:desktop": "pnpm --dir apps/desktop build",
+    "check:desktop-version": "pnpm --dir apps/desktop check:version",
+    "check:desktop-security": "pnpm --dir apps/desktop check:security",
+    "package:desktop": "pnpm --dir apps/desktop package",
+    "package:desktop:windows": "pnpm --dir apps/desktop package:windows",
     "test:api-client": "pnpm --dir packages/api-client test",
     "test:shared-types": "pnpm --dir packages/shared-types test",
     "validate:schemas": "node packages/schemas/scripts/validate.mjs"
