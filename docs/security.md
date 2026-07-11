@@ -75,3 +75,11 @@ The Modrinth adapter permits metadata requests only under explicit `networkPolic
 Strict parsing rejects malformed project/version records and preserves missing hashes as incomplete metadata. HTTP and rate-limit failures become diagnostics without automatic retry. The provider imports no filesystem, shell, child-process, download, installer, Java, launcher, telemetry, or paid AI dependency.
 
 MCAgent Server remains offline and declares `liveResourceResolver=false`, so packaged clients do not gain an implicit live-network capability in M14.
+
+## M15 Compatibility Analysis Controls
+
+Compatibility analysis consumes normalized metadata only and imports no provider client. It performs exact, deterministic checks without fetch, filesystem access, environment inspection, persistence, telemetry, or process execution.
+
+Unknown metadata is not treated as compatible. Conflict findings require explicit version-controlled rules or provider-normalized incompatible dependency metadata; names never create conflicts. Plan integration only copies structured diagnostics and risk state. It cannot replace, download, install, write, repair, or launch resources.
+
+Python MCAgent Server continues to declare `liveResourceResolver=false`. M15 introduces no CurseForge implementation or commercial model API.
