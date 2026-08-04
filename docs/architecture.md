@@ -86,6 +86,27 @@ Providers normalize metadata but do not decide final compatibility. The Analyzer
 
 Resolver and Analyzer compose through an explicit wrapper; offline resolution remains zero-fetch. Compatibility blockers can be mapped to plan errors and high risk without changing the resource-plan schema. M15 does not repair choices, download resources, access local instances, or enable the Executor. See [ADR 0007](./adr/0007-compatibility-analysis-engine.md).
 
+## Repository Control Loop
+
+Architecture work is driven by durable repository state instead of session-only instructions:
+
+```text
+project-state
+  -> active execution plan
+  -> scoped checkpoint
+  -> tests + boundary scan
+  -> progress log + state update
+  -> review or approval gate
+```
+
+`AGENTS.md` defines repository policy, `PLANS.md` defines long-running plan structure, and `docs/autonomy-policy.md` separates AUTO design work from REVIEW changes and GATED privileges. The decision queue and risk register preserve unresolved choices without implying approval.
+
+`scripts/check-autonomy-boundaries.mjs` is a deterministic, read-only repository control. It classifies runtime, manifest, test, documentation, example, and tooling files and fails only on clear runtime privilege patterns. It supplements code review and threat modeling; it cannot prove arbitrary code safe.
+
+## M16 Design Boundary
+
+M16 may describe the future Local Executor in the Execution Plane and add pure contracts or state-machine tests. It must not add filesystem, download, process, Java, authentication, updater, sidecar, or Minecraft launch authority. The proposed path to a First Playable Preview and each required capability gate are documented in `docs/execution/first-playable-plan.md`.
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.
