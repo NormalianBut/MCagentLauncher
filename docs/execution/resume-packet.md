@@ -1,10 +1,12 @@
 # Autonomy Lab Resume Packet
 
 - Updated: 2026-08-04
-- Runtime state: implementation checkpoint verified
+- Runtime state: M18 review handoff complete
 - Branch: `codex/m18-autonomy-recovery`
 - Baseline: `884403e66d84498d64263ec48c663efee50bb278`
-- Exact next action: Create the verified feature commit, push the isolated branch, and prepare the Draft PR without merge.
+- Feature commit: `2815147d0695df28f1cfe1e563512f3740576bc3`
+- Draft PR: `https://github.com/NormalianBut/MCagentLauncher/pull/13`
+- Exact next action: Review Draft PR #13; do not merge or cross later capability gates without separate approval.
 
 ## Completed
 

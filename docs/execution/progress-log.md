@@ -170,3 +170,14 @@ This file is append-only. Correct an earlier entry with a new entry; do not rewr
 - **Regressions:** none observed in the complete configured verification scope.
 - **Next action:** stage and inspect the exact M18 scope, create the feature commit, synchronize/push, and open the Draft PR.
 - **Decision required:** none within DQ-008; merge, tag, Release, and every product capability gate remain closed.
+
+### 2026-08-04T15:05:00+08:00 - M18 Draft PR review handoff completed
+
+- **Branch/worktree:** `codex/m18-autonomy-recovery`; feature commit `2815147d0695df28f1cfe1e563512f3740576bc3` is pushed to `origin/codex/m18-autonomy-recovery`; Draft PR #13 targets `main`.
+- **Objective:** publish the verified interruption-recovery foundation for review without merge or product capability expansion.
+- **Changes:** staged and inspected the exact 22-file M18 scope, committed it, synchronized `origin/main`, pushed the isolated branch, and opened the Draft PR with scope, security boundaries, tests, rollback, and closed gates.
+- **Commands run:** `git diff --cached --check`; staged name/status/stat inspection; `git commit -m "feat: add interruption-resilient autonomy runtime"`; `git fetch origin main`; baseline/merge-base checks; `git push -u origin codex/m18-autonomy-recovery`; GitHub connector PR creation; `gh auth status`; `gh pr create --draft` fallback.
+- **Results:** staged checks passed; commit `2815147` created; fetched `origin/main` remained `884403e` and was the exact merge base; push passed. The GitHub connector returned 403 and `gh auth status` reported the stored token invalid, but the authenticated CLI PR creation fallback succeeded at `https://github.com/NormalianBut/MCagentLauncher/pull/13`.
+- **Regressions:** none observed. No merge, tag, Release, platform-boundary edit, dependency change, product process authority, Java/Minecraft action, download, or user-data access occurred.
+- **Next action:** review Draft PR #13.
+- **Decision required:** human review; all later capability and release gates remain closed.

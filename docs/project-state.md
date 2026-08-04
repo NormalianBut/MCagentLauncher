@@ -8,7 +8,8 @@ This is the primary handoff document for a new Codex task. Verify it against Git
 - Current release checkpoint: `v0.2-beta-m17`.
 - Baseline branch/commit: clean synchronized `main` at `884403e66d84498d64263ec48c663efee50bb278` (merged M17).
 - Active branch: `codex/m18-autonomy-recovery`, created from that baseline.
-- M18 changes are under verification and are not merged, tagged, or released.
+- M18 feature commit: `2815147d0695df28f1cfe1e563512f3740576bc3` (`feat: add interruption-resilient autonomy runtime`).
+- Draft PR #13 targets `main`; M18 is not merged, tagged, or released.
 
 ## Completed Milestones
 
@@ -17,7 +18,7 @@ This is the primary handoff document for a new Codex task. Verify it against Git
 
 ## Current Objective
 
-M18 adds interruption-resilient repository tooling: an external runtime checkpoint, branch work-package checkpoint, verified-integration discipline, single-coordinator lease/heartbeat, PAUSE/STOP, conservative resume/doctor/cleanup, resource modes, and bounded ownership-verifying process supervision. Implementation and full project verification pass; final security scans and review handoff remain.
+M18 adds interruption-resilient repository tooling: an external runtime checkpoint, branch work-package checkpoint, verified-integration discipline, single-coordinator lease/heartbeat, PAUSE/STOP, conservative resume/doctor/cleanup, resource modes, and bounded ownership-verifying process supervision. Implementation, verification, push, and Draft PR handoff are complete; human review remains.
 
 ## Enabled Capabilities
 
@@ -42,7 +43,7 @@ M18 adds interruption-resilient repository tooling: an external runtime checkpoi
 
 ## Next Exact Action
 
-Create the verified feature commit, synchronize the remote baseline, push the branch, and prepare the Draft PR without merge.
+Review Draft PR #13. Do not merge or cross any product/download/Java/OAuth/process/release gate without separate approval.
 
 ## Open Decisions And Risks
 

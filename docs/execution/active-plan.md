@@ -41,7 +41,7 @@ Classification is GATED because tooling writes external state and supervises pro
 3. **Completed - focused tests:** the initial Windows CIM identity approach failed safely; replaced it with a no-admin named-pipe challenge. All 15 focused tests pass.
 4. **Completed - documentation and audit:** synchronized policy/state/risk/resume documentation and hardened supervision to require an active matching lease.
 5. **Completed - full project verification:** unified verification passed all configured suites, builds, Desktop security, boundary scan, and whitespace check.
-6. **In progress - review handoff:** targeted scans and repeated unified verification passed; commit, synchronize/push, and open a Draft PR targeting `main`; do not merge.
+6. **Completed - review handoff:** feature commit `2815147` is pushed and Draft PR #13 targets `main`; no merge, tag, or Release occurred.
 
 ## Tests
 
@@ -69,4 +69,4 @@ Append actual commands/results after each checkpoint; keep this plan, project st
 
 ## Completion Report
 
-Report branch/PR, pause/resume/lease/checkpoint/supervisor behavior, recovery evidence, exact tests, limitations, and user pause/resume commands. Do not claim product execution capability.
+M18 reached its stopping condition on 2026-08-04. Feature commit `2815147d0695df28f1cfe1e563512f3740576bc3` is pushed on `codex/m18-autonomy-recovery`, and Draft PR #13 targets `main`. Fifteen focused tests and the complete configured project matrix pass. The tooling remains separate from product runtime authority.
