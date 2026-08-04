@@ -107,6 +107,18 @@ project-state
 
 M16 may describe the future Local Executor in the Execution Plane and add pure contracts or state-machine tests. It must not add filesystem, download, process, Java, authentication, updater, sidecar, or Minecraft launch authority. The proposed path to a First Playable Preview and each required capability gate are documented in `docs/execution/first-playable-plan.md`.
 
+M16 adopts a deny-by-default transaction boundary:
+
+```text
+compatibility-aware Resource Plan
+  -> immutable reviewed-plan envelope
+  -> Desktop workspace and capability review
+  -> confirmation bound to exact plan + manifest + workspace + permissions
+  -> future gated Local Executor transaction
+```
+
+The M6 install-action preview remains display-only and cannot be executed. Application-managed and user-selected workspaces are distinct trust classes represented by opaque identities; pure contracts contain no absolute local path or runtime adapter. Desired state lives in an immutable execution manifest while observed progress belongs to a separate transaction journal and audit stream. See [ADR 0008](./adr/0008-local-executor-architecture.md).
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.

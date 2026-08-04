@@ -8,8 +8,9 @@ This is the primary handoff document for a new Codex session. Read it before the
 - Current release checkpoint: `v0.2-beta-m15`.
 - Current tags include `v0.2-beta-m13`, `v0.2-beta-m14`, and `v0.2-beta-m15`.
 - Baseline branch: `main`, tracking `origin/main`.
-- Baseline commit: `014fa55` (`Merge pull request #9 from NormalianBut/feat/m15-compatibility-analysis`).
-- Repository-driven governance controls are implemented and verified locally without changing the release tag or enabling runtime capability. The changes remain uncommitted for review.
+- Baseline commit: `6e277a6` (`Merge pull request #10 from NormalianBut/chore/autonomous-development-governance`).
+- Active branch: `codex/m16-local-executor-architecture`, created from the clean synchronized baseline for M16 architecture design.
+- Repository-driven governance controls are merged without changing the release tag or enabling runtime capability.
 
 Always run `git status --short --branch` and `git log -1 --oneline --decorate` before relying on this baseline.
 
@@ -50,7 +51,7 @@ Prepare and execute **M16 Local Executor Architecture Design only**. M16 may def
 
 ## Next Unblocked Task
 
-Create an M16 execution plan and ADR that define the Local Executor boundary, controlled workspace model, user-confirmation contract, transaction states, failure semantics, and future capability gates. Keep all runtime entry points disabled.
+M16 architecture design and pure contracts are complete and fully verified on `codex/m16-local-executor-architecture`. Prepare the review handoff, then stop before privileged runtime implementation. Keep all runtime entry points disabled.
 
 ## Open Decisions
 
@@ -73,6 +74,15 @@ No implementation approval has been granted for these decisions.
 - Compatibility analysis uses exact versions and does not repair candidates.
 - No playable Minecraft instance can be created or launched.
 - Automated boundary scanning detects clear repository patterns; it complements, but does not replace, review and threat modeling.
+- M16 contracts are architecture evidence only. Digest generation, canonical serialization, path containment, persistence atomicity, runtime rollback, and privileged adapters remain unimplemented and gated.
+
+## M16 Verification Evidence
+
+- `pnpm.cmd verify:project`: passed on 2026-08-04 with 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 26 server tests, and an autonomy scan of 197 files with zero violations.
+- `pnpm.cmd check:autonomy-boundaries`: passed independently with zero violations.
+- Isolated TypeScript check for `packages/shared-types/src/localExecutor.ts`: passed.
+- `git diff --check`: passed with line-ending notices only.
+- Manual review found no runtime I/O implementation, production dependency, credential signature, safety-check weakening, or `docs/platform-boundaries.md` change.
 
 ## Validation Commands
 

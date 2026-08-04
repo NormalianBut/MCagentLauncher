@@ -35,6 +35,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview, the v0
 - [ADR 0005: Resource Resolver Architecture](./adr/0005-resource-resolver-architecture.md)
 - [ADR 0006: Modrinth Metadata Provider](./adr/0006-modrinth-metadata-provider.md)
 - [ADR 0007: Compatibility Analysis Engine](./adr/0007-compatibility-analysis-engine.md)
+- [ADR 0008: Local Executor Architecture and Authority Boundary](./adr/0008-local-executor-architecture.md)
 
 ## Releases
 

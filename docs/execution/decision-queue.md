@@ -18,22 +18,22 @@ Only record decisions grounded in the roadmap, architecture, or First Playable p
 
 ### DQ-001 - Controlled Instance Workspace
 
-- **Status:** open.
+- **Status:** awaiting-user.
 - **Decision:** choose the future Executor-owned instance root and containment policy.
 - **Background:** Desktop must never mutate arbitrary or existing user instances.
-- **Options:** app-data managed root; user-selected empty directory with containment proof; both under one normalized workspace contract.
-- **Recommendation:** an app-managed root first, with canonical containment and no symlink/reparse traversal.
+- **Options:** app-data managed root; separately gated user-selected empty directory; both as distinct trust classes behind one policy vocabulary.
+- **Recommendation:** implement an app-managed root first. Keep user-selected locations as opaque picker selections behind `GATE-USER-PATH-01`; do not normalize the two choices into equivalent authority.
 - **Risk:** unsafe path handling could corrupt unrelated user data.
 - **Blocking work:** first filesystem write and local instance creation.
 - **User response:** not provided.
 
 ### DQ-002 - Manifest And Transaction Representation
 
-- **Status:** open.
+- **Status:** awaiting-user.
 - **Decision:** choose durable manifest, journal, commit, and recovery semantics.
 - **Background:** interrupted installation must be detectable, idempotent, and recoverable.
-- **Options:** append-only journal plus immutable manifest; staged manifest with atomic replace; embedded local database.
-- **Recommendation:** begin with versioned JSON manifest plus append-only transaction journal; validate platform atomicity before implementation.
+- **Options:** immutable versioned manifest plus append-only digest-chained journal; staged manifest with atomic replace; embedded local database.
+- **Recommendation:** begin with an immutable versioned JSON desired-state manifest and separate append-only transaction journal. Do not store mutable progress in the manifest; validate platform atomicity before implementation.
 - **Risk:** ambiguous state can cause partial installs or failed rollback.
 - **Blocking work:** transaction persistence and instance mutation.
 - **User response:** not provided.
@@ -80,4 +80,15 @@ Only record decisions grounded in the roadmap, architecture, or First Playable p
 - **Recommendation:** design direct, no-shell child ownership first; a sidecar requires a separate gate and stronger justification.
 - **Risk:** argument injection, orphaned processes, leaked logs, or rollback during active execution.
 - **Blocking work:** first process launch and first playable validation.
+- **User response:** not provided.
+
+### DQ-007 - First Privileged Local Executor Implementation Package
+
+- **Status:** awaiting-user.
+- **Decision:** approve or reject the first scoped runtime implementation package after M16, including its exact capabilities and workspace trust class.
+- **Background:** ADR 0008 defines data contracts but deliberately provides no privileged adapter. Runtime work must begin with a narrow package and cannot infer approval from the M16 design review.
+- **Options:** app-managed workspace inspection/containment only; app-managed workspace plus first controlled writes; defer all runtime implementation; propose a narrower alternative backed by new evidence.
+- **Recommendation:** after M16 review, request `GATE-EXEC-01` and `GATE-FS-01` only for an app-managed workspace containment package with no network, Java, OAuth, process, user-selected path, or existing-instance access. Split first read/validation evidence from mutation if implementation planning can preserve a useful checkpoint.
+- **Risk:** an over-broad first package could collapse independent permissions and make rollback or review evidence ambiguous.
+- **Blocking work:** any privileged Local Executor adapter, filesystem access, workspace creation, manifest/journal persistence, or instance mutation.
 - **User response:** not provided.

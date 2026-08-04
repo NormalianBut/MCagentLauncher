@@ -4,6 +4,7 @@ export * from "./compatibility.ts";
 export * from "./executor.ts";
 export * from "./environment.ts";
 export * from "./installActions.ts";
+export * from "./localExecutor.ts";
 export * from "./plan.ts";
 export * from "./probePolicy.ts";
 export * from "./resolver.ts";

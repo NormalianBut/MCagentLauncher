@@ -36,11 +36,15 @@ The plan crosses from Planner Plane data into Execution Plane authority. Each ca
 
 Define the Executor contract, controlled workspace, confirmation token, transaction state machine, capability interfaces, failure model, threat model, and audit events. Use pure contracts and tests only. No runtime privileges.
 
+**GATE-EXEC-01: stop before the first privileged Local Executor adapter or dispatcher.** Required evidence: reviewed M16 ADR and pure contracts, capability inventory, threat-model review, rollback boundary, scoped implementation checkpoint, and explicit approval.
+
 ### Stage 2: Controlled Instance Workspace
 
 Design and, only after approval, implement a dedicated project-owned root with canonical path containment, symlink/reparse-point defenses, no traversal, no existing-instance mutation, and explicit lifecycle ownership.
 
 **GATE-FS-01: stop before the first filesystem write.** Required evidence: accepted M16 ADR, path threat model, containment tests, rollback plan, dependency review, and explicit approval.
+
+**GATE-USER-PATH-01: stop before a user-selected location is resolved or used.** Required evidence: approved picker/consent UX, empty-location and ownership policy, substitution defenses, adversarial path matrix, and explicit approval. Application-managed workspace work does not imply this approval.
 
 ### Stage 3: Manifest And Transaction Model
 
@@ -61,6 +65,8 @@ Define Fabric-first metadata, installer provenance, version pinning, generated f
 Decide whether Java is user-provided, discovered under consent, or provisioned from an approved source. Define supported versions, signature/hash policy, executable path handling, arguments, memory limits, and platform differences.
 
 Java discovery, provisioning, and execution remain separately gated.
+
+**GATE-JAVA-01: stop before Java discovery, selection, provisioning, or execution.** Required evidence: accepted Java ownership ADR, provenance/version/signature policy, platform matrix, executable-path handling, licensing review, and explicit approval.
 
 ### Stage 7: Authentication
 
@@ -84,6 +90,8 @@ Run an isolated, documented matrix covering supported Windows version, Minecraft
 
 **GATE-REL-01: stop before the first playable release.** Required evidence: all prior gates, complete test matrix, security review, license/source audit, checksum and artifact provenance, known limitations, manual review, and explicit release approval.
 
+Any production dependency addition or material privilege-expanding upgrade requires `GATE-DEP-01` with necessity, provenance, maintenance, license, vulnerability, transitive-capability, and rollback evidence. Updater, sidecar, or existing Minecraft directory access remain outside First Playable and require `GATE-UPDATER-01`, `GATE-SIDECAR-01`, or `GATE-MC-DIR-01` respectively before implementation.
+
 ## Tests And Boundary Scan
 
 Every stage keeps current schema/tests/builds green and adds targeted contract, failure, and security tests before capability code. Run `pnpm verify:project`, Desktop security checks, platform-specific tests, dependency audit, secret scan, and a manual diff of `docs/platform-boundaries.md`.
@@ -96,10 +104,17 @@ Before runtime capability exists, rollback is Git-only removal of the scoped bra
 
 | Gate | Capability | Status |
 |---|---|---|
+| GATE-EXEC-01 | First privileged Local Executor adapter or dispatcher | Not requested |
 | GATE-FS-01 | First filesystem write | Not requested |
+| GATE-USER-PATH-01 | First user-selected location access | Not requested |
 | GATE-NET-01 | First network download | Not requested |
+| GATE-JAVA-01 | First Java discovery, provisioning, selection, or execution | Not requested |
 | GATE-PROC-01 | First process launch | Not requested |
 | GATE-OAUTH-01 | First OAuth use | Not requested |
+| GATE-DEP-01 | Production dependency or privilege-expanding upgrade | Not requested |
+| GATE-UPDATER-01 | Updater behavior (outside First Playable) | Not requested |
+| GATE-SIDECAR-01 | Bundled helper/sidecar (outside First Playable) | Not requested |
+| GATE-MC-DIR-01 | Existing Minecraft directory access (outside First Playable) | Not requested |
 | GATE-REL-01 | First playable release | Not requested |
 
 ## Progress And Completion Reporting
