@@ -115,3 +115,14 @@ This file is append-only. Correct an earlier entry with a new entry; do not rewr
 - **Regressions:** none observed. Remaining limitations are directory-entry fsync, hostile concurrent substitution, authentication of unkeyed digests, process-abort cleanup, and incomplete initialization recovery; none is claimed solved or used to authorize broader mutation.
 - **Next action:** stage the exact M17 scope, review the staged diff, create the requested feature commit, push the current branch, and open a Draft PR targeting `main`.
 - **Decision required:** none for M17 review handoff. DQ-003 through DQ-006 and all later capability gates remain unapproved.
+
+### 2026-08-04T12:00:10+08:00 - M17 Draft PR review handoff completed
+
+- **Branch/worktree:** `codex/m17-controlled-workspace`; feature commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` is pushed to `origin/codex/m17-controlled-workspace`; Draft PR #12 targets `main` and remains unmerged.
+- **Objective:** publish the verified M17 controlled-workspace package for review and record the exact handoff without crossing a later gate.
+- **Changes:** reviewed and staged the exact 19-file M17 scope; created the requested feature commit; pushed the existing branch; opened Draft PR #12 with filesystem operations, containment, confirmation, manifest/journal, rollback, recovery, security boundary, tests, limitations, and closed gates; synchronized durable handoff state.
+- **Commands run:** staged name/status/stat and full diff inspection; `git diff --cached --check`; repeated Desktop security and autonomy scans after final formatting/documentation cleanup; `git commit -m "feat: add controlled workspace transaction foundation"`; `git push -u origin codex/m17-controlled-workspace`; GitHub connector PR creation attempt; `gh pr create`; `gh pr edit`.
+- **Results:** commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` created and pushed. The GitHub connector returned 403 `Resource not accessible by integration`; the authenticated GitHub CLI fallback created and populated `https://github.com/NormalianBut/MCagentLauncher/pull/12`. The PR is a draft against `main` with maintainer review pending.
+- **Regressions:** none observed. No merge, tag, Release, production dependency, platform-boundary edit, or capability beyond DQ-001, DQ-002, and DQ-007 occurred.
+- **Next action:** review Draft PR #12. Stop before every user-path, network, installation, Java, OAuth, process, Minecraft-directory, updater, sidecar, dependency, real-instance, launch, merge, tag, or release gate.
+- **Decision required:** none for this handoff. DQ-003 through DQ-006 and all later gates remain unapproved.

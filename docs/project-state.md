@@ -9,7 +9,8 @@ This is the primary handoff document for a new Codex session. Read it before the
 - Baseline branch: `main`, tracking `origin/main`.
 - Baseline commit: `a360361` (`Merge pull request #11 from NormalianBut/codex/m16-local-executor-architecture`).
 - Active branch: `codex/m17-controlled-workspace`, created from the clean synchronized baseline.
-- M17 changes are fully verified and remain uncommitted for review.
+- M17 feature commit: `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` (`feat: add controlled workspace transaction foundation`).
+- Draft review: GitHub PR #12 targets `main`; it is not merged.
 
 Always run `git status --short --branch` and `git log -1 --oneline --decorate` before relying on this baseline.
 
@@ -42,7 +43,7 @@ Always run `git status --short --branch` and `git log -1 --oneline --decorate` b
 
 ## Current Objective
 
-M17 Controlled Workspace And Transaction Foundation has reached its implementation and verification stopping condition on its scoped feature branch. DQ-001, DQ-002, and DQ-007 approve only this minimum filesystem gate; every later gate remains unapproved.
+M17 Controlled Workspace And Transaction Foundation has reached its implementation, verification, and review-handoff stopping condition on its scoped feature branch. Feature commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` is pushed and Draft PR #12 awaits review. DQ-001, DQ-002, and DQ-007 approve only this minimum filesystem gate; every later gate remains unapproved.
 
 ## Next Unblocked Task
 
