@@ -5,14 +5,12 @@ This is the primary handoff document for a new Codex session. Read it before the
 ## Release And Baseline
 
 - Package version: `0.1.0`.
-- Current release checkpoint: `v0.2-beta-m15`.
-- Current tags include `v0.2-beta-m13`, `v0.2-beta-m14`, and `v0.2-beta-m15`.
+- Current release checkpoint: `v0.2-beta-m16`.
 - Baseline branch: `main`, tracking `origin/main`.
-- Baseline commit: `6e277a6` (`Merge pull request #10 from NormalianBut/chore/autonomous-development-governance`).
-- Active branch: `codex/m16-local-executor-architecture`, created from the clean synchronized baseline for M16 architecture design.
-- M16 review commit: `938f5f7` (`feat(shared-types): define local executor architecture contracts`).
-- Draft review: GitHub PR #11 targets `main`; it is not merged.
-- Repository-driven governance controls are merged without changing the release tag or enabling runtime capability.
+- Baseline commit: `a360361` (`Merge pull request #11 from NormalianBut/codex/m16-local-executor-architecture`).
+- Active branch: `codex/m17-controlled-workspace`, created from the clean synchronized baseline.
+- M17 feature commit: `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` (`feat: add controlled workspace transaction foundation`).
+- Draft review: GitHub PR #12 targets `main`; it is not merged.
 
 Always run `git status --short --branch` and `git log -1 --oneline --decorate` before relying on this baseline.
 
@@ -24,77 +22,62 @@ Always run `git status --short --branch` and `git log -1 --oneline --decorate` b
 - M13: provider-neutral Resource Resolver architecture.
 - M14: Modrinth metadata provider under explicit metadata-only policy.
 - M15: deterministic Compatibility Analysis Engine and plan diagnostics.
+- M16: Local Executor architecture, threat model, approval gates, and pure contracts.
 
 ## Enabled Capabilities
 
-- Offline/mock intent parsing, resource planning, diagnostics, and explanation.
-- Schema-validated API response contracts.
-- Metadata-only Resolver contracts and an explicit-policy Modrinth metadata adapter.
-- Pure compatibility analysis and compatibility-to-plan diagnostics.
-- Web/API Playground and Tauri Desktop preview shell.
-- Install/executor/environment previews that cannot execute.
-- User-consented safe platform probe limited to OS, architecture, app version, and Tauri availability.
-- Independent MCAgent endpoint discovery and compatibility validation.
+- Existing Planner, metadata, compatibility, Web/API, Desktop preview, and safe-platform-probe capabilities.
+- M17 Desktop-only dry-run preview for an opaque application-managed workspace and transaction identity.
+- After exact confirmation, creation of a fixed controlled root beneath Tauri's application data directory.
+- Versioned simulation-only manifest and checksum-chained journal persistence.
+- Simulated commit, interruption, deterministic recovery, and current-transaction test-artifact rollback.
 
 ## Disabled Capabilities
 
-- Filesystem writes and local instance mutation.
-- Resource, loader, Java, or Minecraft downloads.
-- Installation and lockfile persistence.
+- Existing `.minecraft`, third-party launcher instance, user-selected directory, arbitrary-path, unrelated-file, or real user-instance access.
+- Resource, loader, Java, or Minecraft downloads and installation.
 - Shell, child process, sidecar, Java, launcher, or Minecraft execution.
-- Java discovery and Minecraft directory access or scanning.
-- OAuth, Microsoft authentication, token persistence, updater, telemetry, and environment upload.
-- CurseForge integration and paid AI APIs.
+- Java discovery and Minecraft directory scanning.
+- OAuth, Microsoft authentication, token persistence, updater, telemetry, environment upload, commercial model APIs, and production dependency additions.
 - Live Resolver use by the Python MCAgent Server (`liveResourceResolver=false`).
 
 ## Current Objective
 
-M16 Local Executor Architecture Design is complete on its feature branch and awaiting review in draft PR #11. It defines contracts, state machines, threat models, transaction boundaries, and approval requirements without implementing local writes, downloads, installation, process execution, Java access, authentication, or Minecraft launch.
+M17 Controlled Workspace And Transaction Foundation has reached its implementation, verification, and review-handoff stopping condition on its scoped feature branch. Feature commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` is pushed and Draft PR #12 awaits review. DQ-001, DQ-002, and DQ-007 approve only this minimum filesystem gate; every later gate remains unapproved.
 
 ## Next Unblocked Task
 
-Review draft PR #11 and decide DQ-001, DQ-002, and DQ-007. No privileged runtime implementation is unblocked. Keep all runtime entry points disabled and do not cross `GATE-EXEC-01` or `GATE-FS-01` without explicit scoped approval.
+Review the M17 branch and decide the next separately scoped work package. Stop before any real installation, download, Java, authentication, process, user-selected-path, Minecraft-directory, dependency, updater, sidecar, or release capability.
 
 ## Open Decisions
 
-The authoritative queue is `docs/execution/decision-queue.md`. Current unresolved design decisions concern:
-
-- controlled instance workspace and path containment;
-- manifest and transaction representation;
-- download trust and integrity policy;
-- Java runtime ownership;
-- Microsoft authentication and token storage;
-- process lifecycle and rollback ownership.
-
-No implementation approval has been granted for these decisions.
+The authoritative queue is `docs/execution/decision-queue.md`. DQ-003 through DQ-006 remain open for download trust, Java ownership, authentication/token storage, and process lifecycle. DQ-001, DQ-002, and DQ-007 are decided only for M17's restricted scope.
 
 ## Known Limitations
 
-- The Desktop artifact is unsigned and does not bundle MCAgent Server.
-- The Python server uses an offline pipeline adapter and does not expose the TypeScript live Resolver.
-- Modrinth support is metadata-only and requires explicit network policy in the TypeScript client.
-- Compatibility analysis uses exact versions and does not repair candidates.
-- No playable Minecraft instance can be created or launched.
-- Automated boundary scanning detects clear repository patterns; it complements, but does not replace, review and threat modeling.
-- M16 contracts are architecture evidence only. Digest generation, canonical serialization, path containment, persistence atomicity, runtime rollback, and privileged adapters remain unimplemented and gated.
+- M17 creates only a synthetic test marker; it cannot create, install, or launch a Minecraft instance.
+- The confirmation digest is bound to schema/policy, fixed target class, opaque workspace and transaction identities, strict simulation operation, and test-only purpose; exclusive transaction creation prevents replay. It is not an authentication credential, signature, or approval for later capabilities.
+- Atomicity uses synchronized temporary files followed by same-directory rename. Directory-entry synchronization and hostile concurrent path substitution are limited by Rust standard-library platform APIs and remain review concerns before broader mutation.
+- Recovery understands only the simulation state machine and fixed owned artifact. Unknown, corrupt, gapped, or unpublished records fail closed.
+- Windows reparse metadata is rejected; creation of directory symlinks in tests is conditional on the local Windows privilege/developer-mode policy.
+- Automated boundary scanning records the single approved filesystem module but remains defense in depth, not a proof.
 
-## M16 Verification Evidence
+## M17 Verification Evidence
 
-- `pnpm.cmd verify:project`: passed on 2026-08-04 with 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 26 server tests, and an autonomy scan of 197 files with zero violations.
-- `pnpm.cmd check:autonomy-boundaries`: passed independently with zero violations.
-- Isolated TypeScript check for `packages/shared-types/src/localExecutor.ts`: passed.
-- `git diff --check`: passed with line-ending notices only.
-- Manual review found no runtime I/O implementation, production dependency, credential signature, safety-check weakening, or `docs/platform-boundaries.md` change.
+- `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml`: 9 tests passed on Windows after final review corrections.
+- `pnpm.cmd --dir apps/desktop check:security`: passed with the exact six-command allowlist and prohibited-capability checks.
+- `pnpm.cmd --dir apps/desktop build`: passed.
+- `pnpm.cmd check:autonomy-boundaries`: passed with zero violations and the approved filesystem occurrences explicitly reported.
+- `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings`: passed.
+- `pnpm.cmd verify:project`: passed with all configured checks, including the new Rust/security checks.
+- `git diff --check`, dependency diff, platform-boundary diff, prohibited-capability scan, and credential-signature scan: passed; only Git line-ending notices were emitted.
 
 ## Validation Commands
 
 ```bash
-pnpm validate:schemas
-pnpm test:shared-types
-pnpm test:api-client
-pnpm --dir apps/web build
+cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
+pnpm --dir apps/desktop check:security
 pnpm --dir apps/desktop build
-cd services/mcagent-server && python -m pytest -q
 pnpm check:autonomy-boundaries
 pnpm verify:project
 git diff --check
@@ -107,6 +90,6 @@ Use `pnpm.cmd` instead of `pnpm` on Windows PowerShell when script execution pol
 1. Inspect Git branch, HEAD, tag, and worktree.
 2. Read `docs/platform-boundaries.md` without editing it.
 3. Read `docs/autonomy-policy.md` and `docs/execution/active-plan.md`.
-4. Review pending decisions and risks before proposing implementation.
-5. Run the validation scope relevant to the next checkpoint.
+4. Review the decided scope and every still-blocked gate.
+5. Run the validation scope relevant to the current checkpoint.
 6. Update this file and append the progress log after the checkpoint.

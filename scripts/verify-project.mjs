@@ -20,6 +20,12 @@ const checks = [
   pnpmCheck("Shared types tests", ["test:shared-types"]),
   pnpmCheck("API client tests", ["test:api-client"]),
   pnpmCheck("Web build", ["--dir", "apps/web", "build"]),
+  {
+    name: "Desktop controlled-workspace tests",
+    command: "cargo",
+    args: ["test", "--manifest-path", "apps/desktop/src-tauri/Cargo.toml"],
+  },
+  pnpmCheck("Desktop security check", ["--dir", "apps/desktop", "check:security"]),
   pnpmCheck("Desktop build", ["--dir", "apps/desktop", "build"]),
   {
     name: "MCAgent Server tests",

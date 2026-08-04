@@ -125,4 +125,12 @@ The current `InstallActionPreview` is still presentation-only. Its `confirmedByU
 
 Application-managed workspaces are recommended first. User-selected locations remain a separate higher-risk trust class and require an additional gate. Neither contract carries a resolved absolute path, and existing Minecraft instances remain outside the First Playable scope.
 
-All runtime adapters remain absent. M16 adds no filesystem, downloader, Java, OAuth, process, launcher, updater, sidecar, or persistence implementation.
+M16 itself added no runtime adapter. M17 subsequently enables only the approved controlled-workspace and transaction-foundation simulation described below.
+
+## M17 Controlled Workspace Foundation
+
+M17 registers six narrow Desktop commands for dry-run preview, confirmed workspace initialization, simulated commit/interruption, recovery, and rollback. The adapter resolves only a fixed child of Tauri's application data directory and accepts opaque workspace and transaction identities plus a strict `commit` or `interruption` choice rather than paths. The confirmation token is a SHA-256 digest over the exact preview binding; it is not a credential or signature.
+
+The manifest and SHA-256-chained journal describe a synthetic marker only. Records are versioned and atomically published from synchronized same-directory temporary files. The chain is tamper-evident, not authenticated. Existing unmarked directories, traversal, symlinks, junctions, reparse points, corrupt manifests, journal gaps, broken checksum/state chains, unknown artifacts, and ownership mismatches fail closed.
+
+This foundation is not the M6 install preview executor and cannot install plan resources. Download, integrity verification of external bytes, real instance writes, Java, authentication, process execution, Minecraft access, launch, updater, sidecar, arbitrary path selection, and production dependencies remain absent and gated.

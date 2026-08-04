@@ -1,6 +1,6 @@
 # MCagentlauncher Docs
 
-This directory documents the released MCagentlauncher v0.1 Alpha Preview, the v0.2-beta-m15 architecture checkpoint, and the repository-driven development controls for M16 and later work.
+This directory documents the released MCagentlauncher v0.1 Alpha Preview, the v0.2-beta-m16 architecture checkpoint, and the restricted M17 controlled-workspace implementation package.
 
 ## Start Here
 
@@ -11,6 +11,7 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview, the v0
 - [Progress Log](./execution/progress-log.md): append-only execution evidence.
 - [Decision Queue](./execution/decision-queue.md): unresolved choices; entries are not approvals.
 - [Risk Register](./execution/risk-register.md): future Execution Plane risks and controls.
+- [M17 Review](./releases/v0.2-m17-review.md): scoped filesystem authority, security evidence, verification, and remaining gates.
 
 ## Architecture
 

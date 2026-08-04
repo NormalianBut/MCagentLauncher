@@ -111,3 +111,19 @@ Manifest destinations are relative and normalized. Mutable status belongs in an 
 M16 implements none of these runtime mitigations. ADR 0008 enumerates `GATE-EXEC-01` and every capability-specific gate required before privileged code can be added.
 
 The M16 structural validator accepts typed data and cannot authenticate an approval decision. Future gated code must strictly parse untrusted serialized input and resolve decision references against a trusted local policy before considering any request; structural validity never means execution is authorized.
+
+## M17 Controlled Workspace Runtime Controls
+
+DQ-001, DQ-002, and DQ-007 approve one Desktop-owned filesystem module for a synthetic controlled-workspace vertical slice. The runtime root is a fixed child of Tauri's application data directory. Callers provide opaque lowercase workspace and transaction identities only; no command accepts a path, filename, URL, executable, environment record, or arbitrary operation.
+
+Every existing component is inspected with `symlink_metadata`, Windows reparse attributes are rejected, existing ancestors are canonicalized, and containment is revalidated before reads, writes, renames, and removal. Existing unmarked roots or workspaces fail closed and cannot be adopted. This protects against static traversal, symlink, junction, and reparse escape; broader mutation still requires a platform review of hostile concurrent substitution and directory synchronization behavior.
+
+Dry-run preview performs no filesystem access. Mutation requires the exact preview digest token bound to the workspace, transaction, strict `commit` or `interruption` operation, fixed app-managed target class, test-only purpose, schema version, and policy revision. A token for another workspace, transaction, operation, or policy cannot authorize the request. Exclusive transaction-directory creation makes the transaction identity single-use. Persistence contains only explicit schema versions, opaque identities, deterministic simulation intent, SHA-256 checksums, state transitions, and fixed owned-artifact metadata.
+
+Manifest and journal records are written to fixed same-directory temporary names with exclusive creation, synchronized, then atomically published by rename. Journal events are immutable, individually published, sequential, and checksum chained. The SHA-256 chain is tamper-evident corruption evidence only; it is neither an authentication mechanism nor a trusted signature. Recovery rejects missing, extra, reordered, non-canonical, corrupt, mismatched, or unpublished records.
+
+Rollback derives its only target from the fixed manifest contract for the current transaction, revalidates containment, enumerates the transaction artifact directory to reject unknown entries, and compares the complete operation-bound ownership record before removal. Missing artifacts are idempotent; mismatched or unknown data fails closed. Sibling transaction artifacts, workspace roots, existing data, and discovered files are never deletion targets, and production code performs no recursive deletion.
+
+Rust test boundaries use an owned-prefix RAII guard that removes the exact isolated test directory during normal completion and panic unwinding. Process termination that bypasses Rust destructors remains outside this unit-test guarantee; the M17 final review separately found no leftover test-prefix directory.
+
+The module has no network, download, Java, process, shell, sidecar, OAuth, token, telemetry, arbitrary-path, Minecraft-directory, or real-installation behavior. The autonomy scanner reports its approved filesystem occurrences explicitly and continues to reject every other runtime capability pattern.

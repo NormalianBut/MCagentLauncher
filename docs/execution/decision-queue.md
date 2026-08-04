@@ -14,29 +14,31 @@ Only record decisions grounded in the roadmap, architecture, or First Playable p
 - **Blocking work:** work that cannot cross implementation without the decision.
 - **User response:** verbatim or linked response; `not provided` until received.
 
-## Open Decisions
+## Decided For M17
 
 ### DQ-001 - Controlled Instance Workspace
 
-- **Status:** awaiting-user.
+- **Status:** decided.
 - **Decision:** choose the future Executor-owned instance root and containment policy.
 - **Background:** Desktop must never mutate arbitrary or existing user instances.
 - **Options:** app-data managed root; separately gated user-selected empty directory; both as distinct trust classes behind one policy vocabulary.
 - **Recommendation:** implement an app-managed root first. Keep user-selected locations as opaque picker selections behind `GATE-USER-PATH-01`; do not normalize the two choices into equivalent authority.
 - **Risk:** unsafe path handling could corrupt unrelated user data.
 - **Blocking work:** first filesystem write and local instance creation.
-- **User response:** not provided.
+- **User response:** On 2026-08-04: "Approved with restrictions. The implementation may create and manage only an application-controlled, isolated test workspace under the MCagentlauncher application data boundary. It must not access or modify: an existing .minecraft directory; third-party launcher instances; arbitrary user-selected directories; unrelated user files; paths outside the controlled workspace. All paths must be canonicalized and validated before use. The implementation must prevent traversal, symlink, junction, and Windows reparse-point escape from the controlled workspace."
 
 ### DQ-002 - Manifest And Transaction Representation
 
-- **Status:** awaiting-user.
+- **Status:** decided.
 - **Decision:** choose durable manifest, journal, commit, and recovery semantics.
 - **Background:** interrupted installation must be detectable, idempotent, and recoverable.
 - **Options:** immutable versioned manifest plus append-only digest-chained journal; staged manifest with atomic replace; embedded local database.
 - **Recommendation:** begin with an immutable versioned JSON desired-state manifest and separate append-only transaction journal. Do not store mutable progress in the manifest; validate platform atomicity before implementation.
 - **Risk:** ambiguous state can cause partial installs or failed rollback.
 - **Blocking work:** transaction persistence and instance mutation.
-- **User response:** not provided.
+- **User response:** On 2026-08-04: "Approved with restrictions. The implementation may persist only versioned manifest, transaction journal, operation state, checksums, rollback metadata, and records of artifacts created by MCagentlauncher. Persistence must remain inside the approved controlled workspace. Requirements: atomic replacement where practical; crash-recoverable transaction state; deterministic and idempotent recovery; unique transaction identity; explicit schema version; no secrets, OAuth tokens, telemetry, or unrelated environment data; rollback may remove only artifacts created by the current transaction."
+
+## Remaining Open Decisions
 
 ### DQ-003 - Download Trust And Integrity Policy
 
@@ -82,13 +84,15 @@ Only record decisions grounded in the roadmap, architecture, or First Playable p
 - **Blocking work:** first process launch and first playable validation.
 - **User response:** not provided.
 
+## Decided Implementation Package
+
 ### DQ-007 - First Privileged Local Executor Implementation Package
 
-- **Status:** awaiting-user.
+- **Status:** decided.
 - **Decision:** approve or reject the first scoped runtime implementation package after M16, including its exact capabilities and workspace trust class.
 - **Background:** ADR 0008 defines data contracts but deliberately provides no privileged adapter. Runtime work must begin with a narrow package and cannot infer approval from the M16 design review.
 - **Options:** app-managed workspace inspection/containment only; app-managed workspace plus first controlled writes; defer all runtime implementation; propose a narrower alternative backed by new evidence.
 - **Recommendation:** after M16 review, request `GATE-EXEC-01` and `GATE-FS-01` only for an app-managed workspace containment package with no network, Java, OAuth, process, user-selected path, or existing-instance access. Split first read/validation evidence from mutation if implementation planning can preserve a useful checkpoint.
 - **Risk:** an over-broad first package could collapse independent permissions and make rollback or review evidence ambiguous.
 - **Blocking work:** any privileged Local Executor adapter, filesystem access, workspace creation, manifest/journal persistence, or instance mutation.
-- **User response:** not provided.
+- **User response:** On 2026-08-04: "Approved only for the controlled workspace and transaction foundation. Allowed: create an isolated application-managed test workspace; write a versioned manifest; write and update a transaction journal; validate containment; simulate commit, interruption, recovery, and rollback; remove test artifacts created by the current transaction; expose dry-run preview and explicit user confirmation. Not approved: network download; installation of Minecraft, loaders, mods, resource packs, or shaders; Java discovery or execution; shell or process execution; Microsoft OAuth; Minecraft directory access; mutation of real user instances; Minecraft launch; updater, sidecar, telemetry, or commercial model integration. This approval crosses only the minimum filesystem gate required for the controlled workspace vertical slice. Continue to treat all later gates as unapproved."
