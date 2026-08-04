@@ -11,6 +11,7 @@
     "./environment": "./src/environment.ts",
     "./executor": "./src/executor.ts",
     "./installActions": "./src/installActions.ts",
+    "./localExecutor": "./src/localExecutor.ts",
     "./plan": "./src/plan.ts",
     "./probePolicy": "./src/probePolicy.ts",
     "./resolver": "./src/resolver.ts",

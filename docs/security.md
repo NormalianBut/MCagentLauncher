@@ -99,3 +99,15 @@ The non-destructive `scripts/check-autonomy-boundaries.mjs` scan:
 Pattern scanning is defense in depth, not a security proof. Every checkpoint still requires diff inspection, dependency review, threat modeling appropriate to its privileges, secret review, and confirmation that `docs/platform-boundaries.md` has no unauthorized change.
 
 M16 remains architecture-only. A contract describing a future write, download, OAuth, or process action must not expose an implementation handle for that action.
+
+## M16 Local Executor Contract Controls
+
+M16 separates review evidence from execution authority. A future request must bind the exact reviewed Resource Plan, compatibility-analysis digest, immutable manifest, workspace identity and trust class, requested capability set, review presentation, and single-use confirmation. A changed bound value invalidates confirmation.
+
+Application-managed workspaces are the recommended first implementation scope. User-selected locations require a separate location gate, opaque picker identity, reject-existing-content policy, immediate containment revalidation, and symlink/junction/reparse substitution defenses. Existing `.minecraft` mutation remains excluded.
+
+Manifest destinations are relative and normalized. Mutable status belongs in an append-only transaction journal. Failures, rollback, recovery, and audit records must fail closed, remain scoped to transaction-owned data, and exclude secrets, tokens, absolute paths, raw commands, and unbounded output.
+
+M16 implements none of these runtime mitigations. ADR 0008 enumerates `GATE-EXEC-01` and every capability-specific gate required before privileged code can be added.
+
+The M16 structural validator accepts typed data and cannot authenticate an approval decision. Future gated code must strictly parse untrusted serialized input and resolve decision references against a trusted local policy before considering any request; structural validity never means execution is authorized.

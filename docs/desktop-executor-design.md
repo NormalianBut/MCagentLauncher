@@ -107,3 +107,22 @@ M9 improves the Desktop Shell presentation layer only.
 The UI now shows summary cards, workflow status, readable diagnostics, install-action review groups, executor dry-run summary, and environment report summary. Raw JSON remains available for audit.
 
 M9 does not enable real execution. Confirm Install remains preview-only. Desktop still does not download resources, install Minecraft or loaders, write local instance files, launch Minecraft, execute shell commands, detect Java, scan paths, scan disks, upload environment reports, or persist environment reports.
+
+## M16 Architecture Status
+
+M16 defines the future authority boundary in [ADR 0008](./adr/0008-local-executor-architecture.md). It does not turn the M6 preview into an executor.
+
+The future handoff is a new contract with these layers:
+
+1. an immutable snapshot of a reviewed, compatibility-aware Resource Plan and analysis evidence;
+2. an explicit application-managed or user-selected workspace selection;
+3. a versioned execution manifest with stable resource identities and relative destinations;
+4. deny-by-default capability permissions tied to repository approval-gate evidence;
+5. a single-use confirmation bound to the exact request, plan, manifest, workspace, capabilities, and presentation revision;
+6. separate transaction, failure, rollback/recovery, and audit records.
+
+The current `InstallActionPreview` is still presentation-only. Its `confirmedByUser=false` field and preview action list are not upgraded, persisted, or accepted as authority.
+
+Application-managed workspaces are recommended first. User-selected locations remain a separate higher-risk trust class and require an additional gate. Neither contract carries a resolved absolute path, and existing Minecraft instances remain outside the First Playable scope.
+
+All runtime adapters remain absent. M16 adds no filesystem, downloader, Java, OAuth, process, launcher, updater, sidecar, or persistence implementation.
