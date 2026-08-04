@@ -82,3 +82,14 @@ This file is append-only. Correct an earlier entry with a new entry; do not rewr
 - **Regressions:** none observed across configured schema, package, application, server, and boundary scopes.
 - **Next action:** rerun verification after these durable state updates, then commit, push, and prepare the M16 review PR without merging.
 - **Decision required:** DQ-001, DQ-002, and DQ-007 before any privileged Local Executor implementation; DQ-003 through DQ-006 remain future capability decisions.
+
+### 2026-08-04T11:06:03+08:00 - M16 review handoff prepared
+
+- **Branch/worktree:** `codex/m16-local-executor-architecture`; design commit `938f5f7` pushed to `origin/codex/m16-local-executor-architecture`; draft PR #11 targets `main` and is unmerged.
+- **Objective:** publish the verified M16 architecture package for review without crossing a runtime or merge gate.
+- **Changes:** committed and pushed the scoped M16 package; opened draft PR #11 with scope, boundaries, verification, documentation, rollback, and approval-gate disclosures; synchronized the durable handoff state.
+- **Commands run:** `git diff --cached --check`; `git diff --cached --stat`; `git diff --cached --name-status`; `git commit -m "feat(shared-types): define local executor architecture contracts"`; `git push -u origin codex/m16-local-executor-architecture`; `gh --version`; `gh auth status`; GitHub connector pull-request creation attempt; `gh pr create --repo NormalianBut/MCagentLauncher --base main --head codex/m16-local-executor-architecture --draft --title "feat: define M16 Local Executor architecture contracts" --body-file m16-pr-body.tmp.md`.
+- **Results:** staged diff check passed; commit `938f5f7` created and pushed; GitHub CLI 2.92.0 was authenticated as `NormalianBut`; the GitHub connector returned 403 `Resource not accessible by integration`, so the documented CLI fallback succeeded and created `https://github.com/NormalianBut/MCagentLauncher/pull/11`.
+- **Regressions:** none observed; no merge, tag, Release, runtime capability, production dependency, or platform-boundary change occurred.
+- **Next action:** verify and push this documentation-only handoff update, then stop at the approval gate.
+- **Decision required:** DQ-001, DQ-002, and DQ-007; DQ-003 through DQ-006 remain required before their later capabilities.

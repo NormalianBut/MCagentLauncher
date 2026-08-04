@@ -10,6 +10,8 @@ This is the primary handoff document for a new Codex session. Read it before the
 - Baseline branch: `main`, tracking `origin/main`.
 - Baseline commit: `6e277a6` (`Merge pull request #10 from NormalianBut/chore/autonomous-development-governance`).
 - Active branch: `codex/m16-local-executor-architecture`, created from the clean synchronized baseline for M16 architecture design.
+- M16 review commit: `938f5f7` (`feat(shared-types): define local executor architecture contracts`).
+- Draft review: GitHub PR #11 targets `main`; it is not merged.
 - Repository-driven governance controls are merged without changing the release tag or enabling runtime capability.
 
 Always run `git status --short --branch` and `git log -1 --oneline --decorate` before relying on this baseline.
@@ -47,11 +49,11 @@ Always run `git status --short --branch` and `git log -1 --oneline --decorate` b
 
 ## Current Objective
 
-Prepare and execute **M16 Local Executor Architecture Design only**. M16 may define contracts, state machines, threat models, transaction boundaries, and approval requirements. It must not implement local writes, downloads, installation, process execution, Java access, authentication, or Minecraft launch.
+M16 Local Executor Architecture Design is complete on its feature branch and awaiting review in draft PR #11. It defines contracts, state machines, threat models, transaction boundaries, and approval requirements without implementing local writes, downloads, installation, process execution, Java access, authentication, or Minecraft launch.
 
 ## Next Unblocked Task
 
-M16 architecture design and pure contracts are complete and fully verified on `codex/m16-local-executor-architecture`. Prepare the review handoff, then stop before privileged runtime implementation. Keep all runtime entry points disabled.
+Review draft PR #11 and decide DQ-001, DQ-002, and DQ-007. No privileged runtime implementation is unblocked. Keep all runtime entry points disabled and do not cross `GATE-EXEC-01` or `GATE-FS-01` without explicit scoped approval.
 
 ## Open Decisions
 

@@ -56,7 +56,7 @@ M16 is complete when an accepted-for-review ADR and deterministic contracts defi
 3. **Completed - pure contracts and tests:** shared contracts and deterministic validators cover requests, permissions, confirmation, manifests, transactions, failures, rollback/recovery, and audit without I/O; 84 shared-types tests pass and the contract module type-checks in isolation.
 4. **Completed - documentation and state audit:** architecture, security, executor design, public roadmap, decisions, risks, project state, and progress are synchronized; manual boundary scans found no runtime imports, secret signature, or platform-boundary diff.
 5. **Completed - full verification:** `pnpm.cmd verify:project`, the explicit autonomy scan, isolated contract type-check, `git diff --check`, and manual diff/boundary review pass with no runtime privilege added.
-6. **In progress - review handoff:** commit, push, and prepare a PR without merging; then record the durable handoff.
+6. **Completed - review handoff:** committed and pushed `938f5f7`; draft PR #11 targets `main` and remains unmerged; DQ-001, DQ-002, and DQ-007 are awaiting user action before runtime work.
 
 ## Tests
 
@@ -102,3 +102,5 @@ After each checkpoint, update this plan and `docs/project-state.md`, then append
 ## Completion Report
 
 Report only completed work packages, branch/PR status, verification results, current project state, outstanding risks, decision entries requiring user action, and the exact stopping reason. Do not claim M16 enables execution or approves any later gate.
+
+M16 reached its stopping condition on 2026-08-04. The architecture package is fully verified and available in draft PR #11. Work stops before the first privileged Local Executor adapter at `GATE-EXEC-01` and before filesystem scope at `GATE-FS-01`.
