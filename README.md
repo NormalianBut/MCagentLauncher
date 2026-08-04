@@ -2,9 +2,9 @@
 
 MCagentlauncher is an open-source, community-driven intelligent launcher project for Minecraft Java Edition.
 
-Current product status: **v0.1 alpha preview**. Current architecture checkpoint: **v0.2-beta-m15**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
+Current product status: **v0.1 alpha preview**. Current architecture checkpoint: **v0.2-beta-m16**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
 
-The v0.1 Alpha Preview has been released. M11-M14 established the runtime, packaging, Resolver, and Modrinth metadata layers. M15 adds deterministic metadata-only compatibility analysis between Resolver output and resource planning. M16 architecture is under review and remains contracts-only with execution disabled.
+The v0.1 Alpha Preview has been released. M11-M15 established the runtime, packaging, Resolver, metadata, and compatibility layers. M16 completed the Local Executor architecture. M17 now implements only the approved application-managed controlled-workspace and transaction-foundation simulation; Minecraft installation and launch remain disabled.
 
 ```text
 natural language -> intent -> resource plan -> explanation -> install dry-run -> executor dry-run -> environment preview
@@ -147,7 +147,8 @@ On Windows PowerShell systems that block `pnpm.ps1`, use `pnpm.cmd` with the sam
 
 ## Roadmap
 
-- M16: Local Executor Architecture Design under review; pure authority, transaction, confirmation, rollback/recovery, audit, and failure contracts only, with execution disabled.
+- M16: Local Executor Architecture Design complete; pure authority, transaction, confirmation, rollback/recovery, audit, and failure contracts.
+- M17: restricted controlled-workspace and transaction foundation in progress; synthetic app-data-only writes and recovery simulation, with all real installation and later gates disabled.
 - First Playable stages and gates are documented as a proposal, not implementation approval.
 - Future: additional metadata providers behind explicit capability negotiation.
 - Future: Desktop Local Executor implementation after policy, confirmation, source verification, hash verification, rollback, and failure handling are complete.

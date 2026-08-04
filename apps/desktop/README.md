@@ -2,9 +2,9 @@
 
 `apps/desktop` is the v0.1 alpha Desktop Shell for MCagentlauncher v0.1 - Natural Instance. M12 packages the React, TypeScript, and Vite UI as a Windows-first Tauri Native Desktop Preview.
 
-The current desktop app is a dry-run preview surface. It can call the MCAgent Server API, display intent parsing, display resource planning, generate install-action previews, and show executor dry-run results. It does not perform real local execution.
+The Desktop remains a planning and preview surface for Minecraft work. M17 adds a separately scoped controlled-workspace simulation: it can create only synthetic transaction test data under its fixed application-data boundary after exact confirmation. It cannot install or launch Minecraft.
 
-The v0.1 Alpha Preview has been released. M11 adds post-alpha endpoint discovery and compatibility gating through `GET /v1/meta`. MCAgent Server remains planner-only and Desktop Local Executor remains disabled.
+The v0.1 Alpha Preview has been released. MCAgent Server remains planner-only. The only enabled Local Executor authority is M17's controlled-workspace and transaction-foundation simulation.
 
 M9 polishes the Desktop Shell into an alpha preview UI with:
 
@@ -70,7 +70,7 @@ This validates the React/Vite Desktop Shell. The Tauri native build is intention
 
 ## M12 Native Packaging Preview
 
-The packaged Desktop remains dry-run and depends on an independently started compatible MCAgent endpoint. It does not bundle or automatically start Python, and it includes no Local Executor or updater.
+The packaged Desktop depends on an independently started compatible MCAgent endpoint and does not bundle or automatically start Python. Its M17 Local Executor surface is limited to the controlled-workspace simulation and includes no updater.
 
 ```powershell
 pnpm check:desktop-version
@@ -82,7 +82,7 @@ The Windows x64 NSIS output is copied to `artifacts/desktop-preview/` with an un
 
 `VITE_MCAGENT_API_URL` remains a build-time override. The URL must use HTTP(S) and cannot contain credentials. The packaged app performs one startup `/v1/meta` check and only retries when the user requests it. It never stores endpoint or environment-report data in browser storage.
 
-Tauri permissions remain core-only. There are no filesystem, shell, process, updater, autostart, sidecar, download, installation, instance-write, Java-probe, path-scan, or Minecraft-launch commands.
+Tauri permissions remain core-only. The exact command allowlist covers controlled-workspace preview, confirmed initialization, simulated commit/interruption, recovery, and rollback. There are no filesystem plugins, arbitrary-path, shell, process, updater, autostart, sidecar, download, installation, Java-probe, path-scan, or Minecraft-launch commands.
 
 ## Current Safety Boundary
 
@@ -90,7 +90,7 @@ M7 does not:
 
 - download Minecraft or resource files;
 - install Fabric, Forge, NeoForge, mods, resource packs, or shader packs;
-- create or write a local instance;
+- create or write a real local instance (only a fixed synthetic M17 test marker is allowed);
 - write `mods`, `resourcepacks`, or `shaderpacks`;
 - launch Minecraft;
 - execute shell commands;

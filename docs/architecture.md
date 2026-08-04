@@ -119,6 +119,14 @@ compatibility-aware Resource Plan
 
 The M6 install-action preview remains display-only and cannot be executed. Application-managed and user-selected workspaces are distinct trust classes represented by opaque identities; pure contracts contain no absolute local path or runtime adapter. Desired state lives in an immutable execution manifest while observed progress belongs to a separate transaction journal and audit stream. See [ADR 0008](./adr/0008-local-executor-architecture.md).
 
+## M17 Controlled Workspace Boundary
+
+M17 crosses only the approved minimum Desktop filesystem gate. Six narrow Tauri commands expose dry-run preview, confirmed workspace initialization, simulated commit/interruption, recovery, and rollback. They resolve a fixed child of Tauri's application data directory and accept opaque identities plus a strict simulation-operation enum rather than paths. Confirmation binds the exact operation, workspace, transaction, policy, schema, target class, and test-only purpose.
+
+The persisted records describe a controlled-workspace simulation only. The synthetic marker is transaction-owned test data, not an installed artifact or instance file. Planner packages, Web, and MCAgent Server receive no filesystem handle or new authority. No Tauri filesystem plugin or production dependency is added.
+
+User-selected paths, existing launcher/Minecraft data, network acquisition, integrity verification of downloaded bytes, Java, authentication, processes, launch, and real installation remain behind their independent gates.
+
 ## Key Contracts
 
 - MCAgent output must be structured and schema-verifiable.

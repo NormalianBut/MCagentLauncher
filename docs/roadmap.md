@@ -28,7 +28,8 @@ Initial milestones:
 - M13: provider-neutral Resource Resolver architecture and contracts (design).
 - M14: Modrinth metadata provider, strict normalization, deterministic registry/orchestration, and metadata-only policy.
 - M15: deterministic metadata-only compatibility analysis for version, loader, side, dependencies, duplicates, and explicit rules.
-- M16: Local Executor Architecture Design under review; ADR 0008 and pure contracts define reviewed-plan handoff, workspace trust classes, permissions, confirmation, manifest/transaction states, rollback/recovery, audit, failures, and later gates. No executor implementation, downloads, installation, or launch.
+- M16: Local Executor Architecture Design complete; ADR 0008 and pure contracts define reviewed-plan handoff, workspace trust classes, permissions, confirmation, manifest/transaction states, rollback/recovery, audit, failures, and later gates.
+- M17: controlled workspace and transaction foundation in progress under explicitly approved DQ-001, DQ-002, and DQ-007 restrictions. It adds only an app-data-owned synthetic test workspace, versioned persistence, and simulated recovery/rollback; downloads, installation, Java, authentication, processes, Minecraft access, and launch remain disabled.
 
 ## Repository-driven Execution
 
@@ -45,4 +46,4 @@ The proposed path after M16 is documented in `docs/execution/first-playable-plan
 7. Minecraft process lifecycle;
 8. rollback/recovery and first playable validation.
 
-This sequence is planning only. Explicit approval is required before the first privileged Executor adapter, filesystem access, user-selected location access, network download, Java access, process launch, OAuth use, production dependency, and playable release. Updater, sidecar, and existing Minecraft directory access are separately gated and excluded from First Playable. No later stage is currently enabled or approved.
+Only the first application-managed controlled-workspace and transaction-foundation slice is approved. Explicit approval is still required before user-selected location access, network download, Java access, process launch, OAuth use, production dependency, real installation, and playable release. Updater, sidecar, and existing Minecraft directory access are separately gated and excluded from First Playable.

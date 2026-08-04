@@ -1,106 +1,94 @@
-# Active Plan: M16 Local Executor Architecture Design
+# Active Plan: M17 Controlled Workspace And Transaction Foundation
 
 ## Objective
 
-Define the future Desktop Local Executor architecture and side-effect-free contracts without implementing or enabling runtime capability.
+Implement the first approved Desktop Execution Plane vertical slice: an application-managed test workspace with canonical containment, versioned manifest and journal persistence, explicit confirmation, and simulated commit, interruption, recovery, and rollback.
 
 ## Verifiable Stopping Condition
 
-M16 is complete when an accepted-for-review ADR and deterministic contracts define ownership, Resource Plan handoff, controlled workspace choices, permission and confirmation binding, transaction and manifest invariants, failures, audit, rollback, recovery, and every later approval gate; all project verification passes; and no runtime privilege is added.
+M17 is complete when the Desktop-owned Rust adapter can preview without writing, requires an exact confirmation before creating an isolated workspace, persists deterministic versioned records, recovers idempotently after simulated interruption, and removes only test artifacts recorded as owned by the current transaction. Adversarial containment and recovery tests, project verification, the autonomy boundary scan, and `git diff --check` must pass.
 
 ## Current Baseline
 
-- Branch: `codex/m16-local-executor-architecture`, created from synchronized `main`.
-- Commit: `6e277a6` (`Merge pull request #10 from NormalianBut/chore/autonomous-development-governance`).
-- Release checkpoint: `v0.2-beta-m15`; package version remains `0.1.0`.
+- Branch: `codex/m17-controlled-workspace`, created from synchronized `main`.
+- Baseline commit: `a360361` (`Merge pull request #11 from NormalianBut/codex/m16-local-executor-architecture`).
+- Release checkpoint: `v0.2-beta-m16`; package version remains `0.1.0`.
 - Worktree was clean before branch creation.
-- Desktop remains preview-only. No filesystem write, download, Java, authentication, process, instance-mutation, updater, sidecar, or launch authority is enabled.
-- The governance baseline was last verified on 2026-08-04; M16 verification is pending.
+- DQ-001, DQ-002, and DQ-007 were explicitly approved on 2026-08-04 for this restricted package.
+- Network, downloads, Java, OAuth, process execution, user-selected paths, existing Minecraft directories, real instance mutation, updater, sidecar, telemetry, and commercial model integration remain disabled.
 
 ## Scope
 
-- ADR and architecture/security documentation for the future Execution Plane.
-- Pure, serializable contracts for reviewed-plan handoff, workspace ownership, capability permissions, confirmation, manifests, transactions, failures, rollback/recovery, and audit events.
-- Deterministic validation, normalization, and state-transition helpers that have no I/O handles.
-- Tests proving contract invariants and the disabled runtime boundary.
-- Durable state, decision, risk, and progress updates.
+- Desktop-owned Rust code under `apps/desktop/src-tauri` only.
+- A fixed child root beneath Tauri's application data directory and opaque, validated workspace/transaction identities.
+- Canonical containment checks before every read, write, rename, or removal.
+- Symlink, Windows junction, and reparse-point rejection.
+- Immutable, versioned manifest and per-event transaction journal JSON.
+- Atomic temporary-file publication and synchronized file contents where supported by the standard library.
+- Deterministic transaction state derivation and idempotent recovery.
+- Fixed-name test artifacts owned and recorded by one transaction.
+- Dry-run preview and a separate digest confirmation bound to the exact workspace, transaction, strict simulation operation, fixed target class, schema/policy revisions, and test-only purpose before mutation.
 
 ## Non-goals
 
-- Filesystem reads or writes, path discovery, path selection UI, instance creation, manifest persistence, or lockfile persistence.
-- Artifact, loader, Java, or game downloads.
-- Java discovery, provisioning, selection, or execution.
-- Authentication, Microsoft OAuth, credentials, tokens, or secure storage.
-- Shell, child-process, sidecar, launcher, updater, or Minecraft execution.
-- Production dependency additions, merge, tag, Release, or `docs/platform-boundaries.md` changes.
+- Any access to `.minecraft`, third-party launcher instances, user-selected directories, or unrelated user files.
+- Download, artifact installation, Minecraft/loader/mod/resource-pack/shader installation, Java discovery/execution, shell/process execution, OAuth, launch, updater, sidecar, telemetry, or model integration.
+- Accepting an absolute path, relative path, filename, command, URL, or environment data from a caller.
+- Adding a production dependency.
+- Declaring a playable instance or changing `docs/platform-boundaries.md`.
 
 ## Architecture Impact
 
-- Planner Plane remains authoritative for deterministic, compatibility-aware `ResourcePlan` data and cannot execute it.
-- Desktop remains the sole future owner of execution, but M16 exposes no runtime implementation handle.
-- The handoff must bind an immutable reviewed-plan snapshot and compatibility disposition to a distinct future execution request.
-- Application-managed workspaces and user-selected locations share policy contracts but remain distinct trust classes.
-- ADR 0008 is required because M16 establishes the future Execution Plane's transaction and authority boundary.
+This is the first narrowly privileged implementation in the Desktop Execution Plane. Planner packages remain unable to perform I/O. The adapter resolves only a fixed executor-owned child of the Desktop application-data directory. Its persisted manifest describes the workspace-foundation simulation, not Minecraft installation state.
 
 ## Security Impact
 
-- Classification: AUTO design and pure contracts only.
-- All plan, workspace, confirmation, manifest, and recovery data is untrusted until independently validated by a future gated implementation.
-- Permissions are deny-by-default and bound to exact capability identifiers, request identity, reviewed-plan digest, manifest digest, workspace identity, and confirmation revision.
-- M16 cannot prove path containment, atomicity, hash verification, secure storage, or process cleanup; those require later platform-specific evidence and gates.
+- Classification: GATED, explicitly approved only for DQ-001, DQ-002, and DQ-007 restrictions recorded in the decision queue.
+- New authority: create, inspect, atomically update, and remove transaction-owned test data inside the fixed controlled root.
+- Path defense: restricted identifiers, lexical containment, canonical existing-ancestor checks, and symlink/reparse rejection before every operation.
+- Rollback uses only the immutable owned-artifact record for the same transaction; it does not discover deletion targets from directory contents.
+- Persistence excludes secrets, tokens, telemetry, environment dumps, URLs, commands, and absolute paths.
 
 ## Implementation Checkpoints
 
-1. **Completed - governance and architecture baseline:** required documents, ADRs, existing preview contracts, Git state, and boundaries inspected; scoped branch created.
-2. **Completed - ADR and durable design:** ADR 0008 defines ownership, trust boundaries, reviewed-plan handoff, workspace classes, state machines, failure semantics, and gates.
-3. **Completed - pure contracts and tests:** shared contracts and deterministic validators cover requests, permissions, confirmation, manifests, transactions, failures, rollback/recovery, and audit without I/O; 84 shared-types tests pass and the contract module type-checks in isolation.
-4. **Completed - documentation and state audit:** architecture, security, executor design, public roadmap, decisions, risks, project state, and progress are synchronized; manual boundary scans found no runtime imports, secret signature, or platform-boundary diff.
-5. **Completed - full verification:** `pnpm.cmd verify:project`, the explicit autonomy scan, isolated contract type-check, `git diff --check`, and manual diff/boundary review pass with no runtime privilege added.
-6. **Completed - review handoff:** committed and pushed `938f5f7`; draft PR #11 targets `main` and remains unmerged; DQ-001, DQ-002, and DQ-007 are awaiting user action before runtime work.
+1. **Completed - approval and baseline:** confirmed clean merged M16 baseline, created the scoped branch, and recorded the exact gate boundary.
+2. **Completed - controlled workspace adapter:** implemented containment, persistence, confirmation, and the simulation lifecycle with no new dependency.
+3. **Completed - adversarial tests:** covered absolute/mixed-separator/traversal identifier rejection, existing-owner-marker enforcement, reparse metadata, conditional Windows directory-symlink rejection, cross-operation/workspace/transaction confirmation rejection, uniqueness, dry-run no-write behavior, interruption, corrupt manifest, gapped journal, unknown-artifact refusal, unwind-safe temp cleanup, idempotency, and transaction-scoped rollback.
+4. **Completed - full verification and audit:** Rust format/clippy/tests, Desktop security/build, unified project verification, boundary scan, diff checks, and manual prohibited-capability review passed.
+5. **Completed - durable handoff:** synchronized project state, decisions, risks, architecture/security/public docs, and recorded actual outcomes in the progress log.
 
 ## Tests
 
-- `pnpm.cmd test:shared-types`: all existing and M16 contract tests pass.
-- `pnpm.cmd validate:schemas`: all schema examples remain valid.
-- `pnpm.cmd verify:project`: schemas, shared types, API client, Web/Desktop builds, server tests, autonomy boundary scan, and verifier whitespace check pass.
-- `pnpm.cmd check:autonomy-boundaries`: zero clear runtime privilege violations.
-- `git diff --check`: no whitespace errors.
-- Manual diff inspection: no runtime I/O handle, production dependency, secret, unauthorized platform-boundary change, or weakened safety check.
-
-Verification on 2026-08-04 passed 14 schema examples, 84 shared-types tests, 90 API-client tests, Web and Desktop builds, 26 server tests, and a 197-file autonomy scan with zero violations. Existing Starlette/httpx deprecation and denied pytest cache creation warnings remain non-passing warnings.
+- `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml`
+- `pnpm.cmd --dir apps/desktop check:security`
+- `pnpm.cmd --dir apps/desktop build`
+- `pnpm.cmd check:autonomy-boundaries`
+- `pnpm.cmd verify:project`
+- `git diff --check`
 
 ## Boundary Scan
 
-- Inspect imports and manifests for filesystem mutation, downloader, child-process, shell, Java, OAuth, Tauri privileged plugins, updater, sidecar, or commercial model APIs.
-- Confirm contracts contain data only and no callbacks, clients, file descriptors, command builders, executable paths, access tokens, or ambient environment access.
+- Permit filesystem mutation only in the reviewed Desktop controlled-workspace module.
+- Reject any network client, URL fetch, process/shell API, Java/Minecraft path probe, OAuth/token handling, updater, sidecar, arbitrary path parameter, environment enumeration, or new production dependency.
+- Confirm Tauri capabilities expose no filesystem plugin and only explicitly registered narrow commands.
 - Confirm `docs/platform-boundaries.md` is unchanged.
-- Confirm every future privileged capability is named in the ADR, decision queue, and approval-gate matrix.
 
 ## Rollback
 
-Abandon or revert only the scoped Git branch. M16 writes no user or instance data and therefore requires no runtime cleanup. A future implementation may not reuse this Git-only rollback claim as runtime rollback evidence.
+Repository rollback is removal or revert of this scoped branch. Runtime rollback removes only fixed-name simulation artifacts listed in the current transaction's owned-artifact record after revalidating containment and transaction identity. It never removes the workspace root, sibling transactions, pre-existing data, or discovered files.
 
 ## Approval Gates
 
-- M16 architecture, threat model, and pure contracts: AUTO.
-- `GATE-EXEC-01`: stop before the first privileged Local Executor adapter or dispatcher.
-- `GATE-FS-01`: stop before filesystem access, workspace creation, manifest/journal persistence, or instance mutation.
-- `GATE-USER-PATH-01`: stop before resolving or using a user-selected location.
-- `GATE-NET-01`: stop before artifact, loader, Java, or game download behavior.
-- `GATE-JAVA-01`: stop before Java discovery, selection, provisioning, or execution.
-- `GATE-OAUTH-01`: stop before OAuth, credentials, token handling, or secure storage.
-- `GATE-PROC-01`: stop before shell, child-process, sidecar, launcher, or Minecraft execution.
-- `GATE-DEP-01`: stop before a production dependency or material privilege-expanding upgrade.
-- `GATE-UPDATER-01`, `GATE-SIDECAR-01`, and `GATE-MC-DIR-01`: stop before these out-of-scope capabilities are introduced.
-- `GATE-REL-01`: stop before a First Playable release, merge, tag, or Release action.
-- Production dependencies and `docs/platform-boundaries.md` changes require separate explicit approval.
+- `GATE-EXEC-01` and the minimum `GATE-FS-01` scope are approved only for this plan through DQ-001, DQ-002, and DQ-007.
+- `GATE-USER-PATH-01`, `GATE-NET-01`, `GATE-JAVA-01`, `GATE-OAUTH-01`, `GATE-PROC-01`, `GATE-DEP-01`, `GATE-UPDATER-01`, `GATE-SIDECAR-01`, `GATE-MC-DIR-01`, and `GATE-REL-01` remain unapproved.
+- Stop before any production dependency, user-selected location, existing Minecraft access, real installation, download, process, Java, authentication, launch, or release action.
 
 ## Progress Log Requirements
 
-After each checkpoint, update this plan and `docs/project-state.md`, then append commands, actual results, regressions, next action, and decision status to `docs/execution/progress-log.md`. Update the decision queue and risk register whenever design evidence changes a future gate.
+After each checkpoint, update this plan and `docs/project-state.md`, then append commands, actual results, regressions, next action, and decision status to `docs/execution/progress-log.md`. Update the decision queue and risk register when evidence changes.
 
 ## Completion Report
 
-Report only completed work packages, branch/PR status, verification results, current project state, outstanding risks, decision entries requiring user action, and the exact stopping reason. Do not claim M16 enables execution or approves any later gate.
+Report changed files, exact filesystem authority introduced, containment/atomicity/recovery evidence, tests and actual outcomes, remaining limitations and gates, and the branch state. Do not claim a playable instance, installation capability, or approval beyond this workspace foundation.
 
-M16 reached its stopping condition on 2026-08-04. The architecture package is fully verified and available in draft PR #11. Work stops before the first privileged Local Executor adapter at `GATE-EXEC-01` and before filesystem scope at `GATE-FS-01`.
+M17 reached its stopping condition on 2026-08-04. The implementation is ready for its review commit on `codex/m17-controlled-workspace`. Full project verification passed with 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 9 controlled-workspace Rust tests, the Desktop security allowlist, 26 server tests, and zero autonomy-scan violations. Final review bound confirmation to the exact operation and target, made rollback refuse unknown artifacts, added unwind-safe test cleanup, and repeated containment checks around filesystem operations. No dependency, platform-boundary, network, process, Java, OAuth, Minecraft-directory, real-installation, or release change was introduced.

@@ -42,6 +42,8 @@ Define the Executor contract, controlled workspace, confirmation token, transact
 
 Design and, only after approval, implement a dedicated project-owned root with canonical path containment, symlink/reparse-point defenses, no traversal, no existing-instance mutation, and explicit lifecycle ownership.
 
+M17 implements only the approved application-data-owned synthetic test workspace. User-selected directories and real instance mutation remain out of scope.
+
 **GATE-FS-01: stop before the first filesystem write.** Required evidence: accepted M16 ADR, path threat model, containment tests, rollback plan, dependency review, and explicit approval.
 
 **GATE-USER-PATH-01: stop before a user-selected location is resolved or used.** Required evidence: approved picker/consent UX, empty-location and ownership policy, substitution defenses, adversarial path matrix, and explicit approval. Application-managed workspace work does not imply this approval.
@@ -49,6 +51,8 @@ Design and, only after approval, implement a dedicated project-owned root with c
 ### Stage 3: Manifest And Transaction Model
 
 Define immutable intent/plan provenance, expected artifacts, staged/committed states, idempotency, journaling, atomic transitions where supported, and recovery from interruption. The model must distinguish planned, staged, verified, committed, failed, and rolled-back state.
+
+M17 implements the foundation for versioned simulation manifests, immutable checksum-chained events, and deterministic synthetic interruption recovery. Resource installation state and broader transaction phases remain future gated work.
 
 ### Stage 4: Resource Download And Integrity Verification
 
@@ -104,8 +108,8 @@ Before runtime capability exists, rollback is Git-only removal of the scoped bra
 
 | Gate | Capability | Status |
 |---|---|---|
-| GATE-EXEC-01 | First privileged Local Executor adapter or dispatcher | Not requested |
-| GATE-FS-01 | First filesystem write | Not requested |
+| GATE-EXEC-01 | First privileged Local Executor adapter or dispatcher | Approved for M17 controlled-workspace foundation only |
+| GATE-FS-01 | First filesystem write | Approved for M17 application-data test workspace and transaction persistence only |
 | GATE-USER-PATH-01 | First user-selected location access | Not requested |
 | GATE-NET-01 | First network download | Not requested |
 | GATE-JAVA-01 | First Java discovery, provisioning, selection, or execution | Not requested |

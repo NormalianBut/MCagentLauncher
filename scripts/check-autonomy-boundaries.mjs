@@ -92,6 +92,12 @@ const rules = [
   },
 ];
 
+// DQ-001, DQ-002, and DQ-007 approve this single Desktop-owned module for the
+// controlled-workspace vertical slice. Other capability rules still apply to it.
+const approvedRuntimeCapabilities = new Map([
+  ["apps/desktop/src-tauri/src/controlled_workspace.rs", new Set(["filesystem-write"])],
+]);
+
 function relativePath(filePath) {
   return path.relative(repositoryRoot, filePath).split(path.sep).join("/");
 }
@@ -126,6 +132,7 @@ async function collectFiles(directory) {
 const files = (await collectFiles(repositoryRoot)).sort((left, right) => compareText(relativePath(left), relativePath(right)));
 const scannedByClass = {};
 const findings = [];
+const approvedOccurrences = [];
 
 for (const file of files) {
   const fileClass = classify(file);
@@ -136,6 +143,15 @@ for (const file of files) {
   for (let index = 0; index < lines.length; index += 1) {
     for (const rule of rules) {
       if (!rule.pattern.test(lines[index])) continue;
+      if (approvedRuntimeCapabilities.get(relativePath(file))?.has(rule.capability)) {
+        approvedOccurrences.push({
+          ruleId: rule.id,
+          capability: rule.capability,
+          file: relativePath(file),
+          line: index + 1,
+        });
+        continue;
+      }
       findings.push({
         severity: "violation",
         ruleId: rule.id,
@@ -151,6 +167,7 @@ for (const file of files) {
 }
 
 findings.sort((left, right) => compareText(left.file, right.file) || left.line - right.line || compareText(left.ruleId, right.ruleId));
+approvedOccurrences.sort((left, right) => compareText(left.file, right.file) || left.line - right.line || compareText(left.ruleId, right.ruleId));
 const report = {
   schemaVersion: "1.0.0",
   check: "mcagentlauncher-autonomy-boundaries",
@@ -160,13 +177,16 @@ const report = {
     repositoryWrites: false,
     scope: "repository-only",
     failureThreshold: "clear-runtime-violation",
+    approvedRuntimeCapabilities: Object.fromEntries([...approvedRuntimeCapabilities].map(([file, capabilities]) => [file, [...capabilities].sort()])),
   },
   summary: {
     passed: findings.length === 0,
     scannedFiles: files.length,
     scannedByClass: Object.fromEntries(Object.entries(scannedByClass).sort(([left], [right]) => compareText(left, right))),
     violations: findings.length,
+    approvedOccurrences: approvedOccurrences.length,
   },
+  approvedOccurrences,
   findings,
 };
 
