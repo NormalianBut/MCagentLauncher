@@ -98,6 +98,16 @@ const approvedRuntimeCapabilities = new Map([
   ["apps/desktop/src-tauri/src/controlled_workspace.rs", new Set(["filesystem-write"])],
 ]);
 
+// The M18 user-approved Autonomy Lab bootstrap is repository tooling, not
+// Desktop product runtime. Keep its local control-state/process authority in an
+// exact file allowlist so moving the same APIs into product code still fails.
+const approvedToolingCapabilities = new Map([
+  ["scripts/autonomy-runtime.mjs", new Set(["filesystem-write", "process-execution"])],
+  ["scripts/autonomy-process-supervisor.mjs", new Set(["filesystem-write", "process-execution"])],
+  ["scripts/autonomy-resume.mjs", new Set(["filesystem-write"])],
+  ["scripts/autonomy-cleanup.mjs", new Set(["filesystem-write"])],
+]);
+
 function relativePath(filePath) {
   return path.relative(repositoryRoot, filePath).split(path.sep).join("/");
 }
@@ -137,13 +147,15 @@ const approvedOccurrences = [];
 for (const file of files) {
   const fileClass = classify(file);
   scannedByClass[fileClass] = (scannedByClass[fileClass] ?? 0) + 1;
-  if (fileClass !== "runtime" && fileClass !== "manifest") continue;
+  const relative = relativePath(file);
+  const approvedCapabilities = approvedRuntimeCapabilities.get(relative) ?? approvedToolingCapabilities.get(relative);
+  if (fileClass !== "runtime" && fileClass !== "manifest" && !approvedCapabilities) continue;
 
   const lines = (await readFile(file, "utf8")).split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
     for (const rule of rules) {
       if (!rule.pattern.test(lines[index])) continue;
-      if (approvedRuntimeCapabilities.get(relativePath(file))?.has(rule.capability)) {
+      if (approvedCapabilities?.has(rule.capability)) {
         approvedOccurrences.push({
           ruleId: rule.id,
           capability: rule.capability,
@@ -178,6 +190,7 @@ const report = {
     scope: "repository-only",
     failureThreshold: "clear-runtime-violation",
     approvedRuntimeCapabilities: Object.fromEntries([...approvedRuntimeCapabilities].map(([file, capabilities]) => [file, [...capabilities].sort()])),
+    approvedToolingCapabilities: Object.fromEntries([...approvedToolingCapabilities].map(([file, capabilities]) => [file, [...capabilities].sort()])),
   },
   summary: {
     passed: findings.length === 0,

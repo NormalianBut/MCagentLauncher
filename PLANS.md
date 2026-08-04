@@ -30,3 +30,7 @@ Every plan must contain these sections:
 - Update the plan when evidence changes the best next action; preserve the original objective and stopping condition.
 - Append material progress to `docs/execution/progress-log.md` and synchronize `docs/project-state.md` after each checkpoint.
 - Close a plan only after a requirement-by-requirement audit proves the stopping condition.
+- Treat interruption and usage-limit exhaustion as normal: every bounded unit records its exact next action in runtime state and `docs/execution/resume-packet.md`.
+- A work package should normally checkpoint within 20-30 minutes; use small coherent WIP commits when they materially improve recovery.
+- After interruption, run the Autonomy Lab doctor and inspect Git, leases, registered processes, transactions, logs, and temporary publications before cleanup or continuation.
+- Never encode an arbitrary recorded next action as an automatically executed command. A new coordinator validates and starts it deliberately.

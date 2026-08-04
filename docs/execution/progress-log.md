@@ -126,3 +126,47 @@ This file is append-only. Correct an earlier entry with a new entry; do not rewr
 - **Regressions:** none observed. No merge, tag, Release, production dependency, platform-boundary edit, or capability beyond DQ-001, DQ-002, and DQ-007 occurred.
 - **Next action:** review Draft PR #12. Stop before every user-path, network, installation, Java, OAuth, process, Minecraft-directory, updater, sidecar, dependency, real-instance, launch, merge, tag, or release gate.
 - **Decision required:** none for this handoff. DQ-003 through DQ-006 and all later gates remain unapproved.
+
+### 2026-08-04T14:10:00+08:00 - M18 interruption runtime implementation checkpoint
+
+- **Branch/worktree:** `codex/m18-autonomy-recovery` from clean synchronized merged-M17 baseline `884403e`; scoped changes are uncommitted and the worktree contains only M18 work.
+- **Objective:** establish interruption-resilient external runtime state and recoverable branch checkpoints without changing Desktop product capabilities.
+- **Changes:** added atomic control-directory JSON, PAUSE/STOP, single lease and heartbeat contracts, durable operation/resume packet, five package commands, conservative recovery/cleanup, USER_ACTIVE-safe resource decision, direct bounded process supervision, preserved logs/evidence, worktree containment, Java rejection, and PID-plus-nonce named-pipe/socket ownership verification; added 12 focused tests and synchronized the plan/policy/decisions/risks/operating docs.
+- **Commands run:** required governance reads and Git baseline inspection; `git switch -c codex/m18-autonomy-recovery`; repeated `node --check` on new scripts; `pnpm.cmd test:autonomy-runtime`; focused `node --test --test-name-pattern "bounded child timeout" tests/autonomy-runtime.test.mjs`; repeated full focused suite after the identity correction.
+- **Results:** the first full focused run passed six tests, then the timeout case failed safely because Windows CIM process inspection returned access denied and ownership could not be proven. No guessed PID was killed. Replaced CIM with a local nonce challenge requiring no administrator access. The focused timeout rerun passed, and the final focused suite passed all 12 tests in about 8.7 seconds.
+- **Regressions:** none observed in focused scope. Full project verification remains pending. A process created during the intentionally failed test could not be safely identified after its disposable registry was removed, so no broad process kill was attempted.
+- **Next action:** audit the complete M18 diff and documentation, then run full project/security verification.
+- **Decision required:** none within DQ-008. DQ-003 through DQ-006 and every product/download/Java/OAuth/Desktop-process/release gate remain closed.
+
+### 2026-08-04T14:35:00+08:00 - M18 full project verification passed
+
+- **Branch/worktree:** `codex/m18-autonomy-recovery` at baseline `884403e`; verified M18 changes remain uncommitted for final audits.
+- **Objective:** verify interruption recovery together with every configured repository suite and product boundary.
+- **Changes:** hardened the supervisor to require a matching active coordinator lease and refresh it during long work; added heartbeat ownership, persistent STOP, out-of-worktree cwd, and Java rejection cases, bringing the focused matrix to 15 tests; made resume-packet publication atomic and added semantic doctor checks.
+- **Commands run:** `pnpm.cmd test:autonomy-runtime`; `pnpm.cmd check:autonomy-boundaries`; `git diff --check`; `pnpm.cmd verify:project`.
+- **Results:** 15 autonomy tests passed; 14 schema examples, 84 shared-types tests, 90 API-client tests, Web and Desktop builds, 9 Rust controlled-workspace tests, Desktop security, and 26 server tests passed; the autonomy scan classified 210 files, reported 44 exact approved filesystem/process occurrences, and found zero violations; whitespace check passed. Existing Starlette/httpx deprecation and denied pytest-cache warnings remain non-failing.
+- **Regressions:** none observed across configured project verification. Final targeted secret/TODO/dependency/platform-boundary scans remain.
+- **Next action:** run targeted final scans and inspect the complete changed-file set, then create the review commit.
+- **Decision required:** none within DQ-008; all product/runtime/download/Java/OAuth/release gates remain closed.
+
+### 2026-08-04T14:45:00+08:00 - M18 targeted security audit passed
+
+- **Branch/worktree:** `codex/m18-autonomy-recovery` at baseline `884403e`; all scoped changes remain isolated and uncommitted.
+- **Objective:** prove the M18 tooling exception did not change dependencies, platform ownership, product runtime authority, or secret/local-path exposure.
+- **Changes:** restricted cleanup and doctor recognition to exact runtime JSON temporary-publication prefixes; documented and synchronized verification state.
+- **Commands run:** `git diff --check`; platform-boundary and production dependency diffs; repository TODO/FIXME scan; scoped credential-signature, URL/download, Minecraft/Java, shell/PowerShell, process-spawn, and local absolute-path scans; changed-file/status inspection.
+- **Results:** whitespace, platform-boundary, dependency, credential, local-path, and download/network scans passed. No product runtime file changed. Java matches are the explicit supervisor rejection and its test. Process matches are the bounded Git diagnostic and exact supervisor implementation. TODO/FIXME matches are historical progress/review text and the pre-existing M15 heading. One initial Windows `rg` glob form was invalid and was rerun with `-g` filters successfully.
+- **Regressions:** none observed. Unified verification must be repeated after the final hardening.
+- **Next action:** rerun `pnpm.cmd verify:project`, then create the review commit if it passes.
+- **Decision required:** none within DQ-008.
+
+### 2026-08-04T14:55:00+08:00 - M18 final pre-commit verification passed
+
+- **Branch/worktree:** `codex/m18-autonomy-recovery` from `884403e`; final scoped changes are verified and ready for staging.
+- **Objective:** repeat the unified matrix after lease enforcement, semantic diagnostics, atomic resume-packet publication, and exact cleanup-prefix hardening.
+- **Changes:** no product behavior change; confirmed the final M18 implementation and durable state are internally consistent.
+- **Commands run:** `pnpm.cmd verify:project` after all implementation hardening and targeted scans.
+- **Results:** repeated verification passed 15 autonomy tests, 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 9 Rust tests, Desktop security, 26 server tests, zero boundary violations across 210 scanned files, and Git whitespace check. Existing two Python warnings and Git line-ending notices remain non-failing.
+- **Regressions:** none observed in the complete configured verification scope.
+- **Next action:** stage and inspect the exact M18 scope, create the feature commit, synchronize/push, and open the Draft PR.
+- **Decision required:** none within DQ-008; merge, tag, Release, and every product capability gate remain closed.

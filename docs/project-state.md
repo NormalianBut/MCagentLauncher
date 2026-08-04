@@ -1,95 +1,68 @@
 # Project State
 
-This is the primary handoff document for a new Codex session. Read it before the roadmap or active implementation files, then verify its claims against Git and the worktree.
+This is the primary handoff document for a new Codex task. Verify it against Git and the external Autonomy Lab control directory before relying on it.
 
 ## Release And Baseline
 
 - Package version: `0.1.0`.
-- Current release checkpoint: `v0.2-beta-m16`.
-- Baseline branch: `main`, tracking `origin/main`.
-- Baseline commit: `a360361` (`Merge pull request #11 from NormalianBut/codex/m16-local-executor-architecture`).
-- Active branch: `codex/m17-controlled-workspace`, created from the clean synchronized baseline.
-- M17 feature commit: `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` (`feat: add controlled workspace transaction foundation`).
-- Draft review: GitHub PR #12 targets `main`; it is not merged.
-
-Always run `git status --short --branch` and `git log -1 --oneline --decorate` before relying on this baseline.
+- Current release checkpoint: `v0.2-beta-m17`.
+- Baseline branch/commit: clean synchronized `main` at `884403e66d84498d64263ec48c663efee50bb278` (merged M17).
+- Active branch: `codex/m18-autonomy-recovery`, created from that baseline.
+- M18 changes are under verification and are not merged, tagged, or released.
 
 ## Completed Milestones
 
-- M0-M10: monorepo, schemas, mock planning API, Resolver foundations, Web/Desktop previews, safe probe policy, alpha release preparation.
-- M11: runtime topology and endpoint capability negotiation.
-- M12: unsigned Windows-first Native Desktop Packaging Preview.
-- M13: provider-neutral Resource Resolver architecture.
-- M14: Modrinth metadata provider under explicit metadata-only policy.
-- M15: deterministic Compatibility Analysis Engine and plan diagnostics.
-- M16: Local Executor architecture, threat model, approval gates, and pure contracts.
-
-## Enabled Capabilities
-
-- Existing Planner, metadata, compatibility, Web/API, Desktop preview, and safe-platform-probe capabilities.
-- M17 Desktop-only dry-run preview for an opaque application-managed workspace and transaction identity.
-- After exact confirmation, creation of a fixed controlled root beneath Tauri's application data directory.
-- Versioned simulation-only manifest and checksum-chained journal persistence.
-- Simulated commit, interruption, deterministic recovery, and current-transaction test-artifact rollback.
-
-## Disabled Capabilities
-
-- Existing `.minecraft`, third-party launcher instance, user-selected directory, arbitrary-path, unrelated-file, or real user-instance access.
-- Resource, loader, Java, or Minecraft downloads and installation.
-- Shell, child process, sidecar, Java, launcher, or Minecraft execution.
-- Java discovery and Minecraft directory scanning.
-- OAuth, Microsoft authentication, token persistence, updater, telemetry, environment upload, commercial model APIs, and production dependency additions.
-- Live Resolver use by the Python MCAgent Server (`liveResourceResolver=false`).
+- M0-M16: Planner, preview, metadata/compatibility, packaging preview, and Local Executor architecture contracts.
+- M17: approved controlled-workspace simulation with fixed app-data boundary, journal, recovery, and current-transaction test-artifact rollback.
 
 ## Current Objective
 
-M17 Controlled Workspace And Transaction Foundation has reached its implementation, verification, and review-handoff stopping condition on its scoped feature branch. Feature commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` is pushed and Draft PR #12 awaits review. DQ-001, DQ-002, and DQ-007 approve only this minimum filesystem gate; every later gate remains unapproved.
+M18 adds interruption-resilient repository tooling: an external runtime checkpoint, branch work-package checkpoint, verified-integration discipline, single-coordinator lease/heartbeat, PAUSE/STOP, conservative resume/doctor/cleanup, resource modes, and bounded ownership-verifying process supervision. Implementation and full project verification pass; final security scans and review handoff remain.
 
-## Next Unblocked Task
+## Enabled Capabilities
 
-Review the M17 branch and decide the next separately scoped work package. Stop before any real installation, download, Java, authentication, process, user-selected-path, Minecraft-directory, dependency, updater, sidecar, or release capability.
+- All merged M17 Planner/Desktop preview and controlled-workspace simulation capabilities.
+- On the M18 feature branch only: repository tooling may write its configured external control directory and `docs/execution/resume-packet.md`, inspect Git, and directly supervise bounded development/test processes inside the active worktree.
+- Process ownership uses a PID-plus-nonce named-pipe/socket challenge; logs and evidence are preserved.
 
-## Open Decisions
+## Disabled Capabilities
 
-The authoritative queue is `docs/execution/decision-queue.md`. DQ-003 through DQ-006 remain open for download trust, Java ownership, authentication/token storage, and process lifecycle. DQ-001, DQ-002, and DQ-007 are decided only for M17's restricted scope.
+- Desktop/Tauri product process/shell/sidecar authority.
+- Java, Minecraft, launcher, or game execution and discovery.
+- Resource/runtime downloads, network installation, existing `.minecraft` or third-party instance access, arbitrary/user-selected paths, and real instance mutation.
+- OAuth, tokens, telemetry, updater, environment upload, commercial APIs, production dependency additions, automatic spending, merge, tag, and Release.
 
-## Known Limitations
+## Current Evidence
 
-- M17 creates only a synthetic test marker; it cannot create, install, or launch a Minecraft instance.
-- The confirmation digest is bound to schema/policy, fixed target class, opaque workspace and transaction identities, strict simulation operation, and test-only purpose; exclusive transaction creation prevents replay. It is not an authentication credential, signature, or approval for later capabilities.
-- Atomicity uses synchronized temporary files followed by same-directory rename. Directory-entry synchronization and hostile concurrent path substitution are limited by Rust standard-library platform APIs and remain review concerns before broader mutation.
-- Recovery understands only the simulation state machine and fixed owned artifact. Unknown, corrupt, gapped, or unpublished records fail closed.
-- Windows reparse metadata is rejected; creation of directory symlinks in tests is conditional on the local Windows privilege/developer-mode policy.
-- Automated boundary scanning records the single approved filesystem module but remains defense in depth, not a proof.
+- `pnpm.cmd test:autonomy-runtime`: 15 tests passed on Windows.
+- Initial Windows CIM command-line identity inspection failed with access denied; the design failed closed and was replaced by a no-administrator local nonce challenge.
+- Focused tests cover path containment, missing/corrupt state, competing/stale lease, repeated/clean pause, clean resume, crash/interrupted package, uncommitted Git work, preserved failure logs, timeout/tree termination, pause during a child, PID-reuse defense, idempotent doctor/cleanup, and recovery without deletion.
+- `pnpm.cmd verify:project` passed: 15 autonomy tests, 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 9 Rust tests, Desktop security, 26 server tests, the boundary scan, and whitespace check. The two existing Python warnings remain non-failing.
+- Targeted secret, TODO/FIXME, dependency, platform-boundary, local-path, and prohibited-capability scans passed. Matches were exact Java rejection/tests and historical TODO/FIXME references only.
 
-## M17 Verification Evidence
+## Next Exact Action
 
-- `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml`: 9 tests passed on Windows after final review corrections.
-- `pnpm.cmd --dir apps/desktop check:security`: passed with the exact six-command allowlist and prohibited-capability checks.
-- `pnpm.cmd --dir apps/desktop build`: passed.
-- `pnpm.cmd check:autonomy-boundaries`: passed with zero violations and the approved filesystem occurrences explicitly reported.
-- `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings`: passed.
-- `pnpm.cmd verify:project`: passed with all configured checks, including the new Rust/security checks.
-- `git diff --check`, dependency diff, platform-boundary diff, prohibited-capability scan, and credential-signature scan: passed; only Git line-ending notices were emitted.
+Create the verified feature commit, synchronize the remote baseline, push the branch, and prepare the Draft PR without merge.
+
+## Open Decisions And Risks
+
+- DQ-008 approves only the M18 repository-tooling exception.
+- DQ-003 through DQ-006 remain open for download trust, Java ownership, authentication, and Desktop process lifecycle.
+- R-014 through R-016 track coordinator interruption, unrelated-process termination, and destructive recovery. See the risk register for mitigations.
 
 ## Validation Commands
 
 ```bash
-cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
-pnpm --dir apps/desktop check:security
-pnpm --dir apps/desktop build
-pnpm check:autonomy-boundaries
-pnpm verify:project
+pnpm.cmd test:autonomy-runtime
+pnpm.cmd verify:project
+pnpm.cmd check:autonomy-boundaries
 git diff --check
 ```
 
-Use `pnpm.cmd` instead of `pnpm` on Windows PowerShell when script execution policy blocks `pnpm.ps1`.
+## Interruption Handoff
 
-## Handoff Checklist
-
-1. Inspect Git branch, HEAD, tag, and worktree.
-2. Read `docs/platform-boundaries.md` without editing it.
-3. Read `docs/autonomy-policy.md` and `docs/execution/active-plan.md`.
-4. Review the decided scope and every still-blocked gate.
-5. Run the validation scope relevant to the current checkpoint.
-6. Update this file and append the progress log after the checkpoint.
+1. Run `pnpm.cmd autonomy:status` and `pnpm.cmd autonomy:doctor`.
+2. Read `docs/autonomy-interruption-recovery.md`, `docs/execution/active-plan.md`, and `docs/execution/resume-packet.md`.
+3. Inspect Git status/worktrees; never reset or delete uncommitted work automatically.
+4. Resume only the exact recorded next action as a newly validated bounded unit.
+5. Keep `docs/platform-boundaries.md` unchanged.

@@ -86,6 +86,17 @@ Only record decisions grounded in the roadmap, architecture, or First Playable p
 
 ## Decided Implementation Package
 
+### DQ-008 - Autonomy Lab Interruption-Recovery Tooling
+
+- **Status:** decided.
+- **Decision:** permit a repository-only runtime checkpoint and bounded process supervisor for interruption-resilient engineering work.
+- **Background:** model/thread/app/machine interruptions must not strand processes, evidence, Git work, or the exact next action.
+- **Options:** conversation-only recovery; Git-only checkpoints; external runtime state plus Git work-package checkpoints and verified integration.
+- **Recommendation:** use all three layers with fail-closed recovery and exact tooling allowlists.
+- **Risk:** stale PID reuse, unrelated-process termination, arbitrary shell authority, loss of uncommitted work, or control-path escape.
+- **Blocking work:** M18 Autonomy Lab runtime implementation.
+- **User response:** On 2026-08-04 the user requested implementation of the external runtime files, single-coordinator lease, pause/resume/doctor/cleanup commands, harmless process-supervisor tests, resource-aware modes, durable checkpoints, pushed branch, and Draft PR, while explicitly prohibiting Java, Minecraft, downloads, existing user data, administrator requirements, product capability expansion, merge, tag, and Release.
+
 ### DQ-007 - First Privileged Local Executor Implementation Package
 
 - **Status:** decided.

@@ -57,6 +57,10 @@ Approval must identify the capability, intended scope, security evidence, rollba
 - Secrets must never be committed or printed.
 - Production actions must never be inferred from a request to design or document them.
 
+## Approved M18 Repository-Tooling Exception
+
+On 2026-08-04 the user explicitly requested the interruption-resilient Autonomy Lab runtime on a scoped Codex feature branch. That request approves external control-directory writes and direct bounded process supervision only in the exact `scripts/autonomy-*.mjs` development-tooling scope, with harmless tests, ownership verification, preserved evidence, and no administrator requirement. It does not approve any Desktop/Tauri product process API, shell surface, Java/Minecraft execution, download, existing user-data access, authentication, sidecar, or production dependency. The boundary scanner must keep this exception file-specific; moving the authority into product code requires a new gate.
+
 ## Gate Procedure
 
 1. Record the decision in `docs/execution/decision-queue.md`.
