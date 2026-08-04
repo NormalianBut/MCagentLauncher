@@ -29,3 +29,20 @@ Initial milestones:
 - M14: Modrinth metadata provider, strict normalization, deterministic registry/orchestration, and metadata-only policy.
 - M15: deterministic metadata-only compatibility analysis for version, loader, side, dependencies, duplicates, and explicit rules.
 - M16: Local Executor Architecture Design only; no executor implementation, downloads, installation, or launch.
+
+## Repository-driven Execution
+
+M16 and later work use `docs/project-state.md` as the primary handoff, `docs/execution/active-plan.md` as the current checkpoint, and the append-only progress log, decision queue, and risk register as durable evidence. `AGENTS.md`, `PLANS.md`, and `docs/autonomy-policy.md` define operating rules and approval boundaries.
+
+The proposed path after M16 is documented in `docs/execution/first-playable-plan.md`:
+
+1. controlled instance workspace;
+2. manifest and transaction model;
+3. verified resource download;
+4. loader/runtime preparation;
+5. Java runtime policy;
+6. authentication;
+7. Minecraft process lifecycle;
+8. rollback/recovery and first playable validation.
+
+This sequence is planning only. Explicit approval is required before the first filesystem write, network download, process launch, OAuth use, and playable release. No later stage is currently enabled or approved.

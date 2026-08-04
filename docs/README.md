@@ -1,6 +1,16 @@
 # MCagentlauncher Docs
 
-This directory documents the released MCagentlauncher v0.1 Alpha Preview and the M11-M14 runtime, packaging, and Resource Resolver architecture.
+This directory documents the released MCagentlauncher v0.1 Alpha Preview, the v0.2-beta-m15 architecture checkpoint, and the repository-driven development controls for M16 and later work.
+
+## Start Here
+
+- [Project State](./project-state.md): primary handoff for a new Codex session.
+- [Autonomy Policy](./autonomy-policy.md): AUTO, REVIEW, and GATED work.
+- [Active Plan](./execution/active-plan.md): current checkpoint and verification state.
+- [First Playable Plan](./execution/first-playable-plan.md): proposed stages and explicit capability gates.
+- [Progress Log](./execution/progress-log.md): append-only execution evidence.
+- [Decision Queue](./execution/decision-queue.md): unresolved choices; entries are not approvals.
+- [Risk Register](./execution/risk-register.md): future Execution Plane risks and controls.
 
 ## Architecture
 
@@ -43,6 +53,13 @@ This directory documents the released MCagentlauncher v0.1 Alpha Preview and the
 ## Demo
 
 - [v0.1 Alpha Demo Flow](./demo/v0.1-alpha-demo-flow.md)
+
+## Repository Controls
+
+- Root [`AGENTS.md`](../AGENTS.md) defines operating rules and Definition of Done.
+- Root [`PLANS.md`](../PLANS.md) defines durable execution-plan structure.
+- `pnpm check:autonomy-boundaries` performs a read-only, repository-scoped scan for clear runtime privilege violations.
+- `pnpm verify:project` runs the current schemas, tests, builds, boundary scan, and Git whitespace check.
 
 ## Alpha Boundary
 

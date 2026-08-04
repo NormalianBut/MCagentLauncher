@@ -83,3 +83,19 @@ Compatibility analysis consumes normalized metadata only and imports no provider
 Unknown metadata is not treated as compatible. Conflict findings require explicit version-controlled rules or provider-normalized incompatible dependency metadata; names never create conflicts. Plan integration only copies structured diagnostics and risk state. It cannot replace, download, install, write, repair, or launch resources.
 
 Python MCAgent Server continues to declare `liveResourceResolver=false`. M15 introduces no CurseForge implementation or commercial model API.
+
+## Autonomous Development Controls
+
+Repository work is classified as AUTO, REVIEW, or GATED in `docs/autonomy-policy.md`. Filesystem writes, downloads, shell/process execution, Java, Minecraft directory access, OAuth and secrets, instance mutation, updater/sidecar behavior, production dependencies, merge, tag, and Release operations require an explicit gate before implementation or action.
+
+The non-destructive `scripts/check-autonomy-boundaries.mjs` scan:
+
+- reads only files inside the repository;
+- performs no network access and writes no file;
+- distinguishes runtime/manifests from tests, documentation, examples, and tooling;
+- returns non-zero only for clear runtime capability patterns;
+- emits structured JSON suitable for local or CI inspection.
+
+Pattern scanning is defense in depth, not a security proof. Every checkpoint still requires diff inspection, dependency review, threat modeling appropriate to its privileges, secret review, and confirmation that `docs/platform-boundaries.md` has no unauthorized change.
+
+M16 remains architecture-only. A contract describing a future write, download, OAuth, or process action must not expose an implementation handle for that action.

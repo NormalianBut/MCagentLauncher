@@ -2,7 +2,7 @@
 
 MCagentlauncher is an open-source, community-driven intelligent launcher project for Minecraft Java Edition.
 
-Current status: **v0.1 alpha preview**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
+Current product status: **v0.1 alpha preview**. Current architecture checkpoint: **v0.2-beta-m15**. It demonstrates the Natural Instance planning flow, but it does **not** install or launch Minecraft.
 
 The v0.1 Alpha Preview has been released. M11-M14 established the runtime, packaging, Resolver, and Modrinth metadata layers. M15 adds deterministic metadata-only compatibility analysis between Resolver output and resource planning.
 
@@ -94,6 +94,28 @@ pnpm dev:desktop
 
 Source development and packaged Desktop require MCAgent Server to be started separately. The local `http://127.0.0.1:8000` fallback is for development; the M12 artifact does not include or launch a Python sidecar.
 
+Run the complete repository verification:
+
+```bash
+pnpm verify:project
+```
+
+Run only the non-destructive runtime privilege scan:
+
+```bash
+pnpm check:autonomy-boundaries
+```
+
+On Windows PowerShell systems that block `pnpm.ps1`, use `pnpm.cmd` with the same arguments.
+
+## Repository-driven Development
+
+- Start a new session with [`docs/project-state.md`](./docs/project-state.md).
+- Follow [`AGENTS.md`](./AGENTS.md) for repository policy and [`PLANS.md`](./PLANS.md) for long-running work.
+- Work classification and approval gates are defined in [`docs/autonomy-policy.md`](./docs/autonomy-policy.md).
+- The current checkpoint, progress, decisions, and risks live under [`docs/execution`](./docs/execution).
+- Runtime implementation involving writes, downloads, execution, Java, OAuth, instance mutation, production dependencies, merge, tag, or Release requires explicit approval.
+
 ## Safety Boundaries
 
 - AI does not directly execute files.
@@ -126,6 +148,7 @@ Source development and packaged Desktop require MCAgent Server to be started sep
 ## Roadmap
 
 - M16: Local Executor Architecture Design only; execution remains disabled.
+- First Playable stages and gates are documented as a proposal, not implementation approval.
 - Future: additional metadata providers behind explicit capability negotiation.
 - Future: Desktop Local Executor implementation after policy, confirmation, source verification, hash verification, rollback, and failure handling are complete.
 
