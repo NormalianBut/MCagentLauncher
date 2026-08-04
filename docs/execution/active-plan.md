@@ -1,94 +1,72 @@
-# Active Plan: M17 Controlled Workspace And Transaction Foundation
+# Active Plan: M18 Autonomy Lab Interruption Recovery
 
 ## Objective
 
-Implement the first approved Desktop Execution Plane vertical slice: an application-managed test workspace with canonical containment, versioned manifest and journal persistence, explicit confirmation, and simulated commit, interruption, recovery, and rollback.
+Implement interruption-resilient repository tooling that persists control state outside Git, checkpoints exact work-package progress on a Codex branch, and recovers conservatively without expanding Desktop product authority beyond merged M17.
 
 ## Verifiable Stopping Condition
 
-M17 is complete when the Desktop-owned Rust adapter can preview without writing, requires an exact confirmation before creating an isolated workspace, persists deterministic versioned records, recovers idempotently after simulated interruption, and removes only test artifacts recorded as owned by the current transaction. Adversarial containment and recovery tests, project verification, the autonomy boundary scan, and `git diff --check` must pass.
+The five package commands, single-coordinator lease, heartbeat contract, PAUSE/STOP protocol, recovery doctor, conservative cleanup, resource-mode decision, and ownership-verifying bounded process supervisor pass the interruption matrix and full project verification; documentation/state are current; the branch is pushed and a verified Draft PR targets `main` without merge.
 
 ## Current Baseline
 
-- Branch: `codex/m17-controlled-workspace`, created from synchronized `main`.
-- Baseline commit: `a360361` (`Merge pull request #11 from NormalianBut/codex/m16-local-executor-architecture`).
-- Release checkpoint: `v0.2-beta-m16`; package version remains `0.1.0`.
-- Worktree was clean before branch creation.
-- DQ-001, DQ-002, and DQ-007 were explicitly approved on 2026-08-04 for this restricted package.
-- Network, downloads, Java, OAuth, process execution, user-selected paths, existing Minecraft directories, real instance mutation, updater, sidecar, telemetry, and commercial model integration remain disabled.
+- Branch: `codex/m18-autonomy-recovery`, created from clean synchronized `main`.
+- Baseline: `884403e66d84498d64263ec48c663efee50bb278` (merged M17, tag `v0.2-beta-m17`).
+- Enabled product capabilities remain exactly the merged M17 controlled-workspace simulation.
+- The user explicitly approved this M18 repository-tooling process/filesystem scope on 2026-08-04; Desktop process execution remains unapproved.
 
 ## Scope
 
-- Desktop-owned Rust code under `apps/desktop/src-tauri` only.
-- A fixed child root beneath Tauri's application data directory and opaque, validated workspace/transaction identities.
-- Canonical containment checks before every read, write, rename, or removal.
-- Symlink, Windows junction, and reparse-point rejection.
-- Immutable, versioned manifest and per-event transaction journal JSON.
-- Atomic temporary-file publication and synchronized file contents where supported by the standard library.
-- Deterministic transaction state derivation and idempotent recovery.
-- Fixed-name test artifacts owned and recorded by one transaction.
-- Dry-run preview and a separate digest confirmation bound to the exact workspace, transaction, strict simulation operation, fixed target class, schema/policy revisions, and test-only purpose before mutation.
+- `scripts/autonomy-*.mjs`, package commands, and harmless-process tests.
+- External control directory, atomic JSON, sentinels, lease/heartbeat, durable operation/resume packet.
+- Direct no-shell wrapper, bounded timeout, logs, nonce challenge, and verified tree cleanup.
+- Git inspection, conservative recovery/cleanup, USER_ACTIVE-safe resource mode, and governance documentation.
 
 ## Non-goals
 
-- Any access to `.minecraft`, third-party launcher instances, user-selected directories, or unrelated user files.
-- Download, artifact installation, Minecraft/loader/mod/resource-pack/shader installation, Java discovery/execution, shell/process execution, OAuth, launch, updater, sidecar, telemetry, or model integration.
-- Accepting an absolute path, relative path, filename, command, URL, or environment data from a caller.
-- Adding a production dependency.
-- Declaring a playable instance or changing `docs/platform-boundaries.md`.
+Desktop/Tauri process authority, Java/Minecraft/launcher execution, downloads, network work, authentication, existing Minecraft/user-directory access, product sidecars, power-setting changes, auto-spending, automatic model continuation, merge, tag, or Release.
 
 ## Architecture Impact
 
-This is the first narrowly privileged implementation in the Desktop Execution Plane. Planner packages remain unable to perform I/O. The adapter resolves only a fixed executor-owned child of the Desktop application-data directory. Its persisted manifest describes the workspace-foundation simulation, not Minecraft installation state.
+This adds a repository operations layer around development only. It is not part of the Planner or Desktop Execution Plane and cannot be called from product surfaces. The protected integration baseline still receives changes only through review.
 
 ## Security Impact
 
-- Classification: GATED, explicitly approved only for DQ-001, DQ-002, and DQ-007 restrictions recorded in the decision queue.
-- New authority: create, inspect, atomically update, and remove transaction-owned test data inside the fixed controlled root.
-- Path defense: restricted identifiers, lexical containment, canonical existing-ancestor checks, and symlink/reparse rejection before every operation.
-- Rollback uses only the immutable owned-artifact record for the same transaction; it does not discover deletion targets from directory contents.
-- Persistence excludes secrets, tokens, telemetry, environment dumps, URLs, commands, and absolute paths.
+Classification is GATED because tooling writes external state and supervises processes. The request grants only this branch/work-package scope. Exact file allowlists, out-of-worktree containment, in-worktree child working directories, direct spawning, Java rejection, bounded timeouts, PID-plus-nonce ownership, fail-closed cleanup, and evidence preservation constrain it.
 
 ## Implementation Checkpoints
 
-1. **Completed - approval and baseline:** confirmed clean merged M16 baseline, created the scoped branch, and recorded the exact gate boundary.
-2. **Completed - controlled workspace adapter:** implemented containment, persistence, confirmation, and the simulation lifecycle with no new dependency.
-3. **Completed - adversarial tests:** covered absolute/mixed-separator/traversal identifier rejection, existing-owner-marker enforcement, reparse metadata, conditional Windows directory-symlink rejection, cross-operation/workspace/transaction confirmation rejection, uniqueness, dry-run no-write behavior, interruption, corrupt manifest, gapped journal, unknown-artifact refusal, unwind-safe temp cleanup, idempotency, and transaction-scoped rollback.
-4. **Completed - full verification and audit:** Rust format/clippy/tests, Desktop security/build, unified project verification, boundary scan, diff checks, and manual prohibited-capability review passed.
-5. **Completed - durable handoff:** synchronized project state, decisions, risks, architecture/security/public docs, and recorded actual outcomes in the progress log.
+1. **Completed - baseline and gate:** reconciled merged M17, created the branch, and recorded the tooling-only boundary.
+2. **Completed - runtime foundation:** implemented checkpoint files, lease/heartbeat, sentinels, commands, recovery, supervisor, and resource modes.
+3. **Completed - focused tests:** the initial Windows CIM identity approach failed safely; replaced it with a no-admin named-pipe challenge. All 15 focused tests pass.
+4. **Completed - documentation and audit:** synchronized policy/state/risk/resume documentation and hardened supervision to require an active matching lease.
+5. **Completed - full project verification:** unified verification passed all configured suites, builds, Desktop security, boundary scan, and whitespace check.
+6. **Completed - review handoff:** feature commit `2815147` is pushed and Draft PR #13 targets `main`; no merge, tag, or Release occurred.
 
 ## Tests
 
-- `cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml`
-- `pnpm.cmd --dir apps/desktop check:security`
-- `pnpm.cmd --dir apps/desktop build`
-- `pnpm.cmd check:autonomy-boundaries`
+- `pnpm.cmd test:autonomy-runtime`
 - `pnpm.cmd verify:project`
+- `pnpm.cmd check:autonomy-boundaries`
 - `git diff --check`
+- targeted secret, TODO/FIXME, dependency, platform-boundary, Java/Minecraft/download scans.
 
 ## Boundary Scan
 
-- Permit filesystem mutation only in the reviewed Desktop controlled-workspace module.
-- Reject any network client, URL fetch, process/shell API, Java/Minecraft path probe, OAuth/token handling, updater, sidecar, arbitrary path parameter, environment enumeration, or new production dependency.
-- Confirm Tauri capabilities expose no filesystem plugin and only explicitly registered narrow commands.
-- Confirm `docs/platform-boundaries.md` is unchanged.
+Only exact Autonomy Lab tooling files may use Node filesystem/process APIs. Fail on product process authority, shell spawning, network/download clients, Java/Minecraft probes, authentication/secrets, arbitrary child working directories, new production dependencies, or a platform-boundary diff.
 
 ## Rollback
 
-Repository rollback is removal or revert of this scoped branch. Runtime rollback removes only fixed-name simulation artifacts listed in the current transaction's owned-artifact record after revalidating containment and transaction identity. It never removes the workspace root, sibling transactions, pre-existing data, or discovered files.
+Revert or abandon only this feature branch. Runtime cleanup may remove exact control-directory temporary publications after inspection; it preserves logs and never deletes Git worktrees, branches, or uncommitted changes. A stale lease is evidence, not cleanup authority.
 
 ## Approval Gates
 
-- `GATE-EXEC-01` and the minimum `GATE-FS-01` scope are approved only for this plan through DQ-001, DQ-002, and DQ-007.
-- `GATE-USER-PATH-01`, `GATE-NET-01`, `GATE-JAVA-01`, `GATE-OAUTH-01`, `GATE-PROC-01`, `GATE-DEP-01`, `GATE-UPDATER-01`, `GATE-SIDECAR-01`, `GATE-MC-DIR-01`, and `GATE-REL-01` remain unapproved.
-- Stop before any production dependency, user-selected location, existing Minecraft access, real installation, download, process, Java, authentication, launch, or release action.
+DQ-008 approves only this repository-tooling checkpoint. DQ-003 through DQ-006 and all Desktop network, Java, OAuth, process, sidecar, Minecraft-directory, real-installation, merge, tag, and release gates remain closed.
 
 ## Progress Log Requirements
 
-After each checkpoint, update this plan and `docs/project-state.md`, then append commands, actual results, regressions, next action, and decision status to `docs/execution/progress-log.md`. Update the decision queue and risk register when evidence changes.
+Append actual commands/results after each checkpoint; keep this plan, project state, risk register, and resume packet synchronized. Always record one exact next action.
 
 ## Completion Report
 
-Report changed files, exact filesystem authority introduced, containment/atomicity/recovery evidence, tests and actual outcomes, remaining limitations and gates, and the branch state. Do not claim a playable instance, installation capability, or approval beyond this workspace foundation.
-
-M17 reached its stopping condition on 2026-08-04. Feature commit `c9a59f89d858ccf1ad52e41f8021c52e8198dd9d` is pushed on `codex/m17-controlled-workspace`, and Draft PR #12 targets `main` without merge. Full project verification passed with 14 schema examples, 84 shared-types tests, 90 API-client tests, Web/Desktop builds, 9 controlled-workspace Rust tests, the Desktop security allowlist, 26 server tests, and zero autonomy-scan violations. Final review bound confirmation to the exact operation and target, made rollback refuse unknown artifacts, added unwind-safe test cleanup, and repeated containment checks around filesystem operations. No dependency, platform-boundary, network, process, Java, OAuth, Minecraft-directory, real-installation, or release change was introduced.
+M18 reached its stopping condition on 2026-08-04. Feature commit `2815147d0695df28f1cfe1e563512f3740576bc3` is pushed on `codex/m18-autonomy-recovery`, and Draft PR #13 targets `main`. Fifteen focused tests and the complete configured project matrix pass. The tooling remains separate from product runtime authority.

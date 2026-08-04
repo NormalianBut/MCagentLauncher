@@ -16,6 +16,11 @@ function pnpmCheck(name, args) {
 }
 
 const checks = [
+  {
+    name: "Autonomy interruption and recovery tests",
+    command: process.execPath,
+    args: ["--test", "tests/autonomy-runtime.test.mjs"],
+  },
   pnpmCheck("Schema validation", ["validate:schemas"]),
   pnpmCheck("Shared types tests", ["test:shared-types"]),
   pnpmCheck("API client tests", ["test:api-client"]),

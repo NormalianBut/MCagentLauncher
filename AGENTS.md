@@ -41,6 +41,18 @@ pnpm check:autonomy-boundaries
 pnpm verify:project
 ```
 
+Autonomy Lab interruption controls:
+
+```bash
+pnpm autonomy:status
+pnpm autonomy:pause
+pnpm autonomy:doctor
+pnpm autonomy:resume
+pnpm autonomy:cleanup
+```
+
+Set `MCAGENT_AUTONOMY_CONTROL_DIR` to a dedicated directory outside Git. Before a new task, build, privileged tooling step, or long-running process, honor `PAUSE` and `STOP`. Long-running development commands must use the bounded registered supervisor, preserve logs, and checkpoint an exact next action. Read `docs/autonomy-interruption-recovery.md` and `docs/execution/resume-packet.md` when resuming in a new task. These controls authorize repository tooling only and never Desktop Java, Minecraft, download, or process capability.
+
 On Windows PowerShell environments that block `pnpm.ps1`, use `pnpm.cmd` with the same arguments.
 
 ## Git And Release Policy
